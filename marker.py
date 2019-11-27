@@ -1,3 +1,4 @@
+import argparse
 try:
     from PIL import Image
 except ImportError:
@@ -10,24 +11,21 @@ from docx import Document
 from docx.enum.text import WD_COLOR_INDEX
 from nltk.tokenize import sent_tokenize,word_tokenize
 
-#will get by arg
-file_name = 'test1.jpg'
-
-def extract_hocr_from_jpg():
+def extract_hocr_from_jpg(file_src):
     hocrFile = open('./output/hocr.html', 'wb')
-    hocr = pytesseract.image_to_pdf_or_hocr(file_name, extension='hocr')
+    hocr = pytesseract.image_to_pdf_or_hocr(file_src, extension='hocr')
     hocrFile.write(hocr)
     return hocr
 
-def extract_text_from_jpg():
+def extract_text_from_jpg(file_src):
     textFile = open('./output/text.text', 'w')
-    text = pytesseract.image_to_string(file_name)
+    text = pytesseract.image_to_string(file_src)
     textFile.write(text)
     return text
 
-def extract_tsv_from_jpg():
+def extract_tsv_from_jpg(file_src):
     tsvFile = open('./output/data.tsv', 'w')
-    tsvData = pytesseract.image_to_data(Image.open(file_name))
+    tsvData = pytesseract.image_to_data(Image.open(file_src))
     tsvFile.write(tsvData)
     return tsvData
 
@@ -104,16 +102,21 @@ def create_docx(word_table_df, sentences_table, mark = None, output_name = 'doc'
             run.font.highlight_color = WD_COLOR_INDEX.YELLOW
     document.save('./output/'+output_name+'.docx')
 
-def main():
-    extract_hocr_from_jpg()
-    extract_tsv_from_jpg()
-    text = extract_text_from_jpg()
+def main(file_src):
+    extract_hocr_from_jpg(file_src)
+    extract_tsv_from_jpg(file_src)
+    text = extract_text_from_jpg(file_src)
     sentences = extract_sentences(text)
     word_table_df, sentences_table = create_word_dataframe_from_tsv(sentences)
     create_docx(word_table_df,sentences_table, mark='sentences', output_name='docSentences')
     create_docx(word_table_df,sentences_table, mark='words', output_name='docWords')
-main()
 
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='input args')
+    parser.add_argument('-i', dest='inputImage', help='an image input for system')
+    args = parser.parse_args()
+    main(args.inputImage)
 
 
 
