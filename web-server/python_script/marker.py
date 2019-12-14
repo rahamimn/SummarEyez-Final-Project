@@ -110,6 +110,7 @@ def main(file_src):
     word_table_df, sentences_table = create_word_dataframe_from_tsv(sentences)
     create_docx(word_table_df,sentences_table, mark='sentences', output_name='docSentences')
     create_docx(word_table_df,sentences_table, mark='words', output_name='docWords')
+    print('success')
 
 
 if __name__ == "__main__":

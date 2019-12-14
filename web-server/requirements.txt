@@ -1,0 +1,6 @@
+argparse
+pytesseract
+python-docx
+pandas
+numpy
+nltk
