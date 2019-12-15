@@ -13,12 +13,11 @@ var storage = multer.diskStorage({
     filename: function (req, file, cb) {
       cb(null, 'inputImage.jpg')
     }
-  })
-  
+})
+
 var upload = multer({ storage: storage })
 
-
-const port = 3000
+const port = process.env.PORT || 3000
 
 
 app.post('/upload',upload.single('inputImage'), (req, res) => {  
@@ -26,19 +25,24 @@ app.post('/upload',upload.single('inputImage'), (req, res) => {
 });
 
 app.get('/process', (req, res) => {
-
+    let errStr = '';
     const pythonProcess = spawn('python3',["./python_script/marker.py", "-i", "./uploads/inputImage.jpg"]);
-    
+    pythonProcess.on('exit', (code) => {
+        console.log(`child process exited with code ${code}`);
+        if(code === 0){
+                res.sendFile('output/docWords.docx',{ root: __dirname });
+        }
+        else{
+            res.end(errStr);
+        }
+  
+    });
     pythonProcess.stdout.on('data', function(data) {
-        console.log(data.toString());
-        res.sendFile('output/docWords.docx',{ root: __dirname });
+        errStr += data.toString()
     });
     pythonProcess.stderr.on('data', function(data) {
-        console.log(data.toString());
-        res.write(data);
-
-        res.end('end');
+        errStr += data.toString()
     });
 })
 
-app.listen(process.env.PORT || 8080, () => console.log(`Example app listening on port ${port}!`))
+app.listen(port, () => console.log(`Example app listening on port ${port}!`))

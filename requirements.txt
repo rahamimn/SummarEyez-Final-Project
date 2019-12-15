@@ -1,7 +1,7 @@
 argparse
 pytesseract
 python-docx
-pandas
+pandas==0.25.3
 numpy
 nltk
-Pillow
+pillow

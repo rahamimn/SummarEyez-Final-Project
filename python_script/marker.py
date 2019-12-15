@@ -1,16 +1,21 @@
 import argparse
+
+from docx import Document
+import pandas as pd 
+import numpy as np
+import nltk
+from docx import Document
+from docx.enum.text import WD_COLOR_INDEX
+from nltk.tokenize import sent_tokenize
 try:
     from PIL import Image
 except ImportError:
     import Image
-import pytesseract
-from docx import Document
-import pandas as pd 
-import numpy as np
-from docx import Document
-from docx.enum.text import WD_COLOR_INDEX
-from nltk.tokenize import sent_tokenize,word_tokenize
 
+import pytesseract
+nltk.data.path.append("/root/nltk_data")
+
+print('start handle python')
 def extract_hocr_from_jpg(file_src):
     hocrFile = open('./output/hocr.html', 'wb')
     hocr = pytesseract.image_to_pdf_or_hocr(file_src, extension='hocr')
@@ -110,7 +115,7 @@ def main(file_src):
     word_table_df, sentences_table = create_word_dataframe_from_tsv(sentences)
     create_docx(word_table_df,sentences_table, mark='sentences', output_name='docSentences')
     create_docx(word_table_df,sentences_table, mark='words', output_name='docWords')
-    print('success')
+    print('success-python')
 
 
 if __name__ == "__main__":
