@@ -47,6 +47,13 @@ app.get('/process', (req, res) => {
 })
 
 
+//should be called by google
+//to save form
+app.post('/tests', (req, res) => { 
+    //not implemented
+    res.send({status:7});
+});
+
 //should add image
 //and start job of creating all preprocess files
 //if takes long think aboul pulling or dulexer 
