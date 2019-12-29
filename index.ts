@@ -20,12 +20,11 @@ var upload = multer({ storage: storage })
 
 const port = process.env.PORT || 3000
 
-//tests
+//playground - api 
 app.post('/upload',upload.single('inputImage'), (req, res) => {  
     res.send({status:1});
 });
 
-//tests
 app.get('/process', (req, res) => {
     let errStr = '';
     const pythonProcess = spawn('python3',["./python_script/marker.py", "-i", "./uploads/inputImage.jpg"]);
@@ -47,9 +46,27 @@ app.get('/process', (req, res) => {
     });
 })
 
+// should be called by google, when form submited
+// body should include {experimentId}
+// save on firebase test{ name, id, answers, score, csvFixationUrl }
+app.post('/tests', (req, res) => { 
+    //not implemented
+    console.log(req.body);
+    res.send({status:7});
+});
 
-//should be called by google
-//to save form
+//real api
+
+// should be called by google, when form submited
+// body should include {experimentId}
+// save on firebase test{ name, id, answers, score, csvFixationUrl }
+app.post('/experiments/:experimentId/tests', (req, res) => { 
+    //not implemented
+    console.log(req.body);
+    res.send({status:7});
+});
+
+// save on firebase test{ name, id, answers, score, csvFixationUrl }
 app.post('/tests', (req, res) => { 
     //not implemented
     console.log(req.body);
