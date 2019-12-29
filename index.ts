@@ -1,5 +1,6 @@
 const express = require('express');
 const multer = require('multer');
+const bodyParser = require('body-parser');
 
 const spawn = require("child_process").spawn;
 
@@ -14,7 +15,7 @@ var storage = multer.diskStorage({
       cb(null, 'inputImage.jpg')
     }
 })
-
+app.use(bodyParser); 
 var upload = multer({ storage: storage })
 
 const port = process.env.PORT || 3000
@@ -51,6 +52,7 @@ app.get('/process', (req, res) => {
 //to save form
 app.post('/tests', (req, res) => { 
     //not implemented
+    console.log(req.body);
     res.send({status:7});
 });
 
