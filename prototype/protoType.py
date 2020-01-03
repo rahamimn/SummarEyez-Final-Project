@@ -143,19 +143,37 @@ def calculate_weight(fixations, word_table, sentences_table, filename):
 def handleAutomaticAlg(text, word_table):
     alg1_sent_table = pd.DataFrame(Alg1.run_summarization(text))
     alg1_sent_table['par_num'] = 1
-    
+
+    sortedAlg1 = alg1_sent_table.sort_values(['weight'], ascending=True)
+    val = 1
+
+    for index,row in sortedAlg1.iterrows():
+        alg1_sent_table.loc[index,'weight'] = val
+        val+=1
+
     alg2_sent_table = pd.DataFrame(Alg2.calculate_weights(text))
     alg2_sent_table['par_num'] = 1
 
     alg3_sent_table = pd.read_csv('Alg3.csv')
     alg3_sent_table['par_num'] = 1
-    # alg1_sent_table = attach_par_num(word_table)
-    create_docx_sents(alg1_sent_table, output_name='Alg1-Sents', threshold = 0.075)
-    create_docx_sents(alg2_sent_table, output_name='Alg2-Sents', threshold = 3)
-    create_docx_sents(alg3_sent_table, output_name='Alg3-Sents', threshold = 0.22)
+
+    for sent_table in [alg1_sent_table, alg2_sent_table, alg3_sent_table] :
+        sent_table.sort_values(by=['weight']) 
+        max_value = sent_table['weight'].max()
+        min_value = sent_table['weight'].min()
+        sent_table['weight'] = (sent_table['weight'] - min_value) / (max_value - min_value)
+    print(alg1_sent_table)
+    create_docx_sents(alg1_sent_table, output_name='Alg1-Sents', threshold = 0.8)
+    create_docx_sents(alg2_sent_table, output_name='Alg2-Sents', threshold = 0.8)
+    create_docx_sents(alg3_sent_table, output_name='Alg3-Sents', threshold = 0.8)
 
 def handleFixations(fixations, word_table, sentences_table, filename):
     word_table, sentences_table = calculate_weight(fixations, word_table, sentences_table, filename)
+
+    max_value = sentences_table['weight'].max()
+    min_value = sentences_table['weight'].min()
+    sentences_table['weight'] = (sentences_table['weight'] - min_value) / (max_value - min_value)
+
     create_docx_words(word_table, output_name=filename+'-Words')
     create_docx_sents(sentences_table, output_name=filename+'-Sents')
 
