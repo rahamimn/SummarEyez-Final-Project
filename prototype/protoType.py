@@ -162,7 +162,6 @@ def handleAutomaticAlg(text, word_table):
         max_value = sent_table['weight'].max()
         min_value = sent_table['weight'].min()
         sent_table['weight'] = (sent_table['weight'] - min_value) / (max_value - min_value)
-    print(alg1_sent_table)
     create_docx_sents(alg1_sent_table, output_name='Alg1-Sents', threshold = 0.8)
     create_docx_sents(alg2_sent_table, output_name='Alg2-Sents', threshold = 0.8)
     create_docx_sents(alg3_sent_table, output_name='Alg3-Sents', threshold = 0.8)

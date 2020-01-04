@@ -1,6 +1,6 @@
 const express = require('express');
 const multer = require('multer');
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 
 const spawn = require("child_process").spawn;
 
@@ -15,13 +15,14 @@ var storage = multer.diskStorage({
       cb(null, 'inputImage.jpg')
     }
 })
-app.use(bodyParser); 
+// app.use(bodyParser); 
 var upload = multer({ storage: storage })
 
 const port = process.env.PORT || 3000
 
 //playground - api 
 app.post('/upload',upload.single('inputImage'), (req, res) => {  
+    console.log(2);
     res.send({status:1});
 });
 
@@ -37,7 +38,7 @@ app.get('/process', (req, res) => {
             res.end(errStr);
         }
   
-    });
+    })
     pythonProcess.stdout.on('data', function(data) {
         errStr += data.toString()
     });
