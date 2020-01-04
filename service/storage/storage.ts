@@ -9,3 +9,5 @@ export interface Storage{
 const storages: Storage = [googleStorage, localStorage, storageMock ];
 
 
+export default storages[0];
+
