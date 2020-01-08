@@ -38,12 +38,9 @@ def extract_tsv_from_jpg(file_src):
     return tsvData
 
 def extract_sentences(text):
-    sentencesFile = open('./output/sentences.txt', 'w')
     sentences = sent_tokenize(text)
     sentences = [sent.replace('\n',' ') for sent in sentences]
-    sentencesFile.writelines(sentences)
     return sentences
-
 
 def find_index_of_nearest_xy(y_array, x_array, y_point, x_point):
     distance = (y_array - y_point) ** 2 + (x_array - x_point) ** 2
@@ -52,11 +49,12 @@ def find_index_of_nearest_xy(y_array, x_array, y_point, x_point):
 
 def create_sentences_table(word_ocr, sentences):
     table_index_loop = 0
+    par_in_ocr = 0
     par_num = 0
     sentencesWeights = [{'text': sent, 'par_num': -1, 'word_count': 0, 'char_count': len(sent) } for sent in sentences]
     words_of_sent = [sent.split() for sent in sentences]
     for sent_num, words_sentence in enumerate(words_of_sent):
-        #hack to find if the right paragraph
+        #hack to find the right paragraph
         first_word = True 
         empty_words_counter = 0
         sentencesWeights[sent_num]['word_count'] += len(words_sentence)
@@ -68,7 +66,8 @@ def create_sentences_table(word_ocr, sentences):
                     
                 if word_ocr.loc[i, 'text'] == word:
                 #    print('found',i,word, sent_num)
-                    if empty_words_counter > 1 and first_word :
+                    if first_word and (empty_words_counter > 1 or par_in_ocr != word_ocr.loc[i, 'par_num'] ):
+                        par_in_ocr = word_ocr.loc[i, 'par_num']
                         par_num += 1
                     first_word = False
                     word_ocr.at[i,'sent_num'] = int(sent_num)
@@ -80,10 +79,13 @@ def create_sentences_table(word_ocr, sentences):
                     break
             if not found:
                 print('notFound',word, sent_num)
+
     #remove empty text
     word_ocr = word_ocr[pd.isna(word_ocr.text) == False ]
     word_ocr = word_ocr.reset_index()
-    return word_ocr, pd.DataFrame(sentencesWeights)
+
+    return word_ocr[['par_num','text','center_x','center_y','sent_num']], pd.DataFrame(sentencesWeights)
+    
 
 
 def pre_process(word_ocr, sentences):
@@ -96,14 +98,13 @@ def pre_process(word_ocr, sentences):
     word_ocr = word_ocr[['par_num','text','center_x','center_y','sent_num']]
 
     #create sent table 
-    word_ocr, sentences_table = create_sentences_table(word_ocr, sentences)
+    word_ocr, base_sentences_table = create_sentences_table(word_ocr, sentences)
     
-
-    sentences_table.to_csv('./output/sent_table_base.tsv', index=True, sep="\t", na_rep='',
+    base_sentences_table.to_csv('./output/base_sent_table.tsv', index=True, sep="\t", na_rep='',
         header=True, index_label=None, mode='w', decimal='.')
     word_ocr.to_csv('./output/word_ocr.tsv', index=True, sep="\t", na_rep='', 
         header=True, index_label=None, mode='w', decimal='.')
-    return word_ocr, sentences_table
+    return word_ocr, base_sentences_table
 
 def create_docx_words(word_table, output_name = 'doc'):
     document = Document()
@@ -179,8 +180,8 @@ def handleAutomaticAlg(text):
     create_docx_sents(alg2_sent_table, output_name='Alg2-Sents', threshold = 0.8)
     create_docx_sents(alg3_sent_table, output_name='Alg3-Sents', threshold = 0.8)
 
-def handleFixations(fixations, word_table, sentences_table, filename):
-    word_table, sent_table = calculate_weight(fixations, word_table, sentences_table, filename)
+def handleFixations(fixations, word_ocr, base_sentences_table, filename):
+    word_table, sent_table = calculate_weight(fixations, word_ocr, base_sentences_table, filename)
 
     max_value = sent_table['weight'].max()
     min_value = sent_table['weight'].min()
@@ -193,21 +194,21 @@ def handleFixations(fixations, word_table, sentences_table, filename):
         header=True, index_label=None, mode='w', decimal='.')
 
     create_docx_words(word_table, output_name=filename+'-Words')
-    create_docx_sents(sentences_table, output_name=filename+'-Sents')
+    create_docx_sents(sent_table, output_name=filename+'-Sents')
 
 def main():
-    extract_hocr_from_jpg('test2.jpg')
-    word_ocr = extract_tsv_from_jpg('test2.jpg')
-    text = extract_text_from_jpg('test2.jpg')
+    extract_hocr_from_jpg('test1.jpg')
+    word_ocr = extract_tsv_from_jpg('test1.jpg')
+    text = extract_text_from_jpg('test1.jpg')
     sentences = extract_sentences(text)
 
-    word_ocr, sentences_table_base = pre_process(word_ocr, sentences)
+    word_ocr, base_sentences_table = pre_process(word_ocr, sentences)
     handleAutomaticAlg(text)
     #for each File
 
     for filename in os.listdir('./tests'):
         fixations = pd.read_csv('./tests/'+filename)
-        handleFixations(fixations, word_ocr.copy(), sentences_table_base.copy(), filename)
+        handleFixations(fixations, word_ocr.copy(), base_sentences_table.copy(), filename)
 
 if __name__ == "__main__":
     main()
