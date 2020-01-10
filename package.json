@@ -4,19 +4,28 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.ts",
+    "test": "npx jest",
+    "start": "npm run build & node dist/index.ts",
+    "build": "tsc",
     "deploy": "gcloud builds submit --tag gcr.io/text-summarization-262015/deploy"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/jest": "^24.0.25",
     "body-parser": "^1.19.0",
+    "csvtojson": "^2.0.10",
     "export-to-csv": "^0.2.1",
     "express": "^4.17.1",
     "firebase-admin": "^8.9.0",
     "lexrank": "^1.0.5",
     "multer": "^1.4.2",
-    "python-shell": "^1.0.8"
+    "python-shell": "^1.0.8",
+    "ts-jest": "^24.3.0"
+  },
+  "devDependencies": {
+    "@types/firebase": "^3.2.1",
+    "jest": "^24.9.0",
+    "typescript": "^3.7.4"
   }
 }
