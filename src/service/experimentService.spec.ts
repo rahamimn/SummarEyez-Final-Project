@@ -20,21 +20,10 @@ describe('ExperimentService Tests',() =>{
         experimentService = new ExperimentService({collectionsService, storageService, pythonService});
     });
 
-
+    //just for sanity
     it('add automatic algorithm', async () => {
         const buffer = await fs.readFile('./automatic-algorithms/Alg1.py');
         await experimentService.addAutomaticAlgorithms('alg1',buffer);
         expect(true).toBe(true);
-        // const csvBuffer = await fsPromises.readFile('./someCsv.csv')
-        // await googleStorage.uploadBuffer('tests/csvTest.csv',csvBuffer);
-        // const buffer = await googleStorage.downloadToBuffer('tests/csvTest.csv');
     })
-
-
-    // it.skip('upload and download image', async () => {
-    //     const csvBuffer = await fsPromises.readFile('./test1.jpg')
-    //     await googleStorage.uploadBuffer('tests/imageTest.jpg',csvBuffer, fileTypes.Image);
-    //     const buffer = await googleStorage.downloadToBuffer('tests/imageTest.jpg');
-    //     expect(buffer[0].equals(csvBuffer)).toBeTruthy();
-    // })
 });
