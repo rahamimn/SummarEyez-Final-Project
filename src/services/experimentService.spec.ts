@@ -6,7 +6,6 @@ import { PythonScripts } from "./pythonScripts/pythonScripts";
 
 //@ts-ignore
 import {promises as fs} from 'fs';
-import { print } from "util";
 
 jest.setTimeout(30000);
 

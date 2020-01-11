@@ -6,7 +6,7 @@ from sklearn import preprocessing
 
 mm_scaler = preprocessing.MinMaxScaler()
 
-def main(base_sent_table, text, paths_algs,):
+def main(base_sent_table, text, paths_algs):
     sent_tables = []
     for index in range(len(paths_algs)):
         sent_table_copy = base_sent_table.copy()

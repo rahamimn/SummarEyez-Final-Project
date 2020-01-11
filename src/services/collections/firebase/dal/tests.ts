@@ -1,7 +1,6 @@
-export class images {
+export class Tests {
     collection;
     constructor(collection){
         this.collection = collection;
     }
-
 }
