@@ -7,7 +7,10 @@ import nltk
 from nltk.tokenize import sent_tokenize
 import pytesseract
 import sys
+import io
+from PIL import Image, ImageFile
 
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 nltk.data.path.append("/root/nltk_data")
 
@@ -97,6 +100,26 @@ def main(image):
 
     word_ocr, base_sentences_table = pre_process(word_ocr, sentences)
     return text, word_ocr, base_sentences_table
+
+
+if __name__ == "__main__":
+
+    size = int.from_bytes( sys.stdin.buffer.read(4), byteorder='big', signed=False )
+    imageBuffer = sys.stdin.buffer.read(size)
+    # print(imageBuffer)
+    # with open('./inputForTests/minTest.jpg', 'rb') as f:
+    #     print('--------------------------')
+    #     print(f.read())
+    #     im4 = Image.frombuffer(sys.stdin.buffer)
+
+    image = Image.open(io.BytesIO(imageBuffer))
+
+    
+    text, word_ocr, base_sentences_table = main(image)
+
+    sys.stdout.write(text)
+    sys.stdout.write(word_ocr.to_string())
+    sys.stdout.write(base_sentences_table.to_string())
 
 
 # sys.stdout.flush()

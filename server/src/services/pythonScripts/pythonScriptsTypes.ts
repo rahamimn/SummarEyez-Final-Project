@@ -2,7 +2,7 @@
 export interface PythonScriptInterface {
     processImage: (imageBuffer: Buffer) =>
         Promise<{
-            text?: string,
+            text?: Buffer,
             word_ocr?: Buffer,
             base_sent_table?: Buffer}>;
 

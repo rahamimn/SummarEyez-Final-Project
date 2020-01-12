@@ -13,15 +13,23 @@ export class PythonScripts implements PythonScriptInterface {
 
             let options = {
                 mode: 'binary',
+                pythonOptions: ['-u'],
             };
 
             //@ts-ignorets
-            let pyshell = new PythonShell('/python_script/imagePreprocess.py', options);
-            pyshell.send(imageBuffer);
+            let pyshell = new PythonShell('./python_script/imagePreprocess.py', options);
+            
+            this.sendBuffer(imageBuffer,pyshell)
 
             pyshell.stdout.on('data', function (buffer) {
+                // console.log(buffer.toString());
                 inputFiles.push(buffer)
             });
+
+            pyshell.stderr.on('data', function (buffer) {
+                console.log(buffer);
+            });
+
             pyshell.end((err,code,signal) => {
                 if(code === 0 ){
                     resolve({
@@ -43,18 +51,25 @@ export class PythonScripts implements PythonScriptInterface {
 
             let options = {
                 mode: 'binary',
+                pythonOptions: ['-u'],
                 args: algsNames
               };
 
             //@ts-ignore
             let pyshell = new PythonShell('./python_script/runAutomaticAlgo.py', options);
 
-            pyshell.send(text);
-            pyshell.send(base_sent_table);
+            this.sendBuffer(base_sent_table, pyshell)
+            this.sendBuffer(text, pyshell)
 
             pyshell.stdout.on('data', function (buffer) {
+                // console.log(buffer.toString());
                 inputFiles.push(buffer)
             });
+
+            pyshell.stderr.on('data', function (buffer) {
+                console.log(buffer);
+            });
+
             pyshell.end((err,code,signal) => {
                 if(code === 0 ){
                     resolve(algsNames.map((name,i) => ({
@@ -68,4 +83,12 @@ export class PythonScripts implements PythonScriptInterface {
             });
         });
     }
+
+    sendBuffer = (buffer, pyshell ) => {
+        let buffMessageSize = Buffer.allocUnsafe(4);
+        buffMessageSize.writeUInt32BE(buffer.length,0) 
+        pyshell.send(buffMessageSize)
+        pyshell.send(buffer);
+    }
+
 }
