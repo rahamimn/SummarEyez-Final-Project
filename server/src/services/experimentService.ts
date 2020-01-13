@@ -26,10 +26,10 @@ export class ExperimentService{
     addImage = async (name, buffer) => {
         const files = await this.pythonService.processImage(buffer)
         await this.storageService.uploadBuffer(`images/${name}/image`, buffer, fileTypes.Image);
-        await this.storageService.uploadBuffer(`images/${name}/text`, new Buffer(files.text), fileTypes.Text);
+        await this.storageService.uploadBuffer(`images/${name}/text`, files.text, fileTypes.Text);
         await this.storageService.uploadBuffer(`images/${name}/word_ocr`, files.word_ocr, fileTypes.Csv);
         await this.storageService.uploadBuffer(`images/${name}/base_sent_table`, files.base_sent_table, fileTypes.Csv);
-        await this.collectionsService.images.add('name',{
+        await this.collectionsService.images().add('name',{
             name,
             uploaded_date: Date.now(),
             text_path: `images/${name}/text`,
@@ -51,7 +51,7 @@ export class ExperimentService{
         tables.forEach(async row => {
             const path = `images/${imageName}/algs/${row.name}`;
             await this.storageService.uploadBuffer(path, row.sent_table, fileTypes.Csv);
-            await this.collectionsService.images.sentTablesOf(imageName).add(row.name,{
+            await this.collectionsService.images().sentTablesOf(imageName).add(row.name,{
                 type: 'automatic',
                 name: row.name,
                 path

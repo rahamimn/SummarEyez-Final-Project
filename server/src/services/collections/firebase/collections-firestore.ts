@@ -18,5 +18,5 @@ export class Firestore {
     }
 
     automaticAlgos = () => new AutomaticAlgorithms(this.db.collection('automatic-algorithms'));
-    images = new Images(this.db.collection('images'));
+    images = () => new Images(this.db.collection('images'));
 }

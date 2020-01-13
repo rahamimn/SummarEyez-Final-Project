@@ -106,19 +106,27 @@ if __name__ == "__main__":
 
     size = int.from_bytes( sys.stdin.buffer.read(4), byteorder='big', signed=False )
     imageBuffer = sys.stdin.buffer.read(size)
-    # print(imageBuffer)
-    # with open('./inputForTests/minTest.jpg', 'rb') as f:
-    #     print('--------------------------')
-    #     print(f.read())
-    #     im4 = Image.frombuffer(sys.stdin.buffer)
 
     image = Image.open(io.BytesIO(imageBuffer))
 
     
     text, word_ocr, base_sentences_table = main(image)
 
+    word_ocr_string = word_ocr.to_string()
+    base_sentences_table_string = base_sentences_table.to_string()
+    
+    # text = text.decode('latin-1').encode('utf-8')
+    # print(text)
+    # print(len(text))
+    sys.stdout.buffer.write(len(text.encode('utf-8')).to_bytes(4, byteorder="big", signed=False))
+    # sys.stderr.write(len(text))
     sys.stdout.write(text)
+    # ssys.stderr.write(text)
+    # print('11111'+str(len(word_ocr_string)))
+    sys.stdout.buffer.write(len(word_ocr_string.encode('utf-8')).to_bytes(4, byteorder="big",signed=False))
     sys.stdout.write(word_ocr.to_string())
+    # # print(base_sentences_table.to_string())
+    sys.stdout.buffer.write(len(base_sentences_table_string.encode('utf-8')).to_bytes(4, byteorder="big",signed=False))
     sys.stdout.write(base_sentences_table.to_string())
 
 

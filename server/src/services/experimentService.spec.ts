@@ -25,4 +25,10 @@ describe('ExperimentService Tests',() =>{
         await experimentService.addAutomaticAlgorithms('alg1',buffer);
         expect(true).toBe(true);
     })
+
+    it('add image', async () => {
+        const imageBuffer = await fs.readFile('./inputForTests/minTest.jpg');
+        await experimentService.addImage('someImage',imageBuffer);
+        expect(true).toBe(true);
+    })
 });

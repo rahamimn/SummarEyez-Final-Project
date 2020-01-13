@@ -3,5 +3,5 @@ import { Images } from "./firebase/dal/images";
 
 export interface Collections{
     automaticAlgos: () => AutomaticAlgorithms;
-    images: Images;
+    images: () => Images;
 }

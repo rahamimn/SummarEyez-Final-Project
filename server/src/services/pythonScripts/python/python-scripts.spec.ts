@@ -18,7 +18,7 @@ describe('pythonScript',() => {
         expect(true).toBe(true);
     })
 
-    it.skip('imagePreprocess',async () => {
+    it('imagePreprocess',async () => {
         const image = await fs.readFile('./inputForTests/minTest.jpg');
   
         const res = await pythonService.processImage(image);

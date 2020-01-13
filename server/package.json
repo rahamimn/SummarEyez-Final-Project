@@ -5,6 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "test": "npx jest",
+    "testPy": "python3 ./python_script/runAutomaticAlgo.spec.py && python3 ./python_script/imagePreprocess.spec.py",
     "start": "npm run build & node dist/index.ts",
     "build": "tsc",
     "deploy": "gcloud builds submit --tag gcr.io/text-summarization-262015/deploy"

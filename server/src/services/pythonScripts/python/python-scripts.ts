@@ -1,6 +1,6 @@
 import {PythonShell} from 'python-shell';
 import { PythonScriptInterface } from '../pythonScriptsTypes';
-
+const fs = require('fs');
 //doesn't tested at all
 
 export class PythonScripts implements PythonScriptInterface {
@@ -9,21 +9,62 @@ export class PythonScripts implements PythonScriptInterface {
     }
     processImage(imageBuffer: Buffer){
         return new Promise((resolve,reject) => {
-            let inputFiles = [];
+            let inputFiles: Buffer[] = [];
 
             let options = {
                 mode: 'binary',
                 pythonOptions: ['-u'],
             };
 
+            let remainingBytes = 0;
+
             //@ts-ignorets
             let pyshell = new PythonShell('./python_script/imagePreprocess.py', options);
             
             this.sendBuffer(imageBuffer,pyshell)
-
             pyshell.stdout.on('data', function (buffer) {
-                // console.log(buffer.toString());
-                inputFiles.push(buffer)
+                console.log(buffer.length);
+                
+                let workingBuffer = buffer;
+                while(workingBuffer.length > 0){
+                    if(remainingBytes === 0){
+                        // console.log(remainingBytes);
+                        let size = workingBuffer.readUIntBE(0, 4)
+                        console.log(size)
+                        let data = workingBuffer.slice(4,4+size)
+                        
+                        remainingBytes = size - data.length;
+
+                        console.log(remainingBytes, data.length)
+                        inputFiles.push(data)
+                        workingBuffer = workingBuffer.slice(4+size)
+                        console.log(workingBuffer.length)
+                    }
+                    else{
+                        console.log(remainingBytes)
+                        let data = workingBuffer.slice(0,remainingBytes)
+                        remainingBytes = remainingBytes - data.length;
+                        console.log(data)
+                        console.log(remainingBytes, data.length)
+                        inputFiles[inputFiles.length-1] = Buffer.concat([inputFiles[inputFiles.length-1],data])
+                        
+                        console.log(inputFiles[inputFiles.length-1]);
+                        workingBuffer = workingBuffer.slice(data.length)
+                    }
+                }
+
+
+                // if(type.toString() === '/start/'){
+                //     console.log('new')
+                //     inputFiles.push(buffer.slice(7))
+                //     console.log('after', inputFiles.length )
+                // }
+                // else{
+                //     console.log('concat before', inputFiles[inputFiles.length-1].length )
+
+                //     inputFiles[inputFiles.length-1] = Buffer.concat([inputFiles[inputFiles.length-1],buffer])
+                //     console.log('after', inputFiles[inputFiles.length-1].length )
+                // }
             });
 
             pyshell.stderr.on('data', function (buffer) {
