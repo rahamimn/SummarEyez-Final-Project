@@ -11,7 +11,7 @@ export class Firestore {
         if(!admin.apps.length){
             admin.initializeApp({
                 credential: admin.credential.cert(serviceAccount),
-                storageBucket: "text-summarization-262015.appspot.com"
+                storageBucket: "summareyez-6b61e.appspot.com"
             });
         }
         this.db = admin.firestore();
