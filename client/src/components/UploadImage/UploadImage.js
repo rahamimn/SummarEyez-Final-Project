@@ -45,14 +45,14 @@ export class UploadImage extends Component{
 
   render(){
     return (
-        <div style={{width: '100%', marginBottom:'40px'}}>
+        <div style={{width: '100%',margin:'20px 0 40px'}}>
           {this.state.uploading ? 
             <CircularProgress />
           :
           <div>
             <TextField 
                 value={this.state.imageName}
-                style={{marginBottom: '20px'}}
+                style={{width: '200px', marginBottom: '20px'}}
                 onChange={this.handleChangeName}
                 id="standard-basic"
                 label="Image Name" />

@@ -3,6 +3,7 @@ import {DropzoneArea} from 'material-ui-dropzone'
 import axios from 'axios';
 import TextField from '@material-ui/core/TextField'
 import Grid from '@material-ui/core/Grid'
+import Divider from '@material-ui/core/Divider'
 import Button from '@material-ui/core/Button'
 import Card from '@material-ui/core/Card'
 import Typography from '@material-ui/core/Typography'
@@ -52,19 +53,21 @@ export class NewExperiment extends Component{
           <Grid container spacing={3} style={{width:"100%"}}>
             <Grid item xs={12} sm={6}>
               <Card style={{padding: '20px'}}>
-                <Typography>
+                <Typography variant="h5">
                   Create New Experiment
                 </Typography>
+                <Divider/>
                 <TextField 
+                
                   value={this.state.experimentName}
-                  style={{marginBottom: '20px'}}
+                  style={{width: '200px',marginTop:'10px', marginBottom: '20px'}}
                   onChange={this.handleChangeExperimentName}
                   id="text-experiments"
                   label="Experiment Name" />
 
                 <Autocomplete
                   id="legue-select"
-                  style={{ width: 300, marginRight:10 }}
+                  style={{ width: '200px', marginRight:10 }}
                   options={this.state.images}
                   autoHighlight
                   getOptionLabel={option => option.id}
@@ -89,17 +92,15 @@ export class NewExperiment extends Component{
                   inputValue={this.state.imageName}
 
                 />
-                {!this.state.uploadingNewImage &&
-                  <Button 
-                    style={{display: 'block'}}
-                    color="primary"
-                    onClick={() => this.setState({
-                      uploadingNewImage: !this.state.uploadingNewImage
-                    })}>
-                        Upload new Image
-                  </Button> 
-                  }
-                  {this.state.uploadingNewImage && 
+                {!this.state.uploadingNewImage ?
+                    <Button 
+                      style={{display: 'block'}}
+                      color="primary"
+                      onClick={() => this.setState({
+                        uploadingNewImage: !this.state.uploadingNewImage
+                      })}>
+                          Upload new Image
+                    </Button>  :
                     <UploadImage 
                       onImageUploaded ={async (imageName) => {
                         await this.fetchImages();
