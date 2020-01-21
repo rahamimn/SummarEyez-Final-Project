@@ -1,20 +1,46 @@
+import { ExperimentService } from "../services/experimentService";
+import { Firestore } from "../services/collections/firebase/collections-firestore";
+import { GoogleStorage } from "../services/storage/googleStorage/googleStorage";
+import { PythonScripts } from "../services/pythonScripts/python/python-scripts";
+
+const cors = require('cors');
 const express = require('express');
 const multer = require('multer');
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 
 const app = express();
 app.use(express.static('output'));
-
-app.use(bodyParser); 
+app.use(cors())
+// app.use(bodyParser); 
 var upload = multer()
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 4000
 
-// //playground - api 
-// app.post('/upload',upload.single('inputImage'), (req, res) => {  
-//     console.log(2);
-//     res.send({status:1});
-// });
+const experimentService = new ExperimentService({
+    collectionsService: new Firestore(),
+    storageService: new GoogleStorage(),
+    pythonService: new PythonScripts()
+})
+
+
+const errorHandling = async (res, cb) => {
+    try{
+        await cb();
+
+    }catch(err){
+        res.send({status: -1, err});
+    }
+}
+
+app.post('/api/images',upload.single('imageBuffer'), (req, res) => errorHandling(res, async () => {
+    await experimentService.addImage(req.body.imageName, req.file.buffer);
+    res.send({status: 0})
+}));
+
+app.get('/api/images', (req, res) => errorHandling(res, async () => {
+    const images = await experimentService.getImages();
+    res.send(images);
+}));
 
 // app.get('/process', (req, res) => {
 //     let errStr = '';
@@ -67,16 +93,16 @@ app.post('/tests', (req, res) => {
 //should add image
 //and start job of creating all preprocess files
 //if takes long think aboul pulling or dulexer 
-app.post('/images', (req, res) => {  
-    //not implemented
-    res.send({status:-1});
-});
+// app.post('/images', (req, res) => {  
+//     //not implemented
+//     res.send({status:-1});
+// });
 
-//should return json image name/url/id
-app.get('/images', (req, res) => {  
-    //not implemented
-    res.send({status:-1});
-});
+// //should return json image name/url/id
+// app.get('/images', (req, res) => {  
+//     //not implemented
+//     res.send({status:-1});
+// });
 
 //should return experiments id/(maybe imageUrl)
 app.get('/experiments', (req, res) => {  

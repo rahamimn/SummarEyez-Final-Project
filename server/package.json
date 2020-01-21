@@ -6,14 +6,14 @@
   "scripts": {
     "test": "npx jest",
     "testPy": "python3 ./python_script/runAutomaticAlgo.spec.py && python3 ./python_script/imagePreprocess.spec.py",
-    "start": "npm run build & node dist/index.ts",
+    "start": "npm run build ; node dist/controller/controller.js",
     "build": "tsc",
     "deploy": "gcloud builds submit --tag gcr.io/text-summarization-262015/deploy"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
     "csvtojson": "^2.0.10",
     "export-to-csv": "^0.2.1",
     "express": "^4.17.1",

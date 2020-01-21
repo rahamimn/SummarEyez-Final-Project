@@ -24,20 +24,31 @@ export class ExperimentService{
     };
 
     addImage = async (name, buffer) => {
+        console.log(buffer);
         const files = await this.pythonService.processImage(buffer)
         await this.storageService.uploadBuffer(`images/${name}/image`, buffer, fileTypes.Image);
         await this.storageService.uploadBuffer(`images/${name}/text`, files.text, fileTypes.Text);
         await this.storageService.uploadBuffer(`images/${name}/word_ocr`, files.word_ocr, fileTypes.Csv);
         await this.storageService.uploadBuffer(`images/${name}/base_sent_table`, files.base_sent_table, fileTypes.Csv);
-        await this.collectionsService.images().add('name',{
+        await this.collectionsService.images().add(name,{
             name,
             uploaded_date: Date.now(),
+            image_path: `images/${name}/image`,
             text_path: `images/${name}/text`,
             word_ocr_path: `images/${name}/word_ocr`,
             base_sent_table_path: `images/${name}/base_sent_table`,
         })
     }
 
+    getImages = async () => {
+        const imagesCollection = await this.collectionsService.images();
+        const images  = await imagesCollection.getAll();
+        console.log(images);
+        console.log(images.docs);
+        console.log(images.data);
+
+        return images;
+    }
     //TODO - check if exists download if needed
     // we could check with in memory data
     private verifyAutomaticAlgorithmExists = async (names: string[]) => {};
