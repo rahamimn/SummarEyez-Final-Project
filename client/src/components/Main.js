@@ -74,6 +74,10 @@ function Main(props) {
           <ListItemText primary={'Experiments'} />
         </ListItem>
 
+        <ListItem button key={'Upload Algorithm'} onClick={e => history.push('/algorithm')}>
+          <ListItemText primary={'Upload Algorithm'} />
+        </ListItem>
+
         <ListItem button key={'Conduct Test'} onClick={e => history.push('/tests')}>
           <ListItemText primary={'Conduct Test'} />
         </ListItem>
@@ -128,6 +132,9 @@ function Main(props) {
             <NewExperiment/>
           </Route>
           <Route path="/tests">
+            <ArticleViewer json={mockJson}/>
+          </Route>
+          <Route path="/algorithm">
             <ArticleViewer json={mockJson}/>
           </Route>
       </Switch>  

@@ -11,14 +11,18 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { UploadImage } from '../UploadImage/UploadImage';
 
 const ArticleImage = (imagePath) =>
+  <Card>  
+    <div style={{padding:20, backgroundColor: '#dcdcdc',}}>
       <div style={{
           height: 800,
-          width:600,
+          width:'100%',
           backgroundImage: `url("https://storage.googleapis.com/summareyez-6b61e.appspot.com/${imagePath}")`,
           backgroundRepeat: 'no-repeat',
           backgroundSize: 'contain',
           backgroundPositionX: 'center'
           }}/>
+    </div>
+  </Card>
 
 export class NewExperiment extends Component{
   constructor(props){
@@ -92,7 +96,7 @@ export class NewExperiment extends Component{
                   inputValue={this.state.imageName}
 
                 />
-                {!this.state.uploadingNewImage ?
+                {!this.state.uploadingNewImage &&
                     <Button 
                       style={{display: 'block'}}
                       color="primary"
@@ -100,18 +104,9 @@ export class NewExperiment extends Component{
                         uploadingNewImage: !this.state.uploadingNewImage
                       })}>
                           Upload new Image
-                    </Button>  :
-                    <UploadImage 
-                      onImageUploaded ={async (imageName) => {
-                        await this.fetchImages();
-                        this.setState({
-                          uploadingNewImage: false,
-                          image: this.state.images.find(image => image.id === imageName),
-                          imageName
-                        })
-                      }}/>}
+                    </Button> }
                 <Button 
-                  style={{marginTop: '20px', textAlign:'end'}}
+                  style={{marginTop: '20px', float:'right'}}
                   disabled={!!(!this.state.image || !this.state.experimentName)}
                   variant="contained"
                   color="primary"
@@ -119,6 +114,16 @@ export class NewExperiment extends Component{
                     Create
                 </Button> 
               </Card>
+
+              {this.state.uploadingNewImage &&   <UploadImage 
+                      onImageUploaded ={async (imageName) => {
+                        await this.fetchImages();
+                        this.setState({
+                          uploadingNewImage: false,
+                          image: this.state.images.find(image => image.id === imageName),
+                          imageName
+                        })
+                    }}/>}
             </Grid>
             <Grid item xs={12} sm={6}>
               {this.state.image && ArticleImage(this.state.image.data.image_path)}

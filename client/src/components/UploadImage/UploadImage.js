@@ -4,6 +4,9 @@ import axios from 'axios';
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import Card from '@material-ui/core/Card'
+import Divider from '@material-ui/core/Divider'
+import Typography from '@material-ui/core/Typography'
 
 export class UploadImage extends Component{
   constructor(props){
@@ -45,9 +48,16 @@ export class UploadImage extends Component{
 
   render(){
     return (
-        <div style={{width: '100%',margin:'20px 0 40px'}}>
+      <Card style={{width: '100%',margin:'20px 0 40px', padding:'20px'}}>
+        <Typography variant="h5">
+          Upload new Image
+        </Typography>
+        <Divider/>
+        <div> 
           {this.state.uploading ? 
-            <CircularProgress />
+            <div style={{ width: '100%', textAlign:'center', marginTop:'20px'}}>
+              <CircularProgress />
+            </div>
           :
           <div>
             <TextField 
@@ -70,6 +80,7 @@ export class UploadImage extends Component{
             </Button>
           </div>}
         </div> 
+      </Card>
     )  
   }
 } 
