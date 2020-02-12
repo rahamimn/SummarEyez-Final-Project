@@ -1,12 +1,15 @@
-import React from 'react';
+import React, {useState} from 'react';
+import Button from '@material-ui/core/Button'
 
 export const ArticleViewer = ({json,type}) => {
     let paragraphs = [];
     let paragraphNum = -1;
-
+    let [color, setColor] = useState(90)
 
     for(let i = 0 ; i < json.length; i++){
-        const sent = <span key={'sent'+i} style={{backgroundColor:`hsl(90, 100%, ${json[i].weight*100 < 20 ? 1 : json[i].weight*100 }%)`}} >{json[i].text}</span>
+        // const sent = <span key={'sent'+i} style={{backgroundColor:`hsl(90, 100%, ${100 - json[i].weight*50}%)`}} >{json[i].text}</span>
+        const sent = <span key={'sent'+i} style={{backgroundColor:`hsl(${color}, 100%, ${100 - json[i].weight*50}%)`}} >{json[i].text}</span>
+        
         if(json[i].par_num !== paragraphNum){
             paragraphs.push([sent]);
             paragraphNum = json[i].par_num;
@@ -18,14 +21,22 @@ export const ArticleViewer = ({json,type}) => {
 
     const sentHtml = paragraphs.map((sents,i) => <p key={'par'+i}>{sents}</p>);
 
-    return <div style={{
-        backgroundColor: 'white',
-        width:'800px',
-        textAlign:'left',
-        color: 'black',
-        fontSize: '16px',
-        display:'flex',
-        justifyContent: 'center',
-    }}> <div style={{ width:'700px'}}>{sentHtml}</div> </div>
+    return <div>
+            <Button onClick={() => setColor(90)}>yellow</Button>
+            <Button onClick={() => setColor(35)}>red</Button>
+            <Button onClick={() => setColor(200)}>blue</Button>
+            <div style={{
+                backgroundColor: 'white',
+                border: '1px solid black',
+                width:'800px',
+                textAlign:'left',
+                color: 'black',
+                fontSize: '16px',
+                display:'flex',
+                justifyContent: 'center',
+            }}>
+       
+                <div style={{ width:'700px'}}>{sentHtml}</div> </div>
+        </div>
 }
 
