@@ -1,6 +1,6 @@
 import { Tests } from "./tests";
 
-export class experiment {
+export class Experiments {
     collection;
     constructor(collection){
         this.collection = collection;

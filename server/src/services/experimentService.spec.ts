@@ -14,7 +14,7 @@ describe('ExperimentService Tests',() =>{
     beforeEach(() => {
         //not realy test, we should mock those
         const collectionsService = new Collections.Firestore();
-        const storageService = new Storages.GoogleStorage();
+        const storageService = new Storages.MockStorage();
         const pythonService = new PythonScripts.PythonScripts();
         experimentService = new ExperimentService({collectionsService, storageService, pythonService});
     });

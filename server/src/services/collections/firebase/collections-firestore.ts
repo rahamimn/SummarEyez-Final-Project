@@ -1,5 +1,6 @@
 import { AutomaticAlgorithms } from "./dal/automatic-algorithms";
 import { Images } from "./dal/images";
+import { Experiments } from "./dal/experiments";
 
 const admin = require('firebase-admin');
 const serviceAccount = require('../../../../serviceAcountKey.json');
@@ -19,6 +20,6 @@ export class Firestore {
 
     automaticAlgos = () => new AutomaticAlgorithms(this.db.collection('automatic-algorithms'));
     images = () => new Images(this.db.collection('images'));
-    experiments = () => new Images(this.db.collection('experiments'));
+    experiments = () => new Experiments(this.db.collection('experiments'));
     createBatch = () => this.db.batch();
 }

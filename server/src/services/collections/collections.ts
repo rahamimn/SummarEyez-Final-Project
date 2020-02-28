@@ -1,4 +1,4 @@
 import {Firestore} from "./firebase/collections-firestore";
-
-export const Collections = {Firestore};
+import {CollectionMock} from './mock/collections.mock'; 
+export const Collections = {Firestore,CollectionMock};
 
