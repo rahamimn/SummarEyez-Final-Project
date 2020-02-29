@@ -8,7 +8,7 @@ import './App.css';
 import Main from './components/Main'
 function App() {
   return (
-    <div className="App" dataHook="full-page">
+    <div className="App" datahook="full-page">
       <Router>
         <Main/>
       </Router>

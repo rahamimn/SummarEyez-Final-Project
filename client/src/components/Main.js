@@ -21,6 +21,8 @@ import {
 } from "react-router-dom";
 import { NewExperiment } from './NewExperiment/NewExperiment';
 import { ArticleViewer } from './ArticleViewer/ArticleViewer';
+import WelComeDialog from './WelcomeDialog/WelcomeDialog';
+import { Button } from '@material-ui/core';
 
 const drawerWidth = 240;
 
@@ -70,24 +72,26 @@ function Main(props) {
       <Divider />
       <List>
 
-        <ListItem button key={'Experiments'} onClick={e => history.push('/experiments')}>
-          <ListItemText primary={'Experiments'} />
-        </ListItem>
-
         <ListItem button key={'Upload Algorithm'} onClick={e => history.push('/algorithm')}>
           <ListItemText primary={'Upload Algorithm'} />
         </ListItem>
 
-        <ListItem button key={'Conduct Test'} onClick={e => history.push('/tests')}>
+
+        <ListItem button key={'Tests'} onClick={e => history.push('/tests')}>
           <ListItemText primary={'Conduct Test'} />
         </ListItem>
+
+        <ListItem button key={'Edit Test'} onClick={e => history.push('/tests')}>
+          <ListItemText primary={'Conduct Test'} />
+        </ListItem>
+
 
         {/* <ListItem button key={'Conduct Test'} onClick={e => setOpenH2H(!openH2H)}>
           <ListItemText primary={'Conduct Test'} />
           {openH2H ? <ExpandLess /> : <ExpandMore />}
-        </ListItem>
+        </ListItem> */}
 
-        <Collapse in={openH2H} timeout="auto" unmountOnExit>
+        {/* <Collapse in={openH2H} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
             {[{ text: 'Predictions', link:'/h2h'}, { text: 'Last Games', link:'/h2h-stats'} ].map((navItem) => (
               <ListItem button key={navItem.text} onClick={e => history.push(navItem.link)} className={classes.nested}>
@@ -105,9 +109,20 @@ function Main(props) {
       <CssBaseline />
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
+          <div style={{
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'space-between'
+          }}>
+  
           <Typography variant="h6" noWrap>
             Summareyez
           </Typography>
+          <div>
+            <Button color="inherit">Mode</Button>
+            <Button color="inherit" onClick={e => history.push('/experiments')}>New Experiment</Button>
+          </div>
+          </div>
         </Toolbar>
       </AppBar>
       <nav className={classes.drawer} aria-label="mailbox folders">
@@ -139,6 +154,7 @@ function Main(props) {
           </Route>
       </Switch>  
     </main>
+    <WelComeDialog/>
     </div>
   );
 }
