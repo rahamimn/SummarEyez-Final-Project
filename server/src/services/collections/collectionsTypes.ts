@@ -1,19 +1,8 @@
 import { BaseCollection } from "./firebase/dal/baseCollection";
+import { Images } from "./firebase/dal/images";
+import { AutomaticAlgorithms } from "./firebase/dal/automatic-algorithms";
 
 export interface Collections{
     automaticAlgos: () => AutomaticAlgorithms;
     images: () => Images;
-}
-
-
-export interface Images extends BaseCollection {
-
-}
-
-export interface AutomaticAlgorithms extends BaseCollection{
-    
-}
-
-export interface Experiments extends BaseCollection {
-    
 }

@@ -7,6 +7,6 @@ let firestore : Firestore;
     })
 
     it('automatic get', async () => {
-        const res = await firestore.automaticAlgos().get();
+        const res = await firestore.automaticAlgos().get('some id');
     })
 })           

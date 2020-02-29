@@ -7,15 +7,13 @@ import { PythonScripts } from "./pythonScripts/pythonScripts";
 //@ts-ignore
 import {promises as fs} from 'fs';
 
-jest.setTimeout(30000);
-
 describe('ExperimentService Tests',() =>{
     let experimentService: ExperimentService;
     beforeEach(() => {
         //not realy test, we should mock those
         const collectionsService = new Collections.CollectionMock();
         const storageService = new Storages.MockStorage();
-        const pythonService = new PythonScripts.PythonScripts();
+        const pythonService = new PythonScripts.MockPythonScripts();
         experimentService = new ExperimentService({collectionsService, storageService, pythonService});
     });
 
