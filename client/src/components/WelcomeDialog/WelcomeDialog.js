@@ -2,27 +2,29 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import {
+  useHistory,
+} from "react-router-dom";
 
-export default function WelComeDialog(clickTest, clickNewExperiment, clickExperiments) {
-  const [open, setOpen] = React.useState(true);
+export default function WelcomeDialog({
+  validatePermission,
+  onClose
+}) {
+  const history = useHistory();
+  
 
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   return (
     <div>
       <Dialog 
-        open={open} 
-        onClose={handleClose}
-
+        open={true} 
+        onClose={onClose}
         aria-labelledby="form-dialog-title"
-        // disableBackdropClick
-        disableEscapeKeyDown
+        disableBackdropClick = {!!!onClose}
+        disableEscapeKeyDown = {!!!onClose}
         >
         <DialogTitle id="form-dialog-title">Choose Mode</DialogTitle>
         <DialogContent>
@@ -54,6 +56,10 @@ export default function WelComeDialog(clickTest, clickNewExperiment, clickExperi
                     variant="contained"
                     size="large"
                     style={{marginRight: '10px'}}
+                    onClick={() => {
+                      onClose && onClose();
+                      history.push('/experiments/new');
+                    }}
                     >
                 New Experiments
             </Button>
@@ -61,6 +67,10 @@ export default function WelComeDialog(clickTest, clickNewExperiment, clickExperi
                     variant="contained"
                     size="large"
                     style={{marginRight: '10px'}}
+                    onClick={() => {
+                      onClose && onClose();
+                      history.push('/experiments');
+                    }}
                     >
                 Experiments
             </Button>
@@ -68,6 +78,10 @@ export default function WelComeDialog(clickTest, clickNewExperiment, clickExperi
                     variant="contained"
                     color="primary"
                     size="large"
+                    onClick={() => {
+                      onClose && onClose();
+                      history.push('/tests');
+                    }}
                     >
                 Tests
             </Button>
