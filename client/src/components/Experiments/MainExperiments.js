@@ -1,28 +1,19 @@
 import React, {useState} from 'react';
-import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import List from '@material-ui/core/List';
-import Collapse from '@material-ui/core/Collapse';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
 import {
   Switch,
   Route,
   useHistory,
-  Redirect,
 } from "react-router-dom";
 import { NewExperiment } from './NewExperiment/NewExperiment';
-import { ArticleViewer } from '../ArticleViewer/ArticleViewer';
-import { Button } from '@material-ui/core';
-import WelcomeDialog from '../WelcomeDialog/WelcomeDialog';
+import TopNav from '../TopNav/TopNav';
 
 const drawerWidth = 240;
 
@@ -37,12 +28,6 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.up('sm')]: {
       width: drawerWidth,
       flexShrink: 0,
-    },
-  },
-  appBar: {
-    [theme.breakpoints.up('sm')]: {
-      width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: drawerWidth,
     },
   },
   menuButton: {
@@ -76,13 +61,20 @@ function MainExperiments(props) {
           <ListItemText primary={'Upload Algorithm'} />
         </ListItem>
 
-
-        <ListItem button key={'Tests'} onClick={e => history.push('/tests')}>
-          <ListItemText primary={'Conduct Test'} />
+        <ListItem button key={'Summaries'} onClick={e => history.push('/summaries')}>
+          <ListItemText primary={'Summaries'} />
         </ListItem>
 
-        <ListItem button key={'Edit Test'} onClick={e => history.push('/tests')}>
-          <ListItemText primary={'Conduct Test'} />
+        <ListItem button key={'Forms'} onClick={e => history.push('/forms')}>
+          <ListItemText primary={'Forms/Edit Form'} />
+        </ListItem>
+
+        <ListItem button key={'New Form'} onClick={e => history.push('/newForm')}>
+          <ListItemText primary={'Create New Form'} />
+        </ListItem>
+
+        <ListItem button key={'New Form'} onClick={e => history.push('/newForm')}>
+          <ListItemText primary={'Create from eyes (manualy) -opt'} />
         </ListItem>
 
 
@@ -107,24 +99,7 @@ function MainExperiments(props) {
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <AppBar position="fixed" className={classes.appBar}>
-        <Toolbar>
-          <div style={{
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'space-between'
-          }}>
-  
-          <Typography variant="h6" noWrap>
-            Summareyez
-          </Typography>
-          <div>
-            <Button color="inherit" onClick={() => setShowModeSelection(true)}>Mode</Button>
-            <Button color="inherit" onClick={() => history.push('/experiments/new')}>New Experiment</Button>
-          </div>
-          </div>
-        </Toolbar>
-      </AppBar>
+      <TopNav isExperimentMode/>
       <nav className={classes.drawer} aria-label="mailbox folders">
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
         <Hidden xsDown implementation="css">
@@ -139,17 +114,14 @@ function MainExperiments(props) {
           </Drawer>
         </Hidden>
       </nav>
-    <main className={classes.content}>
-      <div className={classes.toolbar} />
-      <Switch>
-          <Route path="/experiments/new">
-            <NewExperiment/>
-          </Route>
-      </Switch>  
-    </main>
-    {showModeSelection && <WelcomeDialog 
-      onClose={() => setShowModeSelection(false)}/>
-      }
+      <main className={classes.content}>
+        <div className={classes.toolbar} />
+        <Switch>
+            <Route path="/experiments/new">
+              <NewExperiment/>
+            </Route>
+        </Switch>  
+      </main>
     </div>
   );
 }

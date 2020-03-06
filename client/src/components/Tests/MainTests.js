@@ -1,44 +1,44 @@
-import React, {useState} from 'react';
+import React from 'react';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   Switch,
   Route,
-  useHistory,
 } from "react-router-dom";
+import { TopNav } from '../TopNav/TopNav';
+import { ArticleViewer } from '../ArticleViewer/ArticleViewer';
 
-import WelcomeDialog from './WelcomeDialog/WelcomeDialog';
-import MainExperiments from './Experiments/MainExperiments';
-import MainTests from './Tests/MainTests';
-import { ArticleViewer } from './ArticleViewer/ArticleViewer';
+const useStyles = makeStyles(theme => ({
+  root: {
+    display: 'flex',
+  },
+  toolbar: theme.mixins.toolbar,
+  content: {
+    flexGrow: 1,
+    padding: theme.spacing(3),
+  },
+}));
 
-function Main() {
-  const history = useHistory();
-
+function MainExperiments(props) {
+  const classes = useStyles();
   return (
-    <div>
+    <div className={classes.root}>
+      <CssBaseline />
+      <TopNav/>
+    <main className={classes.content}>
+      <div className={classes.toolbar} />
       <Switch>
-       
-        <Route path="/experiments">
-          <MainExperiments/>
-        </Route>
-        <Route path="/tests">
-          <MainTests/>
-          {/* <ArticleViewer json={mockJson}/> */}
-        </Route>
-        <Route path="/">
-          <div style={{
-            width: '100%',
-            height: '100vh',
-            backgroundColor:'#dddddd'
-            }}>
-              <WelcomeDialog/>
-            </div>
-        </Route>
-      </Switch>   
+          <Route path="/tests">
+            <ArticleViewer json={mockJson}/>
+          </Route>
+      </Switch>  
+    </main>
     </div>
   );
 }
 
-export default Main;
+export default MainExperiments;
+
 
 const mockJson = [
   {
