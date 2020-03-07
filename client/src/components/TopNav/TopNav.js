@@ -20,7 +20,8 @@ const useStyle = makeStyles(theme => ({
 }));
 
 export const TopNav = ({
-    isExperimentMode
+    isExperimentMode,
+    permit
 }) => {
     const history = useHistory();
     const classes = useStyle();
@@ -47,7 +48,8 @@ export const TopNav = ({
       
     </AppBar>
     {showModeSelection && <WelcomeDialog 
-        onClose={() => setShowModeSelection(false)}/>
+        onClose={() => setShowModeSelection(false)}
+        permit={permit}/>
         }
   </div>
   

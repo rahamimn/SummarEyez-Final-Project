@@ -19,12 +19,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function MainExperiments(props) {
+function MainExperiments({permit}) {
   const classes = useStyles();
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <TopNav/>
+      <TopNav permit={permit}/>
     <main className={classes.content}>
       <div className={classes.toolbar} />
       <Switch>

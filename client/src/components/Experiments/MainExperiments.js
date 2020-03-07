@@ -46,10 +46,9 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function MainExperiments(props) {
+function MainExperiments({permit}) {
   const classes = useStyles();
   const history = useHistory();
-  const [showModeSelection, setShowModeSelection] = useState(false);
   
   const drawer = (
     <div>
@@ -66,11 +65,11 @@ function MainExperiments(props) {
         </ListItem>
 
         <ListItem button key={'Forms'} onClick={e => history.push('/forms')}>
-          <ListItemText primary={'Forms/Edit Form'} />
+          <ListItemText primary={'Forms -> all/Edit/New Form'} />
         </ListItem>
 
-        <ListItem button key={'New Form'} onClick={e => history.push('/newForm')}>
-          <ListItemText primary={'Create New Form'} />
+        <ListItem button key={'Forms'} onClick={e => history.push('/tests')}>
+          <ListItemText primary={'Tests their Summaries'} />
         </ListItem>
 
         <ListItem button key={'New Form'} onClick={e => history.push('/newForm')}>
@@ -99,9 +98,8 @@ function MainExperiments(props) {
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <TopNav isExperimentMode/>
+      <TopNav isExperimentMode permit={permit}/>
       <nav className={classes.drawer} aria-label="mailbox folders">
-        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
         <Hidden xsDown implementation="css">
           <Drawer
             classes={{
@@ -116,10 +114,27 @@ function MainExperiments(props) {
       </nav>
       <main className={classes.content}>
         <div className={classes.toolbar} />
+
         <Switch>
+            
             <Route path="/experiments/new">
               <NewExperiment/>
             </Route>
+            {/* here we add all sub pages : (may be inners goes in sub component)
+              *   forms:
+              *     all forms ()
+              *     edit form
+              *     new form
+              *     questions
+              *     tests:
+              *       see test results 
+              *   upload algorithms
+              *   summries:
+              *     show summary
+              *     merge summary
+              *     show multiple
+              *   upload manuualy - eyes(dev)
+            */}
         </Switch>  
       </main>
     </div>

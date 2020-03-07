@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState} from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -10,11 +10,21 @@ import {
 } from "react-router-dom";
 
 export default function WelcomeDialog({
-  validatePermission,
-  onClose
+  onClose,
+  permit,
 }) {
   const history = useHistory();
+  const [permKey,setPermKey] = useState();
+  const [isKeyError,setKeyError] = useState(false);
   
+  const validate = () => {
+    permit(false);
+    if(permKey === '1234'){
+      permit();
+      return true;
+    }
+    return false;
+  }
 
 
   return (
@@ -32,10 +42,14 @@ export default function WelcomeDialog({
             To continue please choose mode. 
           </DialogContentText>
           <TextField
+            error={isKeyError}
+            helperText="Incorrect Key"
             autoFocus
             margin="dense"
             id="password"
             label="permission key"
+            value={permKey}
+            onChange={(e) => setPermKey(e.target.value)}
             type="password"
             fullWidth
           />
@@ -58,7 +72,7 @@ export default function WelcomeDialog({
                     style={{marginRight: '10px'}}
                     onClick={() => {
                       onClose && onClose();
-                      history.push('/experiments/new');
+                      validate() ? history.push('/experiments/new') : setKeyError(true);
                     }}
                     >
                 New Experiments
@@ -69,7 +83,9 @@ export default function WelcomeDialog({
                     style={{marginRight: '10px'}}
                     onClick={() => {
                       onClose && onClose();
-                      history.push('/experiments');
+                      validate() ? 
+                        history.push('/experiments') :
+                        setKeyError(true);
                     }}
                     >
                 Experiments
@@ -80,6 +96,7 @@ export default function WelcomeDialog({
                     size="large"
                     onClick={() => {
                       onClose && onClose();
+                      validate();
                       history.push('/tests');
                     }}
                     >
