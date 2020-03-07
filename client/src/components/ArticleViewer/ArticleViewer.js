@@ -36,7 +36,7 @@ export const ArticleViewer = ({json,type}) => {
                 justifyContent: 'center',
             }}>
        
-                <div style={{ width:'700px'}}>{sentHtml}</div> </div>
+                <div style={{ width:'700px', fontFamily: '"Times New Roman", Times, serif', fontWeight:'400'}}>{sentHtml}</div> </div>
         </div>
 }
 

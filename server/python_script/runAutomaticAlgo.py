@@ -33,5 +33,7 @@ if __name__ == "__main__":
     sent_tables = main(base_sent_table,text, sys.argv[1:])
 
     for sent_table in sent_tables:
-        sys.stdout.write(sent_table.to_string())
+        sent_table_utf8 = sent_table.to_string().encode('utf-8')
+        sys.stdout.buffer.write(len(sent_table_utf8).to_bytes(4, byteorder="big",signed=False))
+        sys.stdout.buffer.write(sent_table_utf8)
 
