@@ -1,6 +1,7 @@
 import React from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { makeStyles } from '@material-ui/core/styles';
+import Card from '@material-ui/core/Card';
 import {
   Switch,
   Route,
@@ -27,11 +28,17 @@ function MainExperiments({permit}) {
       <TopNav permit={permit}/>
     <main className={classes.content}>
       <div className={classes.toolbar} />
-      <Switch>
-          <Route path="/tests">
-            <ArticleViewer json={mockJson}/>
-          </Route>
-      </Switch>  
+      <div style={{display: 'flex', justifyContent: 'center'}}>
+        <Card style={{
+          width: '80%',
+        }}>
+          <Switch>
+              <Route path="/tests">
+                <ArticleViewer json={mockJson}/>
+              </Route>
+          </Switch>  
+        </Card>
+      </div>
     </main>
     </div>
   );

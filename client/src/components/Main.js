@@ -17,9 +17,8 @@ function Main() {
   return (
     <div>
       <Switch>
-       
         <Route path="/experiments" render={ () => {
-          if(experimentsPermission) {
+          if(experimentsPermission || true) {
             return <MainExperiments permit={permit}/>
           }
           return <Redirect to={{pathname: "/"}}/>

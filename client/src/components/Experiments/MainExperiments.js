@@ -14,6 +14,7 @@ import {
 } from "react-router-dom";
 import { NewExperiment } from './NewExperiment/NewExperiment';
 import TopNav from '../TopNav/TopNav';
+import {Summaries} from './Summaries/Summaries';
 
 const drawerWidth = 240;
 
@@ -60,7 +61,7 @@ function MainExperiments({permit}) {
           <ListItemText primary={'Upload Algorithm'} />
         </ListItem>
 
-        <ListItem button key={'Summaries'} onClick={e => history.push('/summaries')}>
+        <ListItem button key={'Summaries'} onClick={e => history.push('/experiments/summaries')}>
           <ListItemText primary={'Summaries'} />
         </ListItem>
 
@@ -116,9 +117,11 @@ function MainExperiments({permit}) {
         <div className={classes.toolbar} />
 
         <Switch>
-            
             <Route path="/experiments/new">
               <NewExperiment/>
+            </Route>
+            <Route path="/experiments/summaries">
+              <Summaries/>
             </Route>
             {/* here we add all sub pages : (may be inners goes in sub component)
               *   forms:
