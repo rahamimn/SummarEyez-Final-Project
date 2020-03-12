@@ -17,7 +17,7 @@
     "react-scripts": "3.4.0"
   },
   "scripts": {
-    "server": "cd ../server ; npm run start",
+    "server": "cd ../server & npm run start",
     "serverClient": "npm run server & react-scripts start",
     "client": "react-scripts start",
     "start": "npm run client",
