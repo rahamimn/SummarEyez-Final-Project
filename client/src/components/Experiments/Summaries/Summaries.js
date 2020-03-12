@@ -1,16 +1,39 @@
-import React, {Component} from 'react'
-import {DropzoneArea} from 'material-ui-dropzone'
+import React, {Component, useState} from 'react'
 import axios from 'axios';
-import TextField from '@material-ui/core/TextField'
-import Grid from '@material-ui/core/Grid'
-import Divider from '@material-ui/core/Divider'
-import Button from '@material-ui/core/Button'
-import Card from '@material-ui/core/Card'
-import CardContent from '@material-ui/core/CardContent'
 import Typography from '@material-ui/core/Typography'
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import { UploadImage } from '../UploadImage/UploadImage';
 import TableSummaries from './TableSummaries';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { lighten, makeStyles } from '@material-ui/core/styles';
+import {MainToolbar} from './MainToolbar';
+import {
+  autoHeaders,
+  eyesHeaders,
+  mergedHeaders
+} from './Headers';
+
+
+function createData(name, calories, fat, carbs, protein, disabled = false) {
+  return {disabled, data: {name, calories, fat, carbs, protein} };
+}
+
+const rows = [
+  createData('Cupcake', 305, 3.7, 67, 4.3),
+  createData('Donut', 452, 25.0, 51, 4.9),
+  createData('Eclair', 262, 16.0, 24, 6.0, true),
+  createData('Frozen yoghurt', 159, 6.0, 24, 4.0, true),
+  createData('Gingerbread', 356, 16.0, 49, 3.9),
+  createData('Honeycomb', 408, 3.2, 87, 6.5),
+  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
+  createData('Jelly Bean', 375, 0.0, 94, 0.0),
+  createData('KitKat', 518, 26.0, 65, 7.0),
+  createData('Lollipop', 392, 0.2, 98, 0.0),
+  createData('Marshmallow', 318, 0, 81, 2.0),
+  createData('Nougat', 360, 19.0, 9, 37.0),
+  createData('Oreo', 437, 18.0, 63, 4.0),
+];
 
 export class Summaries extends Component{
   constructor(props){
@@ -29,19 +52,83 @@ export class Summaries extends Component{
     this.setState({images: res.data});
   }
 
-  handleChangeExperimentName = (event) => {
-    // this.setState({
-    //   experimentName: event.target.value
-    // });
-  }
-
   render(){
     return (
-      <Card style={{minHeight:'700px'}}>
-        <CardContent>
-          <TableSummaries images={this.state.images}/>
-        </CardContent>
-      </Card>
+      <SimpleExpansionPanel/>
     )  
   }
 } 
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    width: '100%',
+  },
+  heading: {
+    fontSize: theme.typography.pxToRem(15),
+    fontWeight: theme.typography.fontWeightRegular,
+  },
+}));
+
+export function SimpleExpansionPanel() {
+  const classes = useStyles();
+
+  const [autoSelected,setAutoSelected] = useState([]); 
+  const [eyesSelected,setEyesSelected] = useState([]); 
+  const [mergedSelected,setMergedSelected] = useState([]); 
+  return (
+    <div className={classes.root}>
+      <MainToolbar 
+        selected = {{
+          auto: autoSelected,
+          eyes: eyesSelected,
+          merged: mergedSelected
+        }} />
+      <ExpansionPanel>
+        <ExpansionPanelSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography className={classes.heading}>Automatic Summaries</Typography>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails>
+          <TableSummaries 
+            onChangeSelected={setAutoSelected}
+            headers={autoHeaders}
+            rows={rows}/>
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
+      <ExpansionPanel>
+        <ExpansionPanelSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel2a-content"
+          id="panel2a-header"
+        >
+          <Typography className={classes.heading}>Tests Summaries</Typography>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails>
+          <TableSummaries 
+            onChangeSelected={setEyesSelected}
+            headers={eyesHeaders}
+            rows={rows}/>
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
+      <ExpansionPanel>
+        <ExpansionPanelSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel2a-content"
+          id="panel2a-header"
+        >
+          <Typography className={classes.heading}>Merged Summaries</Typography>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails>
+          <TableSummaries 
+            onChangeSelected={setMergedSelected}
+            headers={mergedHeaders}
+            rows={rows}/>
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
+    </div>
+  );
+}
+
