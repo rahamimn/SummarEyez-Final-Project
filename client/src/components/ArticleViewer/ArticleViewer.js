@@ -19,7 +19,7 @@ export const ArticleViewer = ({json,type}) => {
         }
     }
 
-    const sentHtml = paragraphs.map((sents,i) => <p key={'par'+i}>{sents}</p>);
+    const sentHtml = paragraphs.map((par,i) => <p key={'par'+i}>{par}</p>);
 
     return <div>
             <Button onClick={() => setColor(90)}>yellow</Button>
