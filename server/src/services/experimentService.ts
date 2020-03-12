@@ -24,7 +24,6 @@ export class ExperimentService{
     };
 
     addImage = async (name, buffer) => {
-        console.log(buffer);
         const files = await this.pythonService.processImage(buffer)
         await this.storageService.uploadBuffer(`images/${name}/image`, buffer, fileTypes.Image);
         await this.storageService.uploadBuffer(`images/${name}/text`, files.text, fileTypes.Text);
@@ -38,6 +37,7 @@ export class ExperimentService{
             word_ocr_path: `images/${name}/word_ocr`,
             base_sent_table_path: `images/${name}/base_sent_table`,
         })
+        //should run automatic-algs
     }
 
     getImages = async () => {
