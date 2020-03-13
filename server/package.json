@@ -19,6 +19,7 @@
     "export-to-csv": "^0.2.1",
     "express": "^4.17.1",
     "firebase-admin": "^8.9.0",
+    "foreach-promise": "0.0.1",
     "lexrank": "^1.0.5",
     "multer": "^1.4.2",
     "python-shell": "^1.0.8",
