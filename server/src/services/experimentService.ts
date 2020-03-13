@@ -22,6 +22,7 @@ export class ExperimentService{
         await this.collectionsService.automaticAlgos().add(name,{
             name,
             path,
+            uploaded_date: Date.now()
         });
     };
 
@@ -32,7 +33,8 @@ export class ExperimentService{
             await this.collectionsService.images().sentTablesOf(imageName).add(row.name,{
                 type: 'automatic',
                 name: row.name,
-                path
+                path,
+                creation_date: Date.now()
             });
         });
     }

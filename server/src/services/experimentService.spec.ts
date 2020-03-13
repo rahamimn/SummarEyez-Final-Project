@@ -31,6 +31,7 @@ describe('ExperimentService Tests',() =>{
 
     it('add image', async () => {
         const imageName = 'someImage';
+        const tables = [{name:'alg1', sent_table:new Buffer('alg1')}, {name:'alg2', sent_table:new Buffer('alg2')}];
         const imageBuffer = await fs.readFile('./inputForTests/minTest.jpg');
         const files = {
             text: new Buffer('some-text'),
@@ -38,19 +39,35 @@ describe('ExperimentService Tests',() =>{
             base_sent_table: new Buffer('base-sent-table-file'),
         }
         pythonService.setProcessImageResult(files);
+        pythonService.setRunAutomaticAlgsResult(tables);
+
         await experimentService.addImage(imageName,imageBuffer);
 
         expect(await storageService.downloadToBuffer(`images/${imageName}/image`)).toEqual(imageBuffer);
         expect(await storageService.downloadToBuffer(`images/${imageName}/text`)).toEqual(files.text);
         expect(await storageService.downloadToBuffer(`images/${imageName}/word_ocr`)).toEqual(files.word_ocr);
         expect(await storageService.downloadToBuffer(`images/${imageName}/base_sent_table`)).toEqual(files.base_sent_table);
+        expect(await storageService.downloadToBuffer(`images/${imageName}/algs/${tables[0].name}`)).toEqual(tables[0].sent_table);
+        expect(await storageService.downloadToBuffer(`images/${imageName}/algs/${tables[1].name}`)).toEqual(tables[1].sent_table);
         expect(await collectionsService.images().get(imageName)).toEqual(expect.objectContaining({
             name: imageName,
             image_path: `images/${imageName}/image`,
             text_path: `images/${imageName}/text`,
             word_ocr_path: `images/${imageName}/word_ocr`,
             base_sent_table_path: `images/${imageName}/base_sent_table`,
-        }))
+        }));
+        
+        expect(await collectionsService.images().sentTablesOf(imageName).get(tables[0].name)).toEqual(expect.objectContaining({
+            type: 'automatic',
+            name: tables[0].name,
+            path:`images/${imageName}/algs/${tables[0].name}`
+        }));
+
+        expect(await collectionsService.images().sentTablesOf(imageName).get(tables[1].name)).toEqual(expect.objectContaining({
+            type: 'automatic',
+            name: tables[1].name,
+            path:`images/${imageName}/algs/${tables[1].name}`
+        }));
     });
 
     it('get images', async () => {
