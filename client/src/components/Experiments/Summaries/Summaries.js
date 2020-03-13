@@ -1,4 +1,4 @@
-import React, {Component, useState} from 'react'
+import React, {Component, useState, useEffect} from 'react'
 import axios from 'axios';
 import Typography from '@material-ui/core/Typography'
 import TableSummaries from './TableSummaries';
@@ -35,30 +35,6 @@ const rows = [
   createData('Oreo', 437, 18.0, 63, 4.0),
 ];
 
-export class Summaries extends Component{
-  constructor(props){
-    super(props);
-    this.state = {
-      images: []
-    };
-  }
-
-  componentDidMount(){
-    this.fetchImages();
-  }
-
-  fetchImages = async () => {
-    const res = await axios.get('/api/images');
-    this.setState({images: res.data});
-  }
-
-  render(){
-    return (
-      <SimpleExpansionPanel/>
-    )  
-  }
-} 
-
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
@@ -69,12 +45,24 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export function SimpleExpansionPanel() {
+export function Summaries({
+  experimentId
+}) {
   const classes = useStyles();
-
+  const [summaries,setSummaries] = useState({
+    auto: rows,
+    eyes: rows.slice(4),
+    merged: rows.slice(9)
+  }); 
   const [autoSelected,setAutoSelected] = useState([]); 
   const [eyesSelected,setEyesSelected] = useState([]); 
   const [mergedSelected,setMergedSelected] = useState([]); 
+
+  useEffect(async () => {
+    const res = await axios.get(`/api/experiments/${experimentId}/summaries`); //not implemnted yet
+    setSummaries(res.data);
+  } ,[])
+
   return (
     <div className={classes.root}>
       <MainToolbar 
@@ -95,7 +83,7 @@ export function SimpleExpansionPanel() {
           <TableSummaries 
             onChangeSelected={setAutoSelected}
             headers={autoHeaders}
-            rows={rows}/>
+            rows={summaries.auto}/>
         </ExpansionPanelDetails>
       </ExpansionPanel>
       <ExpansionPanel>
@@ -110,7 +98,7 @@ export function SimpleExpansionPanel() {
           <TableSummaries 
             onChangeSelected={setEyesSelected}
             headers={eyesHeaders}
-            rows={rows}/>
+            rows={summaries.eyes}/>
         </ExpansionPanelDetails>
       </ExpansionPanel>
       <ExpansionPanel>
@@ -125,7 +113,7 @@ export function SimpleExpansionPanel() {
           <TableSummaries 
             onChangeSelected={setMergedSelected}
             headers={mergedHeaders}
-            rows={rows}/>
+            rows={summaries.merged}/>
         </ExpansionPanelDetails>
       </ExpansionPanel>
     </div>

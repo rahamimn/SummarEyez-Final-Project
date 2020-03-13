@@ -4,9 +4,9 @@ import { ExperimentsMock } from "./dal/experiments.mock";
 import { Collections } from "../collectionsTypes";
 
 export class CollectionMock implements Collections {
-    private _automaticAlgos;
-    private _images;
-    private _experiments;
+    private _automaticAlgos: AutomaticAlgorithmsMock;
+    private _images: ImagesMock;
+    private _experiments: ExperimentsMock;
 
     constructor(){
         this._automaticAlgos = new AutomaticAlgorithmsMock({});

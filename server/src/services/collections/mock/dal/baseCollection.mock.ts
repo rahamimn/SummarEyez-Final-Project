@@ -10,11 +10,11 @@ export class BaseCollectionMock implements BaseCollection{
 
     getAll = async () => this.collection
 
-    add = (id,data) => {
+    add = async (id,data) => {
         this.collection[id] = data;
     }    
     
-    get = (id: string) => this.collection[id];
+    get = async (id: string) => this.collection[id];
 
     getSubCollectionOf = (id, subCollectionName, SubCollectionType) => {
         if(!this.subCollections.has(id)){

@@ -43,9 +43,6 @@ export class ExperimentService{
     getImages = async () => {
         const imagesCollection = await this.collectionsService.images();
         const images  = await imagesCollection.getAll();
-        console.log(images);
-        console.log(images.docs);
-        console.log(images.data);
 
         return images;
     }

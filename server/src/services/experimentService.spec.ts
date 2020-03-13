@@ -6,11 +6,14 @@ import { PythonScripts } from "./pythonScripts/pythonScripts";
 //@ts-ignore
 import {promises as fs} from 'fs';
 import { MockPythonScripts } from "./pythonScripts/mock/python-scripts.mock";
+import MockStorage from "./storage/mock/storage.mock";
+import { CollectionMock } from "./collections/mock/collections.mock";
+import {createImage} from '../utils/DTOCreators';
 
 describe('ExperimentService Tests',() =>{
     let experimentService: ExperimentService;
-    let collectionsService;
-    let storageService;
+    let collectionsService: CollectionMock;
+    let storageService: MockStorage;
     let pythonService: MockPythonScripts ;
     beforeEach(() => {
         collectionsService = new Collections.CollectionMock();
@@ -41,12 +44,27 @@ describe('ExperimentService Tests',() =>{
         expect(await storageService.downloadToBuffer(`images/${imageName}/text`)).toEqual(files.text);
         expect(await storageService.downloadToBuffer(`images/${imageName}/word_ocr`)).toEqual(files.word_ocr);
         expect(await storageService.downloadToBuffer(`images/${imageName}/base_sent_table`)).toEqual(files.base_sent_table);
-        expect(collectionsService.images().get(imageName)).toEqual(expect.objectContaining({
+        expect(await collectionsService.images().get(imageName)).toEqual(expect.objectContaining({
             name: imageName,
             image_path: `images/${imageName}/image`,
             text_path: `images/${imageName}/text`,
             word_ocr_path: `images/${imageName}/word_ocr`,
             base_sent_table_path: `images/${imageName}/base_sent_table`,
         }))
+    });
+
+    it('get images', async () => {
+        const img1 = createImage({
+            name: 'img1',
+        });
+        const img2 = createImage({
+            name: 'img2',
+        });
+
+        collectionsService.images().add('img1',createImage(img1));
+        collectionsService.images().add('img2',createImage(img2));
+
+        const images = await experimentService.getImages();
+        expect(images).toEqual({img1,img2});
     })
 });

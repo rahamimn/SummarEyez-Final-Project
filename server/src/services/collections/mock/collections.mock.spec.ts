@@ -7,25 +7,24 @@ describe('collection mock',() =>{
         collectionService = new CollectionMock();
     });
 
-    it('set image and get simple',  () => {
+    it('set image and get simple', async () => {
         const data = {data: 'somedata'};
         const id = 'img1';
 
-        collectionService.images().add(id,data);
+        await collectionService.images().add(id,data);
 
-        expect(collectionService.images().get(id)).toBe(data);
+        expect(await collectionService.images().get(id)).toBe(data);
     });
 
-    it('set and get complex hierarchy',  () => {
+    it('set and get complex hierarchy',  async () => {
         const data = {data: 'somedata'};
         const innerData = {data: 'somedata'};
         const outerId = 'img1';
         const innerId = 'sentId';
-        collectionService.images().add(outerId,data);
-        debugger;
-        collectionService.images().sentTablesOf(outerId).add(innerId, innerData);
+        await collectionService.images().add(outerId,data);
+        await collectionService.images().sentTablesOf(outerId).add(innerId, innerData);
 
-        expect(collectionService.images().sentTablesOf(outerId).get(innerId)).toBe(innerData);
+        expect(await collectionService.images().sentTablesOf(outerId).get(innerId)).toBe(innerData);
     });
 
 
