@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
@@ -69,7 +69,7 @@ function MainExperiments({permit}) {
           <ListItemText primary={'Forms -> all/Edit/New Form'} />
         </ListItem>
 
-        <ListItem button key={'Forms'} onClick={e => history.push('/tests')}>
+        <ListItem button key={'Tests'} onClick={e => history.push('/tests')}>
           <ListItemText primary={'Tests their Summaries'} />
         </ListItem>
 

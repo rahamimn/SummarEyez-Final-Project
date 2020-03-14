@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import {DropzoneArea} from 'material-ui-dropzone'
 import axios from 'axios';
 import TextField from '@material-ui/core/TextField'
 import Grid from '@material-ui/core/Grid'

@@ -11,7 +11,6 @@ import TableRow from '@material-ui/core/TableRow';
 import Checkbox from '@material-ui/core/Checkbox';
 
 function EnhancedTableHead({headers}) {
-  console.log(headers);
   return (
     <TableHead>
       <TableRow>
@@ -22,7 +21,7 @@ function EnhancedTableHead({headers}) {
             {headers[0].label}
           </TableCell>
         {headers.slice(1).map(header => (
-          <TableCell align="right">
+          <TableCell key={header.id} align="right">
             {header.label}
           </TableCell>
         ))}
@@ -131,10 +130,14 @@ export default function TableSummaries(props) {
                       <TableCell component="th" id={labelId} scope="row" padding="none">
                         {data.name}
                       </TableCell>
-                      <TableCell align="right">{data.calories}</TableCell>
-                      <TableCell align="right">{data.fat}</TableCell>
-                      <TableCell align="right">{data.carbs}</TableCell>
-                      <TableCell align="right">{data.protein}</TableCell>
+                      {props.headers.slice(1).map(
+                        header => {
+                          return <TableCell key={`${header.id}-${index}`} align="right">{
+                            header.type ==='date' && data[header.id] ?
+                              new Date(data[header.id]).toLocaleDateString() :
+                              data[header.id]}</TableCell>
+                        }
+                      )}
                     </TableRow>
                   );
                 })}
@@ -156,6 +159,6 @@ export default function TableSummaries(props) {
 
 TableSummaries.propTypes = {
   onChangeSelected: PropTypes.func.isRequired,
-  headers: PropTypes.object.isRequired,
-  rows: PropTypes.object.isRequired
+  headers: PropTypes.array.isRequired,
+  rows: PropTypes.array.isRequired
 };

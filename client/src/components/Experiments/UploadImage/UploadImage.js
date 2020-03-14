@@ -24,13 +24,12 @@ export class UploadImage extends Component{
         formData.append('imageBuffer', this.state.files[0]);
         formData.append('imageName', this.state.imageName);
 
-        const res = await axios.post('/api/images',formData,{ 
+        await axios.post('/api/images',formData,{ 
             headers:{
                 "Content-Type": "multipart/form-data"
             },
         });
         //error handling
-
 
         this.props.onImageUploaded && this.props.onImageUploaded(this.state.imageName);
     }
