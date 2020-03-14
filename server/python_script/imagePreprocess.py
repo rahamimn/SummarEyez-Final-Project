@@ -112,8 +112,8 @@ if __name__ == "__main__":
     
     text, word_ocr, base_sentences_table = main(image)
 
-    word_ocr_utf8 = word_ocr.to_string().encode('utf-8')
-    base_sentences_table_utf8 = base_sentences_table.to_string().encode('utf-8')
+    word_ocr_utf8 = word_ocr.to_csv(sep="\t").encode('utf-8')
+    base_sentences_table_utf8 = base_sentences_table.to_csv(sep="\t").encode('utf-8')
     text_utf8 = text.encode('utf-8')
     # text = text.decode('latin-1').encode('utf-8')
     # print(text)
