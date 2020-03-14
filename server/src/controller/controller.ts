@@ -43,6 +43,11 @@ app.get('/api/images', (req, res) => errorHandling(res, async () => {
     res.send(images);
 }));
 
+app.get('/api/experiments/:exerimentId/summaries', (req, res) => errorHandling(res, async () => {
+    const summaries = await experimentService.getSummaries(req.params.exerimentId);
+    res.send(summaries);
+}));
+
 
 //should return experiments 
 app.get('/api/experiments', (req, res) => {  

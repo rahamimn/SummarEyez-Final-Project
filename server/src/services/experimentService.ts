@@ -16,16 +16,6 @@ export class ExperimentService{
         this.pythonService = pythonService;
     }
 
-    addAutomaticAlgorithms = async (name, buffer) => {
-        const path = `automatic-algos/${name}`
-        await this.storageService.uploadBuffer(`automatic-algos/${name}`, buffer, fileTypes.Text);
-        await this.collectionsService.automaticAlgos().add(name,{
-            name,
-            path,
-            uploaded_date: Date.now()
-        });
-    };
-
     private addAutomaticAlgToImg = async (tables, imageName) => {
         await forEP(tables, async row => {
             const path = `images/${imageName}/algs/${row.name}`;
@@ -48,6 +38,7 @@ export class ExperimentService{
         });
         return algNames;
     }
+
     addImage = async (name, buffer) => {
         const files = await this.pythonService.processImage(buffer)
         await this.storageService.uploadBuffer(`images/${name}/image`, buffer, fileTypes.Image);
@@ -81,6 +72,20 @@ export class ExperimentService{
         return images;
     }
 
+    getSummaries = async (experimentId)=> {
+        const eyesExample = {id: 'eye1',data:{name:'eye1', creation_date:Date.now()}}
+        const mergedExample = {id: 'eye1',data:{name:'eye1', creation_date:Date.now()}}
+        //we should get the image from experiment, but wasn't implemented yet.
+        const autoSentTables = await this.collectionsService.images().sentTablesOf('withAutomatic2').getAll();
+        const autoDisabled = [{id:'alg3',data:{name:'alg3'}, disabled: true}];
+        return{
+            auto: [...autoSentTables, ...autoDisabled],
+            eyes: Array(15).fill(eyesExample),
+            merged: Array(15).fill(mergedExample),
+        }
+
+    }
+
     //TODO - check if exists download if needed
     // we could check with in memory data
     private verifyAutomaticAlgorithmExists = async (names: string[]) => {};
@@ -92,6 +97,16 @@ export class ExperimentService{
         const {tables} = await this.pythonService.runAutomaticAlgs(algsNames, text,base_sent_table);
         await this.addAutomaticAlgToImg(tables,imageName);
     }
+
+    addAutomaticAlgorithms = async (name, buffer) => {
+        const path = `automatic-algos/${name}`
+        await this.storageService.uploadBuffer(`automatic-algos/${name}`, buffer, fileTypes.Text);
+        await this.collectionsService.automaticAlgos().add(name,{
+            name,
+            path,
+            uploaded_date: Date.now()
+        });
+    };
     
 
 }
