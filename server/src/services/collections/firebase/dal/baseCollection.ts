@@ -13,6 +13,6 @@ export class BaseCollection {
         return this.collection.doc(id).set(data)
     }    
     
-    get = (id: string) => this.collection.doc(id);
+    get = async (id: string) => (await this.collection.doc(id).get()).data();
 
 }
