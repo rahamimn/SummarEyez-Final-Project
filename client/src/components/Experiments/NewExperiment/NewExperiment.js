@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import axios from 'axios';
 import TextField from '@material-ui/core/TextField'
 import Grid from '@material-ui/core/Grid'
 import Divider from '@material-ui/core/Divider'
@@ -8,6 +7,7 @@ import Card from '@material-ui/core/Card'
 import Typography from '@material-ui/core/Typography'
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { UploadImage } from '../UploadImage/UploadImage';
+import * as api from '../../../apiService';
 
 const ArticleImage = (imagePath) =>
   <Card>  
@@ -40,8 +40,8 @@ export class NewExperiment extends Component{
   }
 
   fetchImages = async () => {
-    const res = await axios.get('/api/images');
-    this.setState({images: res.data});
+    const images = await api.getImages();
+    this.setState({images});
   }
 
   handleChangeExperimentName = (event) => {

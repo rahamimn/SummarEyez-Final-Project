@@ -1,5 +1,4 @@
 import React, { useState, useEffect} from 'react'
-import axios from 'axios';
 import Typography from '@material-ui/core/Typography'
 import TableSummaries from './TableSummaries';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
@@ -13,6 +12,7 @@ import {
   eyesHeaders,
   mergedHeaders
 } from './Headers';
+import * as api from '../../../apiService';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -39,11 +39,11 @@ export function Summaries({
 
   useEffect(() => {
     const fetch = async () => {
-      const res = await axios.get(`/api/experiments/${experimentId}/summaries`); 
-      setSummaries(res.data);
+      const summaries = await api.getSummaries(); 
+      setSummaries(summaries);
     }
     fetch();
-  } ,[experimentId])
+  }, [experimentId])
 
   return (
     <div className={classes.root}>

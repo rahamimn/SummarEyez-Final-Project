@@ -1,12 +1,12 @@
 import React, {Component} from 'react'
 import {DropzoneArea} from 'material-ui-dropzone'
-import axios from 'axios';
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Card from '@material-ui/core/Card'
 import Divider from '@material-ui/core/Divider'
 import Typography from '@material-ui/core/Typography'
+import * as api from '../../../apiService';
 
 export class UploadImage extends Component{
   constructor(props){
@@ -20,15 +20,7 @@ export class UploadImage extends Component{
 
     handleAddImage = async () => {
         this.setState({uploading: true});
-        const formData = new FormData();
-        formData.append('imageBuffer', this.state.files[0]);
-        formData.append('imageName', this.state.imageName);
-
-        await axios.post('/api/images',formData,{ 
-            headers:{
-                "Content-Type": "multipart/form-data"
-            },
-        });
+        await api.uploadImage(this.state.imageName, this.state.files[0]);
         //error handling
 
         this.props.onImageUploaded && this.props.onImageUploaded(this.state.imageName);

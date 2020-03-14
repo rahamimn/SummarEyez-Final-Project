@@ -55,7 +55,9 @@ const useToolbarStyles = makeStyles(theme => ({
         {justDisabled && <Button key="1" color="inherit">Run</Button> }
        
         {allSelected.length === 1 && disabled.length === 0 && [
-            <Button key="1" color="inherit">View</Button>,
+            <Button 
+                key="1"
+                color="inherit">View</Button>,
             <Button key="2" color="inherit">Info</Button>
         ]}
 

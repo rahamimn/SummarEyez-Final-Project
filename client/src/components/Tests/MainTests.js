@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState,useEffect} from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import { TopNav } from '../TopNav/TopNav';
 import { ArticleViewer } from '../ArticleViewer/ArticleViewer';
+import * as api from '../../apiService';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -22,6 +23,16 @@ const useStyles = makeStyles(theme => ({
 
 function MainExperiments({permit}) {
   const classes = useStyles();
+  const [json,setJson ] = useState(mockJson);
+
+  useEffect(() => {
+    const fetch = async () => {
+      const json = await api.getSummary('1','2','3');
+      setJson(json);
+    }
+    fetch();
+  },[]);
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -34,7 +45,7 @@ function MainExperiments({permit}) {
         }}>
           <Switch>
               <Route path="/tests">
-                <ArticleViewer json={mockJson}/>
+                <ArticleViewer json={json}/>
               </Route>
           </Switch>  
         </Card>
