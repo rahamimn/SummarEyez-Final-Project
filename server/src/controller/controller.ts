@@ -43,9 +43,22 @@ app.get('/api/images', (req, res) => errorHandling(res, async () => {
     res.send(images);
 }));
 
+// not fully implemented 
 app.get('/api/experiments/:exerimentId/summaries', (req, res) => errorHandling(res, async () => {
     const summaries = await experimentService.getSummaries(req.params.exerimentId);
     res.send(summaries);
+}));
+
+// not fully implemented 
+app.get('/api/experiments/:exerimentId/summary', (req, res) => errorHandling(res, async () => {
+    const summaries = await experimentService.getSummary(req.params.exerimentId,'auto','Alg1.py');
+    res.send(summaries);
+}));
+
+// not fully implemented 
+app.get('/api/experiments/:exerimentId/summary-info', (req, res) => errorHandling(res, async () => {
+    // const summaries = await experimentService.getSummaryw(req.params.exerimentId);
+    res.send(0);
 }));
 
 

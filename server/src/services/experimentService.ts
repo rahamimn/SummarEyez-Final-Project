@@ -4,6 +4,7 @@ import { PythonScriptInterface } from "./pythonScripts/pythonScriptsTypes";
 const forEP = require('foreach-promise');
 //@ts-ignore
 import {promises as fs} from 'fs';
+import * as csv from 'csvtojson';
 
 export class ExperimentService{
     private collectionsService : Collections;
@@ -72,11 +73,19 @@ export class ExperimentService{
         return images;
     }
 
+    getSummary = async (experimentId, type, name)=> {
+        if(type === 'auto'){
+            const autoSentTable = await this.collectionsService.images().sentTablesOf('auto5').get(name);
+            const csvFile = await this.storageService.downloadToBuffer(autoSentTable.path)
+            return await csv({delimiter:'auto'}).fromString(csvFile.toString());
+        }
+    }
+
     getSummaries = async (experimentId)=> {
         const eyesExample = {id: 'eye1',data:{name:'eye1', creation_date:Date.now()}}
         const mergedExample = {id: 'eye1',data:{name:'eye1', creation_date:Date.now()}}
         //we should get the image from experiment, but wasn't implemented yet.
-        const autoSentTables = await this.collectionsService.images().sentTablesOf('withAutomatic2').getAll();
+        const autoSentTables = await this.collectionsService.images().sentTablesOf('auto5').getAll();
         const autoDisabled = [{id:'alg3',data:{name:'alg3'}, disabled: true}];
         return{
             auto: [...autoSentTables, ...autoDisabled],
