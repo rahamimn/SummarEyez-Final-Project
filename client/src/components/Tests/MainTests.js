@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 import { TopNav } from '../TopNav/TopNav';
 import { ArticleViewer } from '../ArticleViewer/ArticleViewer';
-import * as api from '../../apiService';
+import api from '../../apiService';
 
 const useStyles = makeStyles(theme => ({
   root: {

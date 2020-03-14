@@ -7,7 +7,7 @@ import Card from '@material-ui/core/Card'
 import Typography from '@material-ui/core/Typography'
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { UploadImage } from '../UploadImage/UploadImage';
-import * as api from '../../../apiService';
+import api from '../../../apiService';
 
 const ArticleImage = (imagePath) =>
   <Card>  

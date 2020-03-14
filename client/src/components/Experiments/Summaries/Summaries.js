@@ -12,7 +12,7 @@ import {
   eyesHeaders,
   mergedHeaders
 } from './Headers';
-import * as api from '../../../apiService';
+import api from '../../../apiService';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -37,17 +37,20 @@ export function Summaries({
   const [eyesSelected,setEyesSelected] = useState([]); 
   const [mergedSelected,setMergedSelected] = useState([]); 
 
+
+  const fetchSummaries = async () => {
+    const summaries = await api.getSummaries(); 
+    setSummaries(summaries);
+  }
+
   useEffect(() => {
-    const fetch = async () => {
-      const summaries = await api.getSummaries(); 
-      setSummaries(summaries);
-    }
-    fetch();
+    fetchSummaries();
   }, [experimentId])
 
   return (
     <div className={classes.root}>
       <MainToolbar 
+        updateList = {fetchSummaries}
         selected = {{
           auto: autoSelected,
           eyes: eyesSelected,

@@ -6,7 +6,7 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import Card from '@material-ui/core/Card'
 import Divider from '@material-ui/core/Divider'
 import Typography from '@material-ui/core/Typography'
-import * as api from '../../../apiService';
+import api from '../../../apiService';
 
 export class UploadImage extends Component{
   constructor(props){

@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
-
+import api from '../../../apiService';
 const useToolbarStyles = makeStyles(theme => ({
     root: {
       paddingLeft: theme.spacing(2),
@@ -26,9 +26,8 @@ const useToolbarStyles = makeStyles(theme => ({
     },
   }));
   
-  export const MainToolbar = props => {
+  export const MainToolbar = ({ selected, updateList }) => {
     const classes = useToolbarStyles();
-    const { selected } = props;
   
     const allSelected = [...selected.auto, ...selected.eyes, ...selected.merged];
     const numSelected = allSelected.length;
@@ -52,7 +51,14 @@ const useToolbarStyles = makeStyles(theme => ({
             All Summaries
           </Typography>
         )}
-        {justDisabled && <Button key="1" color="inherit">Run</Button> }
+        {justDisabled && 
+            <Button 
+                color="inherit"
+                onClick={ async () => {
+                    await api.runAlgs();
+                    await updateList;
+                }
+            }>Run</Button> }
        
         {allSelected.length === 1 && disabled.length === 0 && [
             <Button 
@@ -70,5 +76,6 @@ const useToolbarStyles = makeStyles(theme => ({
   };
   
   MainToolbar.propTypes = {
-    selected: PropTypes.object.isRequired
+    selected: PropTypes.object.isRequired,
+    updateList: PropTypes.func.isRequired
   };
