@@ -25,12 +25,28 @@ describe('ExperimentService Tests',() =>{
     it('add automatic algorithm', async () => {
         const buffr = new Buffer('alg1')
         const new_alg_name = 'alg1_new';
-        const status = await experimentService.addAutomaticAlgorithms(new_alg_name, buffr)
+        const {status, error} = await experimentService.addAutomaticAlgorithms(new_alg_name, buffr)
         expect(await storageService.downloadToBuffer(`automatic-algos/${new_alg_name}`)).toEqual(buffr);
         expect(await collectionsService.automaticAlgos().get(new_alg_name)).toEqual(expect.objectContaining({
             name: new_alg_name,
             path: `automatic-algos/${new_alg_name}`
         }))
+        expect(status).toBe(0)
+        expect(error).toBe("no error")
+    });
+
+    it('add automatic algorithm with the same name', async () => {
+        const buffr = new Buffer('alg1')
+        const new_alg_name = 'alg1_new';
+        await experimentService.addAutomaticAlgorithms(new_alg_name, buffr)
+        expect(await storageService.downloadToBuffer(`automatic-algos/${new_alg_name}`)).toEqual(buffr);
+        expect(await collectionsService.automaticAlgos().get(new_alg_name)).toEqual(expect.objectContaining({
+            name: new_alg_name,
+            path: `automatic-algos/${new_alg_name}`
+        }))
+        const {status, error} = await experimentService.addAutomaticAlgorithms(new_alg_name, buffr)
+        expect(status).toBe(-1)
+        expect(error).toBe("the name of the file is not unic")
     });
 
 
