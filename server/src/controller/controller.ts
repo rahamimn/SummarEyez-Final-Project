@@ -6,7 +6,7 @@ import { PythonScripts } from "../services/pythonScripts/python/python-scripts";
 const cors = require('cors');
 const express = require('express');
 const multer = require('multer');
-// const bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 
 const app = express();
 app.use(express.static('output'));
@@ -69,9 +69,10 @@ app.get('/api/experiments', (req, res) => {
 });
 
 //create experiment
-app.post('/api/experiments', (req, res) => {  
-    //not implemented
-    res.send({status:-1});
+app.post('/api/experiments', bodyParser.json(), async (req, res) => {  
+     const summaries = await experimentService.addExperiment(req.body.experimentName, req.body.imageName)
+    res.send(summaries);
+    //res.send({status:-1});
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
