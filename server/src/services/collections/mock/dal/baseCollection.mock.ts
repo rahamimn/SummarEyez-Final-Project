@@ -9,6 +9,10 @@ export class BaseCollectionMock implements BaseCollection{
     }
 
     getAll = async () => this.collection
+    //Object.keys(this.collection).map(key => ({id:key, data: this.collection[key]}))
+
+    //{id1:{ddsad:1}, id2:{dsad:2}}
+    //[{id:"id1", data:}]
 
     add = async (id,data) => {
         this.collection[id] = data;
