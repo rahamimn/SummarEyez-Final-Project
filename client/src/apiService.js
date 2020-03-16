@@ -17,7 +17,7 @@ const api = {
         formData.append('imageBuffer', buffer);
         formData.append('imageName', name);
 
-        const res = await axios.post('/api/upload',formData,{ 
+        const res = await axios.post('/api/images',formData,{ 
             headers:{
                 "Content-Type": "multipart/form-data"
             },
