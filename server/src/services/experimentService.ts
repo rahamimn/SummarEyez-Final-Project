@@ -112,7 +112,7 @@ export class ExperimentService{
         const path = `automatic-algos/${name}`
         await this.storageService.uploadBuffer(path, buffer, fileTypes.Text);
         if (await this.collectionsService.automaticAlgos().get(name) != undefined){
-            return {status: -1, error: "the name of the file is not unic"};
+            return {status: -1, error: "the name of the file is not unique"};
         }
         else{
         await this.collectionsService.automaticAlgos().add(name,{
