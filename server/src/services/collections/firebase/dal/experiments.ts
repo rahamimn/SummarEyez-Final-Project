@@ -1,8 +1,10 @@
 import { Tests } from "./tests";
+import { BaseCollection } from "./baseCollection";
 
-export class Experiments {
+export class Experiments extends BaseCollection {
     collection;
     constructor(collection){
+        super(collection);
         this.collection = collection;
     }
     getTests(experimentId: string){
