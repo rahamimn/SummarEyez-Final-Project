@@ -109,7 +109,7 @@ export class ExperimentService{
 
     addAutomaticAlgorithms = async (name, buffer) => {
         const path = `automatic-algos/${name}`
-        await this.storageService.uploadBuffer(`automatic-algos/${name}`, buffer, fileTypes.Text);
+        await this.storageService.uploadBuffer(path, buffer, fileTypes.Text);
         await this.collectionsService.automaticAlgos().add(name,{
             name,
             path,

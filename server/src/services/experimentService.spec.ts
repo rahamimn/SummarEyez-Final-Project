@@ -1,4 +1,4 @@
-import { ExperimentService } from "./experimentService";
+import { ExperimentService } from './experimentService';
 import { Collections } from "./collections/collections";
 import { Storages } from "./storage/storage";
 import { PythonScripts } from "./pythonScripts/pythonScripts";
@@ -22,12 +22,17 @@ describe('ExperimentService Tests',() =>{
         experimentService = new ExperimentService({collectionsService, storageService, pythonService});
     });
 
-    //just for sanity
     it('add automatic algorithm', async () => {
-        // const buffer = await fs.readFile('./automatic-algorithms/Alg1.py');
-        // await experimentService.addAutomaticAlgorithms('alg1',buffer);
-        expect(true).toBe(true);
-    })
+        const buffr = new Buffer('alg1')
+        const new_alg_name = 'alg1_new';
+        const status = await experimentService.addAutomaticAlgorithms(new_alg_name, buffr)
+        expect(await storageService.downloadToBuffer(`automatic-algos/${new_alg_name}`)).toEqual(buffr);
+        expect(await collectionsService.automaticAlgos().get(new_alg_name)).toEqual(expect.objectContaining({
+            name: new_alg_name,
+            path: `automatic-algos/${new_alg_name}`
+        }))
+    });
+
 
     it('add image', async () => {
         const imageName = 'someImage';
