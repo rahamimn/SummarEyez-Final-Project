@@ -32,7 +32,6 @@ describe('ExperimentService Tests',() =>{
             path: `automatic-algos/${new_alg_name}`
         }))
         expect(status).toBe(0)
-        expect(error).toBe("no error")
     });
 
     it('add automatic algorithm with the same name', async () => {

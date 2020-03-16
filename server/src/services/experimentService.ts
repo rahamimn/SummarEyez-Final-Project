@@ -120,7 +120,7 @@ export class ExperimentService{
             path,
             uploaded_date: Date.now()
         });
-        return {status: 0, error: "no error"};
+        return {status: 0};
         }
     };
     
