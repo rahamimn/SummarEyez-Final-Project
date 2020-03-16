@@ -80,8 +80,8 @@ app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 //upload algorithm 
 app.post('/api/algorithms',upload.single('algorithmBuffer'), (req, res) => errorHandling(res, async () => {
-    await experimentService.addAutomaticAlgorithms(req.body.algorithmName, req.file.buffer);
-    res.send({status: 0})
+    const {status, error} = await experimentService.addAutomaticAlgorithms(req.body.algorithmName, req.file.buffer);
+    res.send({status: status, error: error})
 }));
 
 //todo: handle the get if needed

@@ -6,6 +6,7 @@ const forEP = require('foreach-promise');
 import {promises as fs} from 'fs';
 import * as csv from 'csvtojson';
 
+
 export class ExperimentService{
     private collectionsService : Collections;
     private storageService: Storage;
@@ -56,14 +57,14 @@ export class ExperimentService{
         });
 
         //we should fetch newly algorithms 
-
         const automaticAlgsSavedLocally = await this.getAutoAlgsSavedLocally()
        
         const {tables} = await this.pythonService.runAutomaticAlgs(
             automaticAlgsSavedLocally,
             files.text,
             files.base_sent_table);
-        await this.addAutomaticAlgToImg(tables,name);
+        await this.addAutomaticAlgToImg(tables,name);       
+
     }
 
     getImages = async () => {
@@ -110,11 +111,17 @@ export class ExperimentService{
     addAutomaticAlgorithms = async (name, buffer) => {
         const path = `automatic-algos/${name}`
         await this.storageService.uploadBuffer(path, buffer, fileTypes.Text);
+        if (await this.collectionsService.automaticAlgos().get(name) != undefined){
+            return {status: -1, error: "the name of the file is not unic"};
+        }
+        else{
         await this.collectionsService.automaticAlgos().add(name,{
             name,
             path,
             uploaded_date: Date.now()
         });
+        return {status: 0, error: "no error"};
+        }
     };
     
 
