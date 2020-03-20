@@ -6,7 +6,7 @@ import { PythonScripts } from "../services/pythonScripts/python/python-scripts";
 const cors = require('cors');
 const express = require('express');
 const multer = require('multer');
-// const bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 
 const app = express();
 app.use(express.static('output'));
@@ -82,6 +82,13 @@ app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 app.post('/api/algorithms',upload.single('algorithmBuffer'), (req, res) => errorHandling(res, async () => {
     const {status, error} = await experimentService.addAutomaticAlgorithms(req.body.algorithmName, req.file.buffer);
     res.send({status: status, error})
+}));
+
+app.post('/api/runAutoAlgs', bodyParser.json(), (req, res) => errorHandling(res, async () => {
+    const {algNames, experimentName} = req.body;
+    console.log(algNames, experimentName);
+    const {status} = await experimentService.runAutomaticAlgs(algNames, experimentName);
+    res.send({status: status})
 }));
 
 //todo: handle the get if needed

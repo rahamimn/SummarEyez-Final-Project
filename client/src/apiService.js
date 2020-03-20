@@ -44,8 +44,12 @@ const api = {
         return res.data;
     },
 
-    runAlgs: async (experimentId, algs) => {
-
+    runAlgs: async (experimentName,algNames) => {
+        const res = await axios.post('/api/runAutoAlgs',{
+            experimentName:'sss',
+            algNames,
+        });
+        return res.data;
     },
 
     merge: async () => {

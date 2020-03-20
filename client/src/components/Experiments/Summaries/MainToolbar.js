@@ -26,7 +26,7 @@ const useToolbarStyles = makeStyles(theme => ({
     },
   }));
   
-  export const MainToolbar = ({ selected, updateList }) => {
+  export const MainToolbar = ({ selected, updateList, experimentName }) => {
     const classes = useToolbarStyles();
   
     const allSelected = [...selected.auto, ...selected.eyes, ...selected.merged];
@@ -55,8 +55,8 @@ const useToolbarStyles = makeStyles(theme => ({
             <Button 
                 color="inherit"
                 onClick={ async () => {
-                    await api.runAlgs();
-                    await updateList;
+                    await api.runAlgs(experimentName, selected.auto.map(auto => auto.data.name));
+                    await updateList();
                 }
             }>Run</Button> }
        
