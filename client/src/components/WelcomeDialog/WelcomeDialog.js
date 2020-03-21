@@ -7,14 +7,15 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import {
   useHistory,
+  useParams
 } from "react-router-dom";
 
 export default function WelcomeDialog({
-  experimentName,
   onClose,
   permit,
 }) {
   const history = useHistory();
+  const {experimentName} = useParams();
   const [permKey,setPermKey] = useState();
   const [experiment,setExperiment] = useState();
   const [isKeyError,setKeyError] = useState(false);
