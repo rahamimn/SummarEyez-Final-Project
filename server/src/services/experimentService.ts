@@ -113,12 +113,13 @@ export class ExperimentService{
         }
     }
 
-    getSummaries = async (experimentId)=> {
+    getSummaries = async (experimentName)=> {
         const eyesExample = {id: 'eye1',data:{name:'eye1', creation_date:Date.now()}}
         const mergedExample = {id: 'eye1',data:{name:'eye1', creation_date:Date.now()}}
         //we should get the image from experiment, but wasn't implemented yet.
 
-        const autoSentTables = await this.collectionsService.images().sentTablesOf('t1').getAll();
+        const experiment = await this.collectionsService.experiments().get(experimentName);
+        const autoSentTables = await this.collectionsService.images().sentTablesOf(experiment.imageName).getAll();
         const allAutomaticAlgs = await this.collectionsService.automaticAlgos().getAll();
 
         return{

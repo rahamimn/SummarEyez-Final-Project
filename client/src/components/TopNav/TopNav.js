@@ -20,6 +20,7 @@ const useStyle = makeStyles(theme => ({
 }));
 
 export const TopNav = ({
+    experimentName,
     isExperimentMode,
     permit
 }) => {
@@ -40,7 +41,9 @@ export const TopNav = ({
           Summareyez
         </Typography>
         <div>
-          {isExperimentMode && <Button color="inherit" onClick={() => history.push('/experiments/new')}>New Experiment</Button>}
+          {isExperimentMode && <Button color="inherit" onClick={() => history.push(
+            experimentName ? `/experiments/${experimentName}/new` : '/experiments-new'
+            )}>New Experiment</Button>}
           <Button color="inherit" onClick={() => setShowModeSelection(true)}>Mode</Button>
         </div>
         </div>
@@ -48,6 +51,7 @@ export const TopNav = ({
       
     </AppBar>
     {showModeSelection && <WelcomeDialog 
+        experimentName={experimentName}
         onClose={() => setShowModeSelection(false)}
         permit={permit}/>
         }

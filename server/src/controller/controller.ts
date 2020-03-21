@@ -44,8 +44,8 @@ app.get('/api/images', (req, res) => errorHandling(res, async () => {
 }));
 
 // not fully implemented 
-app.get('/api/experiments/:exerimentId/summaries', (req, res) => errorHandling(res, async () => {
-    const summaries = await experimentService.getSummaries(req.params.exerimentId);
+app.get('/api/experiments/:exerimentName/summaries', (req, res) => errorHandling(res, async () => {
+    const summaries = await experimentService.getSummaries(req.params.exerimentName);
     res.send(summaries);
 }));
 

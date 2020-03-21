@@ -13,9 +13,9 @@ import {
 export default function WelcomeDialog({
   onClose,
   permit,
+  experimentName
 }) {
   const history = useHistory();
-  const {experimentName} = useParams();
   const [permKey,setPermKey] = useState();
   const [experiment,setExperiment] = useState();
   const [isKeyError,setKeyError] = useState(false);
