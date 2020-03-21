@@ -24,14 +24,32 @@ const api = {
         });
         return res.data;
     },
+    
 
     getSummaries: async (experimentId) => {
         const res = await axios.get('/api/experiments/123/summaries');
         return res.data;
     },
     
-    runAlgs: async (experimentId, algs) => {
+    uploadAlgorithm: async (name, buffer) => {
+        const formData = new FormData();
+        formData.append('algorithmBuffer', buffer);
+        formData.append('algorithmName', name);
 
+        const res = await axios.post('/api/algorithms',formData,{ 
+            headers:{
+                "Content-Type": "multipart/form-data"
+            },
+        });
+        return res.data;
+    },
+
+    runAlgs: async (experimentName,algNames) => {
+        const res = await axios.post('/api/runAutoAlgs',{
+            experimentName:'sss',
+            algNames,
+        });
+        return res.data;
     },
 
     merge: async () => {

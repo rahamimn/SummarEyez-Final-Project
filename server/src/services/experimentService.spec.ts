@@ -2,7 +2,6 @@ import { ExperimentService } from './experimentService';
 import { Collections } from "./collections/collections";
 import { Storages } from "./storage/storage";
 import { PythonScripts } from "./pythonScripts/pythonScripts";
-
 //@ts-ignore
 import {promises as fs} from 'fs';
 import { MockPythonScripts } from "./pythonScripts/mock/python-scripts.mock";
@@ -45,11 +44,11 @@ describe('ExperimentService Tests',() =>{
         }))
         const {status, error} = await experimentService.addAutomaticAlgorithms(new_alg_name, buffr)
         expect(status).toBe(-1)
-        expect(error).toBe("the name of the file is not unic")
+        expect(error).toBe("the name of the file is not unique")
     });
 
 
-    it('add image', async () => {
+    it('add image - when no auto exists in the system ', async () => {
         const imageName = 'someImage';
         const tables = [{name:'alg1', sent_table:new Buffer('alg1')}, {name:'alg2', sent_table:new Buffer('alg2')}];
         const imageBuffer = await fs.readFile('./inputForTests/minTest.jpg');
@@ -102,7 +101,7 @@ describe('ExperimentService Tests',() =>{
         collectionsService.images().add('img2',createImage(img2));
 
         const images = await experimentService.getImages();
-        expect(images).toEqual({img1,img2});
+        expect(images).toEqual([{id:'img1',data:img1},{id:'img2',data:img2}]);
     })
 
     it('add experiment', async () => {
@@ -127,4 +126,8 @@ describe('ExperimentService Tests',() =>{
         expect(error).toBe("The name of the experiment already exist in the system.");
     })
    
+    //TODO
+    it('run auto algs', async () => {
+        expect(true).toEqual(true);
+    });
 });

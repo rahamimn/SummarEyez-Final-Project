@@ -3,28 +3,25 @@ import {DropzoneArea} from 'material-ui-dropzone'
 import axios from 'axios';
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
+import Card from '@material-ui/core/Card'
+import api from '../../../apiService';
 
-export class UploadImage extends Component{
+
+export class UploadAlgorithm extends Component{
   constructor(props){
     super(props);
     this.state = {
       files: [],
-      imageName: ''
+      algorithmName: '',
+      isNameExists: false
     };
   }
 
-    handleAddImage = async () => {
-        const formData = new FormData();
-        formData.append('imageBuffer', this.state.files[0]);
-        formData.append('imageName', this.state.imageName);
-
-        const res = await axios.post('/api/upload',formData,{ 
-            headers:{
-                "Content-Type": "multipart/form-data"
-            },
-        });
-        this.props.onImageUploaded && this.props.onImageUploaded();
-    }
+  handleAddAlg = async () => {
+    this.setState({uploading: true});
+    const {status} = await api.uploadAlgorithm(this.state.algorithmName, this.state.files[0]);
+    this.setState({uploading: false, isNameExists: status === -1}); 
+  }
 
   handleChangeFile = (files) => {
     this.setState({
@@ -33,32 +30,51 @@ export class UploadImage extends Component{
   }
   handleChangeName = (event) => {
     this.setState({
-      imageName: event.target.value
+      algorithmName: event.target.value
     });
+    this.setState({ isNameExists: false} ); 
   }
 
   render(){
-    return (
-        <div style={{width: '100%', marginBottom: '40px'}}>
+    return (  
+      <Card>
+      <div style=
+        {{ 
+          padding:20,
+          backgroundColor: '#dcdcdc',
+          height: 800,
+          width:'100%',
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'contain',
+          backgroundPositionX: 'center'
+      }}>
             <TextField 
-                value={this.state.imageName}
+                error={this.state.isNameExists}
+                helperText={this.state.isNameExists && "Name already exsits, please choose different name" }
+                value={this.state.algorithmName}
                 style={{marginBottom: '20px'}}
                 onChange={this.handleChangeName}
                 id="standard-basic"
-                label="Image Name" />
+                label="Algorithm Name"
+                />
                 
             <DropzoneArea 
                 filesLimit={1}
-                onChange={this.handleChangeFile}/>
+                onChange={this.handleChangeFile}
+                acceptedFiles={["text/py/*"]}
+                />
+
             <Button 
-              
-                disabled={this.state.files.length === 0 || !this.state.imageName}
+                disabled={this.state.files.length === 0 || !this.state.algorithmName}
                 variant="contained"
                 color="primary"
-                onClick={this.handleAddImage}>
-                    Primary
+                onClick={this.handleAddAlg}>
+                    Upload algorithm  
             </Button>
         </div> 
+        </Card>  
+
+      
     )  
   }
 } 

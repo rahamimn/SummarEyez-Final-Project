@@ -15,6 +15,8 @@ import {
 import { NewExperiment } from './NewExperiment/NewExperiment';
 import TopNav from '../TopNav/TopNav';
 import {Summaries} from './Summaries/Summaries';
+import {UploadAlgorithm} from './UploadAutomaticAlg-notImpl/UploadAutomaticAlg';
+
 
 const drawerWidth = 240;
 
@@ -57,7 +59,7 @@ function MainExperiments({permit}) {
       <Divider />
       <List>
 
-        <ListItem button key={'Upload Algorithm'} onClick={e => history.push('/algorithm')}>
+        <ListItem button key={'Upload Algorithm'} onClick={e => history.push('/experiments/algorithm')}>
           <ListItemText primary={'Upload Algorithm'} />
         </ListItem>
 
@@ -122,6 +124,9 @@ function MainExperiments({permit}) {
             </Route>
             <Route path="/experiments/summaries">
               <Summaries/>
+            </Route>
+            <Route path="/experiments/algorithm">
+              <UploadAlgorithm/>
             </Route>
             {/* here we add all sub pages : (may be inners goes in sub component)
               *   forms:

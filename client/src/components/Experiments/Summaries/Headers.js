@@ -2,8 +2,7 @@
 export const autoHeaders = [
     { id: 'name', label: 'Name' },
     { id: 'creation_date', label: 'Creation Date' , type:'date' },
-    { id: 'creationDate2', label: 'CreationDate2' },
-    { id: 'creationDate3', label: 'CreationDate3' },
+    { id: 'uploaded_date', label: 'Algorithm Uploaded', type:'date' },
     { id: 'grade', label: 'Grade'},
   ];
   

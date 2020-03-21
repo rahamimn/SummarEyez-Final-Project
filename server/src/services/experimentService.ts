@@ -18,6 +18,21 @@ export class ExperimentService{
         this.pythonService = pythonService;
     }
 
+    private intersectAutomaticAlgs(all:{id:string, data:object, disabled?: boolean}[] ,subset: {id:string, data:object}[]){
+        const autoAlgs = [];
+        all.forEach(auto => {
+            const autoCalculated = subset.filter(auto2 => auto2.id === auto.id);
+
+            if(autoCalculated.length === 0){
+                autoAlgs.push({...auto, disabled: true})
+            }
+            else{
+                autoAlgs.push({id:auto.id,data:{...auto.data, ...autoCalculated[0].data} , disabled: false})
+            }
+        });
+        return autoAlgs;
+    }
+
     private addAutomaticAlgToImg = async (tables, imageName) => {
         await forEP(tables, async row => {
             const path = `images/${imageName}/algs/${row.name}`;
@@ -33,11 +48,13 @@ export class ExperimentService{
     private getAutoAlgsSavedLocally = async () => {
         const files = await fs.readdir('./automatic-algorithms');
         let algNames = [];
-        await forEP(files, async (file:string) => {
-            if(file.endsWith('.py')){
-                algNames.push(file);
-            }
-        });
+        if(files.length > 0){
+            await forEP(files, async (file:string) => {
+                if(file.endsWith('.py')){
+                    algNames.push(file);
+                }
+            });
+        }
         return algNames;
     }
 
@@ -56,9 +73,23 @@ export class ExperimentService{
             base_sent_table_path: `images/${name}/base_sent_table`,
         });
 
+        const automaticAlgsSavedLocally = await this.getAutoAlgsSavedLocally();
         //we should fetch newly algorithms 
-        const automaticAlgsSavedLocally = await this.getAutoAlgsSavedLocally()
-       
+        const allAutomaticAlgs: string[] = await this.collectionsService.automaticAlgos().getAll();
+        if(allAutomaticAlgs.length > 0){
+            await forEP(allAutomaticAlgs, async (metaAuto) => {
+                const autoName = metaAuto.data.name;
+                if(allAutomaticAlgs.includes(autoName)){
+                    return;
+                }
+                await this.storageService.downloadToPath(
+                    metaAuto.data.path,
+                    `./automatic-algorithms/${autoName}`
+                )
+                automaticAlgsSavedLocally.push(autoName)
+            });
+        }
+    
         const {tables} = await this.pythonService.runAutomaticAlgs(
             automaticAlgsSavedLocally,
             files.text,
@@ -76,7 +107,7 @@ export class ExperimentService{
 
     getSummary = async (experimentId, type, name)=> {
         if(type === 'auto'){
-            const autoSentTable = await this.collectionsService.images().sentTablesOf('auto5').get(name);
+            const autoSentTable = await this.collectionsService.images().sentTablesOf('t1').get(name);
             const csvFile = await this.storageService.downloadToBuffer(autoSentTable.path)
             return await csv({delimiter:'auto'}).fromString(csvFile.toString());
         }
@@ -86,10 +117,12 @@ export class ExperimentService{
         const eyesExample = {id: 'eye1',data:{name:'eye1', creation_date:Date.now()}}
         const mergedExample = {id: 'eye1',data:{name:'eye1', creation_date:Date.now()}}
         //we should get the image from experiment, but wasn't implemented yet.
-        const autoSentTables = await this.collectionsService.images().sentTablesOf('auto5').getAll();
-        const autoDisabled = [{id:'alg3',data:{name:'alg3'}, disabled: true}];
+
+        const autoSentTables = await this.collectionsService.images().sentTablesOf('t1').getAll();
+        const allAutomaticAlgs = await this.collectionsService.automaticAlgos().getAll();
+
         return{
-            auto: [...autoSentTables, ...autoDisabled],
+            auto: this.intersectAutomaticAlgs(allAutomaticAlgs, autoSentTables),
             eyes: Array(15).fill(eyesExample),
             merged: Array(15).fill(mergedExample),
         }
@@ -98,21 +131,40 @@ export class ExperimentService{
 
     //TODO - check if exists download if needed
     // we could check with in memory data
-    private verifyAutomaticAlgorithmExists = async (names: string[]) => {};
+    private verifyAutomaticAlgorithmExists = async (names: string[]) => {
+        const automaticAlgsSavedLocally = await this.getAutoAlgsSavedLocally();
+        //we should fetch newly algorithms 
+        await forEP(names, async name => {
+            const metaAuto = await this.collectionsService.automaticAlgos().get(name);
+            if(!automaticAlgsSavedLocally.includes(name)){
+                await this.storageService.downloadToPath(
+                    metaAuto.path,
+                    `./automatic-algorithms/${name}`
+                )
+            }
 
-    runAutomaticAlgs = async (algsNames: string[], imageName:string, options: {text?: Buffer, base_sent_table?: Buffer } ) => {
-        const text = options.text || await this.storageService.downloadToBuffer(`images/${imageName}/text`);
-        const base_sent_table = options.base_sent_table || await this.storageService.downloadToBuffer(`images/${imageName}/base_sent_table`);
+        });
+    };
+
+    runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
+        // const expermient = await this.collectionsService.experiments().get(experimentName)
+        // const imageName =  expermient.imageName;
+        const imageName = 't1';
+        const text = await this.storageService.downloadToBuffer(`images/${imageName}/text`);
+        const base_sent_table = await this.storageService.downloadToBuffer(`images/${imageName}/base_sent_table`);
         await this.verifyAutomaticAlgorithmExists(algsNames);
         const {tables} = await this.pythonService.runAutomaticAlgs(algsNames, text,base_sent_table);
         await this.addAutomaticAlgToImg(tables,imageName);
+        return {
+            status: 0,
+        }
     }
 
     addAutomaticAlgorithms = async (name, buffer) => {
         const path = `automatic-algos/${name}`
         await this.storageService.uploadBuffer(path, buffer, fileTypes.Text);
         if (await this.collectionsService.automaticAlgos().get(name) != undefined){
-            return {status: -1, error: "the name of the file is not unic"};
+            return {status: -1, error: "the name of the file is not unique"};
         }
         else{
         await this.collectionsService.automaticAlgos().add(name,{
@@ -120,7 +172,7 @@ export class ExperimentService{
             path,
             uploaded_date: Date.now()
         });
-        return {status: 0};
+            return {status: 0};
         }
     };
 

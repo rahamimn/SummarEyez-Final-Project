@@ -85,6 +85,13 @@ app.post('/api/algorithms',upload.single('algorithmBuffer'), (req, res) => error
     res.send({status: status, error})
 }));
 
+app.post('/api/runAutoAlgs', bodyParser.json(), (req, res) => errorHandling(res, async () => {
+    const {algNames, experimentName} = req.body;
+    console.log(algNames, experimentName);
+    const {status} = await experimentService.runAutomaticAlgs(algNames, experimentName);
+    res.send({status: status})
+}));
+
 //todo: handle the get if needed
 // app.get('/api/algorithms', (req, res) => errorHandling(res, async () => {
 //     const algorithms = await experimentService.get();
