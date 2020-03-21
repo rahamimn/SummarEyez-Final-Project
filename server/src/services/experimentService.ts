@@ -148,9 +148,8 @@ export class ExperimentService{
     };
 
     runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
-        // const expermient = await this.collectionsService.experiments().get(experimentName)
-        // const imageName =  expermient.imageName;
-        const imageName = 't1';
+        const expermient = await this.collectionsService.experiments().get(experimentName)
+        const imageName =  expermient.imageName;
         const text = await this.storageService.downloadToBuffer(`images/${imageName}/text`);
         const base_sent_table = await this.storageService.downloadToBuffer(`images/${imageName}/base_sent_table`);
         await this.verifyAutomaticAlgorithmExists(algsNames);
@@ -161,15 +160,16 @@ export class ExperimentService{
         }
     }
 
-    addAutomaticAlgorithms = async (name, buffer) => {
-        const path = `automatic-algos/${name}`
+    addAutomaticAlgorithms = async (name: string, buffer) => {
+        const formattedName = name.endsWith('.py') ? name :  (name+'.py');
+        const path = `automatic-algos/${formattedName}`
         await this.storageService.uploadBuffer(path, buffer, fileTypes.Text);
-        if (await this.collectionsService.automaticAlgos().get(name) != undefined){
+        if (await this.collectionsService.automaticAlgos().get(formattedName) != undefined){
             return {status: -1, error: "the name of the file is not unique"};
         }
         else{
-        await this.collectionsService.automaticAlgos().add(name,{
-            name,
+        await this.collectionsService.automaticAlgos().add(formattedName,{
+            name: formattedName,
             path,
             uploaded_date: Date.now()
         });
