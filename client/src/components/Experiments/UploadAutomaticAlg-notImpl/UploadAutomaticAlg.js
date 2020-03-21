@@ -37,7 +37,7 @@ export class UploadAlgorithm extends Component{
 
   render(){
     return (  
-      <Card>
+      <Card style={{ width: '60%' }}>
       <div style=
         {{ 
           padding:20,
@@ -55,16 +55,18 @@ export class UploadAlgorithm extends Component{
                 style={{marginBottom: '20px'}}
                 onChange={this.handleChangeName}
                 id="standard-basic"
-                label="Algorithm Name"
+                label="Insert algorithm name"
                 />
                 
-            <DropzoneArea 
+              <DropzoneArea
                 filesLimit={1}
-                onChange={this.handleChangeFile}
-                acceptedFiles={["text/py/*"]}
+                  onChange={this.handleChangeFile}
+                  acceptedFiles={["text/py/*"]}
+                  dropzoneText={"Upload your python script here"}
                 />
 
             <Button 
+                style={{marginTop: '20px'}}
                 disabled={this.state.files.length === 0 || !this.state.algorithmName}
                 variant="contained"
                 color="primary"
