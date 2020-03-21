@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function MainExperiments({permit}) {
+function MainTests({permit}) {
   const classes = useStyles();
   const [json,setJson ] = useState(mockJson);
 
@@ -55,7 +55,7 @@ function MainExperiments({permit}) {
   );
 }
 
-export default MainExperiments;
+export default MainTests;
 
 
 const mockJson = [

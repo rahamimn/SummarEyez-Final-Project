@@ -177,8 +177,7 @@ export class ExperimentService{
     };
 
     addExperiment = async (experimentName, imageName)=>{
-       const experiments =  await this.collectionsService.experiments().getAll();
-       if(experiments[experimentName]){
+       if(await this.collectionsService.experiments().get(experimentName)){
         return {status: -1, error: "The name of the experiment already exist in the system."};  
        }
        await this.collectionsService.experiments().add(experimentName,

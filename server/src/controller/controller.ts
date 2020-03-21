@@ -70,9 +70,8 @@ app.get('/api/experiments', (req, res) => {
 
 //create experiment
 app.post('/api/experiments', bodyParser.json(), async (req, res) => {  
-     const summaries = await experimentService.addExperiment(req.body.experimentName, req.body.imageName)
-    res.send(summaries);
-    //res.send({status:-1});
+    const response = await experimentService.addExperiment(req.body.experimentName, req.body.imageName)
+    res.send(response);
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

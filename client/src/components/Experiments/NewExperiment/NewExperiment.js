@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography'
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { UploadImage } from '../UploadImage/UploadImage';
 import api from '../../../apiService';
+import { withRouter } from "react-router-dom";
 
 const ArticleImage = (imagePath) =>
   <Card>  
@@ -23,10 +24,11 @@ const ArticleImage = (imagePath) =>
     </div>
   </Card>
 
-export class NewExperiment extends Component{
+class NewExperimentComponent extends Component{
   constructor(props){
     super(props);
     this.state = {
+      isNameExists: false,
       images: [],
       image: null,
       imageName: '',
@@ -42,6 +44,18 @@ export class NewExperiment extends Component{
   fetchImages = async () => {
     const images = await api.getImages();
     this.setState({images});
+  }
+
+  handleAddExperiment = async () => {
+    const res = await api.addExperiment(this.state.experimentName, this.state.imageName);
+    if(res.status !== 0){
+      this.setState({
+        isNameExists: true
+      });
+    }
+    else{
+      this.props.history.push(`/experiments/${this.state.experimentName}`);
+    }
   }
 
   handleChangeExperimentName = (event) => {
@@ -61,7 +75,8 @@ export class NewExperiment extends Component{
                 </Typography>
                 <Divider/>
                 <TextField 
-                
+                  error={this.state.isNameExists}
+                  helperText={this.state.isNameExists && "Name already exsits, please choose different name" }
                   value={this.state.experimentName}
                   style={{width: '200px',marginTop:'10px', marginBottom: '20px'}}
                   onChange={this.handleChangeExperimentName}
@@ -109,7 +124,7 @@ export class NewExperiment extends Component{
                   disabled={!!(!this.state.image || !this.state.experimentName)}
                   variant="contained"
                   color="primary"
-                  onClick={this.handleAddImage}>
+                  onClick={this.handleAddExperiment}>
                     Create
                 </Button> 
               </Card>
@@ -132,3 +147,4 @@ export class NewExperiment extends Component{
     )  
   }
 } 
+export const NewExperiment = withRouter(NewExperimentComponent);

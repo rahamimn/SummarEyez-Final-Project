@@ -11,6 +11,7 @@ import {
   Switch,
   Route,
   useHistory,
+  useParams,
 } from "react-router-dom";
 import { NewExperiment } from './NewExperiment/NewExperiment';
 import TopNav from '../TopNav/TopNav';
@@ -50,34 +51,39 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function MainExperiments({permit}) {
+  const { experimentName } = useParams();
+
   const classes = useStyles();
   const history = useHistory();
-  
+  const experimetPage = (page) => experimentName ? `/experiments/${experimentName}/${page}` : `/experiments-new/${page}`;
+  const experimetRoutePage = (page) => `/experiments/:experimentName/${page}`;
+
   const drawer = (
     <div>
       <div className={classes.toolbar} />
       <Divider />
       <List>
 
-        <ListItem button key={'Upload Algorithm'} onClick={e => history.push('/experiments/algorithm')}>
+        <ListItem button key={'Upload Algorithm'} onClick={e => history.push(experimetPage('algorithm'))}>
           <ListItemText primary={'Upload Algorithm'} />
         </ListItem>
+        {experimentName &&
+          [<ListItem button key={'Summaries'} onClick={e => history.push(experimetPage('summaries'))}>
+            <ListItemText primary={'Summaries'} />
+          </ListItem>,
 
-        <ListItem button key={'Summaries'} onClick={e => history.push('/experiments/summaries')}>
-          <ListItemText primary={'Summaries'} />
-        </ListItem>
+          <ListItem button key={'Forms'} onClick={e => history.push(experimetPage('forms'))}>
+            <ListItemText primary={'Forms -> all/Edit/New Form'} />
+          </ListItem>,
 
-        <ListItem button key={'Forms'} onClick={e => history.push('/forms')}>
-          <ListItemText primary={'Forms -> all/Edit/New Form'} />
-        </ListItem>
+          <ListItem button key={'Tests'} onClick={e => history.push(experimetPage('tests'))}>
+            <ListItemText primary={'Tests their Summaries'} />
+          </ListItem>,
 
-        <ListItem button key={'Tests'} onClick={e => history.push('/tests')}>
-          <ListItemText primary={'Tests their Summaries'} />
-        </ListItem>
-
-        <ListItem button key={'New Form'} onClick={e => history.push('/newForm')}>
-          <ListItemText primary={'Create from eyes (manualy) -opt'} />
-        </ListItem>
+          <ListItem button key={'New Form'} onClick={e => history.push(experimetPage('newForm'))}>
+            <ListItemText primary={'Create from eyes (manualy) -opt'} />
+          </ListItem>]
+        }
 
 
         {/* <ListItem button key={'Conduct Test'} onClick={e => setOpenH2H(!openH2H)}>
@@ -119,13 +125,16 @@ function MainExperiments({permit}) {
         <div className={classes.toolbar} />
 
         <Switch>
-            <Route path="/experiments/new">
+            <Route path={'/experiments-new'}>
               <NewExperiment/>
             </Route>
-            <Route path="/experiments/summaries">
+            <Route path={experimetRoutePage('new')}>
+              <NewExperiment/>
+            </Route>
+            <Route path={experimetRoutePage('summaries')}>
               <Summaries/>
             </Route>
-            <Route path="/experiments/algorithm">
+            <Route path={experimetRoutePage('algorithm')}>
               <UploadAlgorithm/>
             </Route>
             {/* here we add all sub pages : (may be inners goes in sub component)

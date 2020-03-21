@@ -13,6 +13,7 @@ import {
   mergedHeaders
 } from './Headers';
 import api from '../../../apiService';
+import {useParams} from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -27,6 +28,7 @@ const useStyles = makeStyles(theme => ({
 export function Summaries({
   experimentId
 }) {
+  const {experimentName} = useParams()
   const classes = useStyles();
   const [summaries,setSummaries] = useState({
     auto: [],
@@ -39,7 +41,7 @@ export function Summaries({
 
 
   const fetchSummaries = async () => {
-    const summaries = await api.getSummaries(); 
+    const summaries = await api.getSummaries(experimentName); 
     setSummaries(summaries);
   }
 

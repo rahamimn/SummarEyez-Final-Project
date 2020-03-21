@@ -17,9 +17,15 @@ function Main() {
   return (
     <div>
       <Switch>
-        <Route path="/experiments" render={ () => {
+        <Route path="/experiments-new" render={ () => {
           if(experimentsPermission || true) {
-            return <MainExperiments permit={permit}/>
+            return <MainExperiments permit={permit} />
+          }
+          return <Redirect to={{pathname: "/"}}/>
+        }}/>
+        <Route path="/experiments/:experimentName" render={ () => {
+          if(experimentsPermission || true) {
+            return <MainExperiments permit={permit} />
           }
           return <Redirect to={{pathname: "/"}}/>
         }}/>

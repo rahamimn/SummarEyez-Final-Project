@@ -26,8 +26,8 @@ const api = {
     },
     
 
-    getSummaries: async (experimentId) => {
-        const res = await axios.get('/api/experiments/123/summaries');
+    getSummaries: async (experimentName) => {
+        const res = await axios.get(`/api/experiments/${experimentName}/summaries`);
         return res.data;
     },
     
@@ -46,7 +46,7 @@ const api = {
 
     runAlgs: async (experimentName,algNames) => {
         const res = await axios.post('/api/runAutoAlgs',{
-            experimentName:'sss',
+            experimentName,
             algNames,
         });
         return res.data;
@@ -54,7 +54,15 @@ const api = {
 
     merge: async () => {
 
-    }
+    },
+
+    addExperiment: async (experimentName,imageName) => {
+        const res = await axios.post('/api/experiments',{
+            experimentName,
+            imageName,
+        });
+        return res.data;
+    },
 }
 
 export default api;

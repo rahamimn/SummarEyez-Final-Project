@@ -6,6 +6,8 @@ import PropTypes from 'prop-types';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import api from '../../../apiService';
+import {useParams} from 'react-router-dom'
+
 const useToolbarStyles = makeStyles(theme => ({
     root: {
       paddingLeft: theme.spacing(2),
@@ -26,9 +28,10 @@ const useToolbarStyles = makeStyles(theme => ({
     },
   }));
   
-  export const MainToolbar = ({ selected, updateList, experimentName }) => {
+  export const MainToolbar = ({ selected, updateList }) => {
     const classes = useToolbarStyles();
-  
+    const { experimentName } = useParams();
+
     const allSelected = [...selected.auto, ...selected.eyes, ...selected.merged];
     const numSelected = allSelected.length;
     const disabled = selected.auto.filter((selected) => selected.disabled) 

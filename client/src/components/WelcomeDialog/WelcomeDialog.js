@@ -10,11 +10,13 @@ import {
 } from "react-router-dom";
 
 export default function WelcomeDialog({
+  experimentName,
   onClose,
   permit,
 }) {
   const history = useHistory();
   const [permKey,setPermKey] = useState();
+  const [experiment,setExperiment] = useState();
   const [isKeyError,setKeyError] = useState(false);
   
   const validate = () => {
@@ -60,6 +62,8 @@ export default function WelcomeDialog({
             label="experiment"
             type="text"
             fullWidth
+            value={experiment}
+            onChange={(e) => setExperiment(e.target.value)}
           />
           <div style={{
               display: 'flex',
@@ -72,7 +76,10 @@ export default function WelcomeDialog({
                     style={{marginRight: '10px'}}
                     onClick={() => {
                       onClose && onClose();
-                      validate() ? history.push('/experiments/new') : setKeyError(true);
+                      validate() ? history.push(experimentName ? 
+                        `/experiments/${experimentName}/new` :
+                        `/experiments-new`
+                      ) : setKeyError(true);
                     }}
                     >
                 New Experiments
@@ -84,7 +91,7 @@ export default function WelcomeDialog({
                     onClick={() => {
                       onClose && onClose();
                       validate() ? 
-                        history.push('/experiments') :
+                        history.push(`/experiments/${experiment}`) :
                         setKeyError(true);
                     }}
                     >
