@@ -104,9 +104,30 @@ describe('ExperimentService Tests',() =>{
         expect(images).toEqual([{id:'img1',data:img1},{id:'img2',data:img2}]);
     })
 
+    it('add experiment', async () => {
+        const expName= "exp_1";
+        const imageName= "img_1";
+        const res = await experimentService.addExperiment(expName, imageName);
+        expect(res).toEqual({"status": 0});
+        
+        expect(await collectionsService.experiments().get(expName)).toEqual(expect.objectContaining({
+                name: expName,
+                imageName
+        }));
+    })
+
+    it('fail to add experiment because already exist', async () => {
+        const expName= "exp_1";
+        const imageName= "img_1";
+
+        const res = await collectionsService.experiments().add(expName, imageName);
+        const {status, error} = await experimentService.addExperiment(expName, imageName);
+        expect(status).toBe(-1);
+        expect(error).toBe("The name of the experiment already exist in the system.");
+    })
+   
     //TODO
     it('run auto algs', async () => {
         expect(true).toEqual(true);
     });
-    
 });
