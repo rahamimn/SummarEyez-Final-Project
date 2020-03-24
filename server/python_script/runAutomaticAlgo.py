@@ -22,6 +22,10 @@ def main(base_sent_table, text, paths_algs):
         sent_table_copy['normalized_weight'] = sent_table['weight']
         sent_tables.append(sent_table_copy)
     
+    return normalWeight(sent_tables)
+
+
+def normalWeight(sent_tables): 
     for index in range(len(sent_tables)):
         tmp_arr_for_normal_calc= []
         for j in range(len(sent_tables[index])):
@@ -32,9 +36,8 @@ def main(base_sent_table, text, paths_algs):
         minmaxTransformed = minmax.fit_transform(transformed)
         for p in range(len(sent_tables[index])):
             sent_tables[index]['normalized_weight'][p] = minmaxTransformed[p][0] 
-     
     return sent_tables
-    
+
 
 if __name__ == "__main__":
 
