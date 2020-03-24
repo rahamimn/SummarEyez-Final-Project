@@ -50,8 +50,12 @@ app.get('/api/experiments/:exerimentName/summaries', (req, res) => errorHandling
 }));
 
 // not fully implemented 
-app.get('/api/experiments/:exerimentId/summary', (req, res) => errorHandling(res, async () => {
-    const summaries = await experimentService.getSummary(req.params.exerimentId,'auto','Alg1.py');
+app.get('/api/experiments/:exerimentName/summary', (req, res) => errorHandling(res, async () => {
+    const summaries = await experimentService.getSummary(
+        req.params.exerimentName,
+        req.query.type,
+        req.query.name
+    );
     res.send(summaries);
 }));
 
@@ -75,7 +79,6 @@ app.post('/api/experiments', bodyParser.json(), async (req, res) => {
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
-
 
 
 //upload algorithm 

@@ -39,6 +39,8 @@ const useToolbarStyles = makeStyles(theme => ({
     const justDisabled = allSelected.length === disabled.length
         && allSelected.length > 0 ;
 
+    const oneNotDisable = allSelected.length === 1 && disabled.length === 0 && allSelected[0];
+
     return (
       <Toolbar
         className={clsx(classes.root, {
@@ -63,9 +65,10 @@ const useToolbarStyles = makeStyles(theme => ({
                 }
             }>Run</Button> }
        
-        {allSelected.length === 1 && disabled.length === 0 && [
+        {oneNotDisable && [
             <Button 
                 key="1"
+                onClick={() => window.open(`/article/${experimentName}/${oneNotDisable.data.type}/${oneNotDisable.data.name}`,'_blank')}
                 color="inherit">View</Button>,
             <Button key="2" color="inherit">Info</Button>
         ]}

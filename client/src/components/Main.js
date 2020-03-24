@@ -8,6 +8,7 @@ import {
 import WelcomeDialog from './WelcomeDialog/WelcomeDialog';
 import MainExperiments from './Experiments/MainExperiments';
 import MainTests from './Tests/MainTests';
+import {ArticleMain} from './ArticleViewer/ArticleMain';
 
 
 function Main() {
@@ -17,6 +18,9 @@ function Main() {
   return (
     <div>
       <Switch>
+        <Route path="/article/:experimentName/:type/:name">
+          <ArticleMain/>
+        </Route>
         <Route path="/experiments-new" render={ () => {
           if(experimentsPermission || true) {
             return <MainExperiments permit={permit} />

@@ -38,7 +38,7 @@ export class ExperimentService{
             const path = `images/${imageName}/algs/${row.name}`;
             await this.storageService.uploadBuffer(path, row.sent_table, fileTypes.Csv);
             await this.collectionsService.images().sentTablesOf(imageName).add(row.name,{
-                type: 'automatic',
+                type: 'auto',
                 name: row.name,
                 path,
                 creation_date: Date.now()
@@ -105,9 +105,10 @@ export class ExperimentService{
         return images;
     }
 
-    getSummary = async (experimentId, type, name)=> {
+    getSummary = async (experimentName, type, name)=> {
         if(type === 'auto'){
-            const autoSentTable = await this.collectionsService.images().sentTablesOf('t1').get(name);
+            const experiment = await this.collectionsService.experiments().get(experimentName);
+            const autoSentTable = await this.collectionsService.images().sentTablesOf(experiment.imageName).get(name);
             const csvFile = await this.storageService.downloadToBuffer(autoSentTable.path)
             return await csv({delimiter:'auto'}).fromString(csvFile.toString());
         }

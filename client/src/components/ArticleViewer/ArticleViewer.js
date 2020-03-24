@@ -8,7 +8,7 @@ export const ArticleViewer = ({json,type}) => {
 
     for(let i = 0 ; i < json.length; i++){
         // const sent = <span key={'sent'+i} style={{backgroundColor:`hsl(90, 100%, ${100 - json[i].weight*50}%)`}} >{json[i].text}</span>
-        const sent = <span key={'sent'+i} style={{backgroundColor:`hsl(${color}, 100%, ${100 - json[i].weight*50}%)`}} >{json[i].text}</span>
+        const sent = <span key={'sent'+i} style={{backgroundColor:`hsl(${color}, 100%, ${100 - json[i].normalized_weight*50}%)`}} >{json[i].text}</span>
         
         if(json[i].par_num !== paragraphNum){
             paragraphs.push([sent]);

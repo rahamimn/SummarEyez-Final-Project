@@ -2,8 +2,8 @@ import axios from 'axios';
 
 const api = {
 
-    getSummary: async (experimentId,type,name) => {
-        const res = await axios.get('/api/experiments/123/summary');
+    getSummary: async (experimentName,type,name) => {
+        const res = await axios.get(`/api/experiments/${experimentName}/summary?type=${type}&name=${name}`);
         return res.data;
     },
 
