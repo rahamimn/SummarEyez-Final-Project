@@ -2,8 +2,11 @@
 import importlib.util
 import sys
 import pandas as pd
+pd.options.mode.chained_assignment = None 
 from sklearn import preprocessing
 from io import StringIO
+from sklearn.preprocessing import PowerTransformer
+from sklearn.preprocessing import MinMaxScaler
 
 mm_scaler = preprocessing.MinMaxScaler()
 
@@ -11,14 +14,25 @@ def main(base_sent_table, text, paths_algs):
     sent_tables = []
     for index in range(len(paths_algs)):
         sent_table_copy = base_sent_table.copy()
-        spec = importlib.util.spec_from_file_location("*", "./automatic-algorithms/"+paths_algs[index])
+        spec = importlib.util.spec_from_file_location("*", "./server/automatic-algorithms/"+paths_algs[index])
         alg = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(alg)
         sent_table = pd.DataFrame(alg.run(text))
         sent_table_copy['weight'] = sent_table['weight']
-        #we should fix this
         sent_table_copy['normalized_weight'] = sent_table['weight']
         sent_tables.append(sent_table_copy)
+    
+    for index in range(len(sent_tables)):
+        tmp_arr_for_normal_calc= []
+        for j in range(len(sent_tables[index])):
+            tmp_arr_for_normal_calc.append([sent_tables[index]['normalized_weight'].get(j)])
+        pt = PowerTransformer()
+        transformed = pt.fit_transform(tmp_arr_for_normal_calc)
+        minmax = MinMaxScaler()
+        minmaxTransformed = minmax.fit_transform(transformed)
+        for p in range(len(sent_tables[index])):
+            sent_tables[index]['normalized_weight'][p] = minmaxTransformed[p][0] 
+     
     return sent_tables
     
 
