@@ -20,23 +20,22 @@ def main(base_sent_table, text, paths_algs):
         sent_table = pd.DataFrame(alg.run(text))
         sent_table_copy['weight'] = sent_table['weight']
         sent_table_copy['normalized_weight'] = sent_table['weight']
-        sent_tables.append(sent_table_copy)
-    
-    return normalWeight(sent_tables)
-
-
-def normalWeight(sent_tables): 
-    for index in range(len(sent_tables)):
-        tmp_arr_for_normal_calc= []
-        for j in range(len(sent_tables[index])):
-            tmp_arr_for_normal_calc.append([sent_tables[index]['normalized_weight'].get(j)])
-        pt = PowerTransformer()
-        transformed = pt.fit_transform(tmp_arr_for_normal_calc)
-        minmax = MinMaxScaler()
-        minmaxTransformed = minmax.fit_transform(transformed)
-        for p in range(len(sent_tables[index])):
-            sent_tables[index]['normalized_weight'][p] = minmaxTransformed[p][0] 
+        normalWeight(sent_tables, sent_table_copy)
+        
     return sent_tables
+
+
+def normalWeight(sent_tables, sent_table_copy): 
+    tmp_arr_for_normal_calc= []
+    for j in range(len(sent_table_copy)):
+        tmp_arr_for_normal_calc.append([sent_table_copy['normalized_weight'].get(j)])
+    pt = PowerTransformer()
+    transformed = pt.fit_transform(tmp_arr_for_normal_calc)
+    minmax = MinMaxScaler()
+    minmaxTransformed = minmax.fit_transform(transformed)
+    for p in range(len(sent_table_copy)):
+        sent_table_copy['normalized_weight'][p] = minmaxTransformed[p][0] 
+    sent_tables.append(sent_table_copy)
 
 
 if __name__ == "__main__":
