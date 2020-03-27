@@ -11,7 +11,7 @@ def main(base_sent_table, text, paths_algs):
     sent_tables = []
     for index in range(len(paths_algs)):
         sent_table_copy = base_sent_table.copy()
-        spec = importlib.util.spec_from_file_location("*", "./automatic-algorithms/"+paths_algs[index])
+        spec = importlib.util.spec_from_file_location("*", "../automatic-algorithms/"+paths_algs[index])
         alg = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(alg)
         sent_table = pd.DataFrame(alg.run(text))
