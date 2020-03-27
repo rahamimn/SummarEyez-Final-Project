@@ -133,16 +133,25 @@ export class ExperimentService{
     getSummaries = async (experimentName)=> {
         const eyesExample = {id: 'eye1',data:{name:'eye1', creation_date:Date.now()}}
         const mergedExample = {id: 'eye1',data:{name:'eye1', creation_date:Date.now()}}
-        //we should get the image from experiment, but wasn't implemented yet.
-
+        //
         const experiment = await this.collectionsService.experiments().get(experimentName);
+        if(!experiment){
+            return {
+                status: -1,
+                error: 'experiment name does not exist'
+            }
+        }
+        
         const autoSentTables = await this.collectionsService.images().sentTablesOf(experiment.imageName).getAll();
         const allAutomaticAlgs = await this.collectionsService.automaticAlgos().getAll();
 
         return{
-            auto: this.intersectAutomaticAlgs(allAutomaticAlgs, autoSentTables),
-            eyes: Array(15).fill(eyesExample),
-            merged: Array(15).fill(mergedExample),
+            status: 0,
+            data: {
+                auto: this.intersectAutomaticAlgs(allAutomaticAlgs, autoSentTables),
+                eyes: Array(15).fill(eyesExample),
+                merged: Array(15).fill(mergedExample),
+            }
         }
 
     }

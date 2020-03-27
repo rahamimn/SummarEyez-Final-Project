@@ -9,6 +9,7 @@ import MockStorage from "./storage/mock/storage.mock";
 import { CollectionMock } from "./collections/mock/collections.mock";
 import {createImage} from '../utils/DTOCreators';
 import { fileTypes } from './storage/storageTypes';
+import * as csv from 'csvtojson';
 
 describe('ExperimentService Tests',() =>{
     let experimentService: ExperimentService;
@@ -159,6 +160,7 @@ describe('ExperimentService Tests',() =>{
         const imageName = ' im1';
         const autoName = 'auto1.py';
         const autoFilePath = 'some/path';
+        const sent_table = new Buffer("");
 
         beforeEach( async () => {
             await collectionsService.experiments().add(expName, {imageName});
@@ -171,7 +173,9 @@ describe('ExperimentService Tests',() =>{
 
         it('success - auto', async () => {
             const {status, data} = await experimentService.getSummary(expName, 'auto',autoName);
+            const json = await csv({delimiter:'auto'}).fromString(sent_table.toString())
             expect(status).toEqual(0);
+            expect(data).toEqual(json);
         }); 
 
         it('success - eyes', async () => {
@@ -206,6 +210,7 @@ describe('ExperimentService Tests',() =>{
     });
    
     describe('run automatic algs' , () => {
+
         it('success', async () => {
             expect(true).toEqual(true);
         });
@@ -216,12 +221,34 @@ describe('ExperimentService Tests',() =>{
     });
 
     describe('get summaries' , () => {
-        it('success', async () => {
-            expect(true).toEqual(true);
+        const expName = 'expName';
+        const imageName = 'imageName';
+        const autoName1 = 'auto1.py';
+        const autoName2 = 'auto2.py';
+        const metaData = {};
+
+        beforeEach( async () => {
+            await collectionsService.automaticAlgos().add(autoName1,{});
+            await collectionsService.automaticAlgos().add(autoName2,{});
+            await collectionsService.experiments().add(expName, {imageName});
+            await collectionsService.images().add(imageName, {});
+            await collectionsService.images().sentTablesOf(imageName).add(autoName1, metaData);
+        });
+
+        it('success - (only auto)', async () => {
+            const {status, data} = await experimentService.getSummaries(expName);
+
+            expect(status).toEqual(0);
+            expect(data).toEqual(expect.objectContaining({
+                auto: [{id:autoName1, data: metaData, disabled: false},{id:autoName2, data: metaData, disabled:true}]
+            }));
         });
 
         it('fail - experiment does not exists', async () => {
-            expect(true).toEqual(true);
+            const {status, error} = await experimentService.getSummaries('notExistsExpName');
+s
+            expect(status).toEqual(-1);
+            expect(error).toEqual('experiment name does not exist');
         });
     });
 

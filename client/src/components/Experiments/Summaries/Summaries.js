@@ -41,8 +41,8 @@ export function Summaries({
 
 
   const fetchSummaries = async () => {
-    const summaries = await api.getSummaries(experimentName); 
-    setSummaries(summaries);
+    const res = await api.getSummaries(experimentName); 
+    setSummaries(res.data);
   }
 
   useEffect(() => {
