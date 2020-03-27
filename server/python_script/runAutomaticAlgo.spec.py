@@ -4,7 +4,7 @@ import runAutomaticAlgo
 import pandas as pd
 import sklearn
 
-base_sent_table = pd.read_csv('../inputForTests/base_sent_table.tsv', sep = '\t')
+base_sent_table = pd.read_csv('./inputForTests/base_sent_table.tsv', sep = '\t')
 text = """According to you, which one is more important between teacher’s ability to relate
 well with the students and excellent knowledge of the subject being taught?
 

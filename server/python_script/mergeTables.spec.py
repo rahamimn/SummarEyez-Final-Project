@@ -1,6 +1,6 @@
 
 # import mergedTables
-# import runAutomaticAlgo.py
+import runAutomaticAlgo
 import pandas as pd
 import sklearn
 
@@ -24,13 +24,15 @@ responsibility."""
 #gets and prints the sentences and their weights.
 #using run autumatic algo and the algs should be in the system
 #NOTE: the 2 cases should give same value, they only test more then 1 lists
-sent_table_calculator = mergeTables.main(base_sent_table, text,['Alg1.py','Alg2.py'], [0.1, 0.9])
+
+sent_tables = runAutomaticAlgo.main(base_sent_table, text,['Alg1.py','Alg2.py'])
+sent_table_calculator = mergeTables.main(base_sent_table, sent_tables, [0.1, 0.9])
 print("sent_table_calculator: ")
 for line in sent_table_calculator:
     print(line)
 
-
-sent_table_calculator = mergeTables.main(base_sent_table, text,['Alg2.py', 'Alg1.py', 'Alg2.py'], [0.5, 0.1, 0.4])
+sent_tables2 = runAutomaticAlgo.main(base_sent_table, text,['Alg1.py', 'Alg1.py', 'Alg2.py'])
+sent_table_calculator1 = mergeTables.main(base_sent_table, sent_tables2, [0.5, 0.1, 0.4])
 print("sent_table_calculator: ")
-for line in sent_table_calculator:
+for line in sent_table_calculator1:
     print(line)
