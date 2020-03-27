@@ -59,6 +59,14 @@ export class ExperimentService{
     }
 
     addImage = async (name, buffer) => {
+        const image = await this.collectionsService.images().get(name);
+        if(image){
+            return {
+                status: -1,
+                error: 'image name already exists'
+            }
+        }
+
         const files = await this.pythonService.processImage(buffer)
         await this.storageService.uploadBuffer(`images/${name}/image`, buffer, fileTypes.Image);
         await this.storageService.uploadBuffer(`images/${name}/text`, files.text, fileTypes.Text);
@@ -94,8 +102,11 @@ export class ExperimentService{
             automaticAlgsSavedLocally,
             files.text,
             files.base_sent_table);
-        await this.addAutomaticAlgToImg(tables,name);       
+        await this.addAutomaticAlgToImg(tables,name);
 
+        return {
+            status: 0
+        }     
     }
 
     getImages = async () => {
@@ -141,7 +152,7 @@ export class ExperimentService{
                 error: 'experiment name does not exist'
             }
         }
-        
+
         const autoSentTables = await this.collectionsService.images().sentTablesOf(experiment.imageName).getAll();
         const allAutomaticAlgs = await this.collectionsService.automaticAlgos().getAll();
 
@@ -174,8 +185,14 @@ export class ExperimentService{
     };
 
     runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
-        const expermient = await this.collectionsService.experiments().get(experimentName)
-        const imageName =  expermient.imageName;
+        const experiment = await this.collectionsService.experiments().get(experimentName);
+        if(!experiment){
+            return {
+                status: -1,
+                error: 'experiment name does not exist'
+            }
+        };
+        const imageName =  experiment.imageName;
         const text = await this.storageService.downloadToBuffer(`images/${imageName}/text`);
         const base_sent_table = await this.storageService.downloadToBuffer(`images/${imageName}/base_sent_table`);
         await this.verifyAutomaticAlgorithmExists(algsNames);

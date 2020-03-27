@@ -77,8 +77,9 @@ describe('ExperimentService Tests',() =>{
             pythonService.setProcessImageResult(files);
             pythonService.setRunAutomaticAlgsResult(tables);
 
-            await experimentService.addImage(imageName,imageBuffer);
+            const {status} = await experimentService.addImage(imageName,imageBuffer);
 
+            expect(status).toEqual(0);
             expect(await storageService.downloadToBuffer(`images/${imageName}/image`)).toEqual(imageBuffer);
             expect(await storageService.downloadToBuffer(`images/${imageName}/text`)).toEqual(files.text);
             expect(await storageService.downloadToBuffer(`images/${imageName}/word_ocr`)).toEqual(files.word_ocr);
@@ -104,6 +105,7 @@ describe('ExperimentService Tests',() =>{
                 name: tables[1].name,
                 path:`images/${imageName}/algs/${tables[1].name}`
             }));
+   
         });
 
         it('add image - success with auto algs in system ', async () => {
@@ -112,7 +114,12 @@ describe('ExperimentService Tests',() =>{
 
 
         it('add image - fail name exists ', async () => {
-            expect(true).toEqual(true);
+            const existName = 'imageName';
+            await collectionsService.images().add(existName, {});
+            const {status, error} = await experimentService.addImage(existName,new Buffer(""));
+
+            expect(status).toEqual(-1);
+            expect(error).toEqual('image name already exists');
         });
     });
 
@@ -149,7 +156,7 @@ describe('ExperimentService Tests',() =>{
             const expName= "exp_1";
             const imageName= "img_1";
 
-            const res = await collectionsService.experiments().add(expName, {});
+            await collectionsService.experiments().add(expName, {});
             const {status, error} = await experimentService.addExperiment(expName, imageName);
             expect(status).toBe(-1);
             expect(error).toBe("The name of the experiment already exist in the system.");
@@ -216,7 +223,9 @@ describe('ExperimentService Tests',() =>{
         });
 
         it('fail - name does not exists', async () => {
-            expect(true).toEqual(true);
+            const {status, error} = await experimentService.runAutomaticAlgs(['auto1'],'notExistsExpName');
+            expect(status).toEqual(-1);
+            expect(error).toEqual('experiment name does not exist');
         });
     });
 
@@ -246,7 +255,7 @@ describe('ExperimentService Tests',() =>{
 
         it('fail - experiment does not exists', async () => {
             const {status, error} = await experimentService.getSummaries('notExistsExpName');
-s
+
             expect(status).toEqual(-1);
             expect(error).toEqual('experiment name does not exist');
         });
