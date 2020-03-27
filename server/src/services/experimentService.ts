@@ -105,12 +105,28 @@ export class ExperimentService{
         return images;
     }
 
-    getSummary = async (experimentName, type, name)=> {
+    getSummary = async (experimentName, type, name) => {
+        const experiment = await this.collectionsService.experiments().get(experimentName);
+        if(!experiment){
+            return {
+                status: -1,
+                error: 'experiment name does not exist'
+            }
+        }
+
         if(type === 'auto'){
-            const experiment = await this.collectionsService.experiments().get(experimentName);
             const autoSentTable = await this.collectionsService.images().sentTablesOf(experiment.imageName).get(name);
+            if(!autoSentTable){
+                return {
+                    status: -2,
+                    error: 'summary name does not exist'
+                }
+            }
             const csvFile = await this.storageService.downloadToBuffer(autoSentTable.path)
-            return await csv({delimiter:'auto'}).fromString(csvFile.toString());
+            return {
+                status: 0,
+                data: await csv({delimiter:'auto'}).fromString(csvFile.toString())
+            };
         }
     }
 

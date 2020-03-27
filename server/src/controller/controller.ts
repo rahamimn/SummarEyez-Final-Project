@@ -51,12 +51,12 @@ app.get('/api/experiments/:exerimentName/summaries', (req, res) => errorHandling
 
 // not fully implemented 
 app.get('/api/experiments/:exerimentName/summary', (req, res) => errorHandling(res, async () => {
-    const summaries = await experimentService.getSummary(
+    const summary = await experimentService.getSummary(
         req.params.exerimentName,
         req.query.type,
         req.query.name
     );
-    res.send(summaries);
+    res.send(summary);
 }));
 
 // not fully implemented 

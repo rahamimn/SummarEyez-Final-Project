@@ -28,7 +28,7 @@ function MainTests({permit}) {
   useEffect(() => {
     const fetch = async () => {
       const json = await api.getSummary('1','2','3');
-      setJson(json);
+      setJson(json.data);
     }
     fetch();
   },[]);

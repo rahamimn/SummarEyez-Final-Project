@@ -8,6 +8,7 @@ import { MockPythonScripts } from "./pythonScripts/mock/python-scripts.mock";
 import MockStorage from "./storage/mock/storage.mock";
 import { CollectionMock } from "./collections/mock/collections.mock";
 import {createImage} from '../utils/DTOCreators';
+import { fileTypes } from './storage/storageTypes';
 
 describe('ExperimentService Tests',() =>{
     let experimentService: ExperimentService;
@@ -147,15 +148,30 @@ describe('ExperimentService Tests',() =>{
             const expName= "exp_1";
             const imageName= "img_1";
 
-            const res = await collectionsService.experiments().add(expName, imageName);
+            const res = await collectionsService.experiments().add(expName, {});
             const {status, error} = await experimentService.addExperiment(expName, imageName);
             expect(status).toBe(-1);
             expect(error).toBe("The name of the experiment already exist in the system.");
         });
     });
     describe('get summary' , () => {
+        const expName = 'exp1';
+        const imageName = ' im1';
+        const autoName = 'auto1.py';
+        const autoFilePath = 'some/path';
+
+        beforeEach( async () => {
+            await collectionsService.experiments().add(expName, {imageName});
+            await collectionsService.images().add(imageName, {});
+            await collectionsService.images().sentTablesOf(imageName).add(autoName,{
+                path:autoFilePath
+            });
+            await storageService.uploadBuffer(autoFilePath,new Buffer(""),fileTypes.Csv);
+        });
+
         it('success - auto', async () => {
-            expect(true).toEqual(true);
+            const {status, data} = await experimentService.getSummary(expName, 'auto',autoName);
+            expect(status).toEqual(0);
         }); 
 
         it('success - eyes', async () => {
@@ -165,9 +181,19 @@ describe('ExperimentService Tests',() =>{
         it('success - merged', async () => {
             expect(true).toEqual(true);
         });
+        
+        it('fail - experiment not exists', async () => {
+            const notExistsExpName = 'NotExistsExp1';
+            const {status, error} = await experimentService.getSummary(notExistsExpName, 'auto','');
+            expect(status).toEqual(-1);
+            expect(error).toEqual('experiment name does not exist');
+        });
 
         it('fail - auto not exists', async () => {
-            expect(true).toEqual(true);
+            const notExistsAutoSummaryName = 'NotExistsAuto';
+            const {status, error} = await experimentService.getSummary(expName, 'auto',notExistsAutoSummaryName);
+            expect(status).toEqual(-2);
+            expect(error).toEqual('summary name does not exist');
         });
 
         it('fail - eyes not exists', async () => {

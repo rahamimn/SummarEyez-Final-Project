@@ -13,7 +13,7 @@ export const ArticleMain = () => {
     useEffect(() => {
       const fetch = async () => {
         const json = await api.getSummary(experimentName,type,name);
-        setJson(json);
+        setJson(json.data);
       }
       fetch();
     },[]);
