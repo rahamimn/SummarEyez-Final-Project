@@ -4,7 +4,7 @@ const api = {
 
     getSummary: async (experimentName,type,name) => {
         const res = await axios.get(`/api/experiments/${experimentName}/summary?type=${type}&name=${name}`);
-        return res.data;
+        return res;
     },
 
     getImages: async () => {
@@ -28,7 +28,7 @@ const api = {
 
     getSummaries: async (experimentName) => {
         const res = await axios.get(`/api/experiments/${experimentName}/summaries`);
-        return res.data;
+        return res;
     },
     
     uploadAlgorithm: async (name, buffer) => {
