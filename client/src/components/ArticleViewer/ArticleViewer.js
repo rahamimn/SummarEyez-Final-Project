@@ -16,11 +16,8 @@ export const ArticleViewer = ({summary,type}) => {
         setTopSentencesCount(summary.length)
     },[summary]);
 
-    const sortedSentences = [...summary].sort((a,b) => a.normalized_weight - b.normalized_weight);
-    console.log(sortedSentences);
-    console.log(sortedSentences.slice(0,topSentencesCount));
+    const sortedSentences = [...summary].sort((a,b) => b.normalized_weight - a.normalized_weight);
     const topSentences = sortedSentences.slice(0,topSentencesCount);
-    debugger;
     const backgroundColor = (sent) =>  (sent.normalized_weight > minWeight && topSentences.includes(sent)) ? 
         `hsl(${color}, 100%, ${100 - sent.normalized_weight*50}%)` :
         null;
