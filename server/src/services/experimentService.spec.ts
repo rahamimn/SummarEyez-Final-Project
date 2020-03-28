@@ -126,7 +126,7 @@ describe('ExperimentService Tests',() =>{
     });
 
     describe('get images' , () => {
-        it('get images', async () => {
+        it('success', async () => {
             const img1 = createImage({
                 name: 'img1',
             });
@@ -140,7 +140,22 @@ describe('ExperimentService Tests',() =>{
             const images = await experimentService.getImages();
             expect(images).toEqual([{id:'img1',data:img1},{id:'img2',data:img2}]);
         });
-    })
+    });
+
+    describe('get experiments' , () => {
+        it('success', async () => {
+            const exp1 = {}
+            const exp2 = {}
+
+            collectionsService.experiments().add('exp1',exp1);
+            collectionsService.experiments().add('exp2',exp2);
+
+            const experiments = await experimentService.getExperiments();
+            expect(experiments.status).toEqual(0);
+            expect(experiments.data).toEqual([{id:'exp1',data:exp1},{id:'exp2',data:exp2}]);
+        });
+    });
+
     describe('add experiment' , () => {
         it('success', async () => {
             const expName= "exp_1";

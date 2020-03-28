@@ -4,11 +4,16 @@ const api = {
 
     getSummary: async (experimentName,type,name) => {
         const res = await axios.get(`/api/experiments/${experimentName}/summary?type=${type}&name=${name}`);
-        return res;
+        return res.data;
     },
 
     getImages: async () => {
         const res = await axios.get('/api/images');
+        return res.data;
+    },
+
+    getExperiments: async () => {
+        const res = await axios.get('/api/experiments');
         return res.data;
     },
 
@@ -28,7 +33,7 @@ const api = {
 
     getSummaries: async (experimentName) => {
         const res = await axios.get(`/api/experiments/${experimentName}/summaries`);
-        return res;
+        return res.data;
     },
     
     uploadAlgorithm: async (name, buffer) => {

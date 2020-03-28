@@ -39,8 +39,13 @@ app.post('/api/images',upload.single('imageBuffer'), (req, res) => errorHandling
 }));
 
 app.get('/api/images', (req, res) => errorHandling(res, async () => {
-    const images = await experimentService.getImages();
-    res.send(images);
+    const response = await experimentService.getImages();
+    res.send(response);
+}));
+
+app.get('/api/experiments', (req, res) => errorHandling(res, async () => {
+    const response = await experimentService.getExperiments();
+    res.send(response);
 }));
 
 // not fully implemented 

@@ -116,6 +116,14 @@ export class ExperimentService{
         return images;
     }
 
+    getExperiments = async () => {
+        const experiments = await this.collectionsService.experiments().getAll();
+        return {
+            status: 0,
+            data: experiments,
+        };
+    }
+
     getSummary = async (experimentName, type, name) => {
         const experiment = await this.collectionsService.experiments().get(experimentName);
         if(!experiment){
@@ -133,7 +141,8 @@ export class ExperimentService{
                     error: 'summary name does not exist'
                 }
             }
-            const csvFile = await this.storageService.downloadToBuffer(autoSentTable.path)
+            const csvFile = await this.storageService.downloadToBuffer(autoSentTable.path);
+
             return {
                 status: 0,
                 data: await csvToJson({delimiter:'auto'}).fromString(csvFile.toString())
@@ -180,7 +189,6 @@ export class ExperimentService{
                     `./automatic-algorithms/${name}`
                 )
             }
-
         });
     };
 
