@@ -118,10 +118,7 @@ export class ExperimentService{
 
     getExperiments = async () => {
         const experiments = await this.collectionsService.experiments().getAll();
-        return {
-            status: 0,
-            data: experiments,
-        };
+        return { status: 0, experiments};
     }
 
     getSummary = async (experimentName, type, name) => {

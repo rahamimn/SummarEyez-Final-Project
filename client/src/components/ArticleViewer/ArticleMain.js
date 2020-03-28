@@ -4,19 +4,25 @@ import {
   } from "react-router-dom";
 import { ArticleViewer } from './ArticleViewer';
 import api from '../../apiService';
+import Card from '@material-ui/core/Card';
+import Container from '@material-ui/core/Container';
 
   
 export const ArticleMain = () => {
     const {experimentName,type,name} = useParams();
-    const [json,setJson ] = useState([]);
+    const [summary,setSummary ] = useState([]);
 
     useEffect(() => {
       const fetch = async () => {
-        const json = await api.getSummary(experimentName,type,name);
-        setJson(json.data);
+        const res = await api.getSummary(experimentName,type,name);
+        setSummary(res.data);
       }
       fetch();
     },[]);
 
-    return <ArticleViewer json={json}/>
+    return <Container>
+        <Card >
+            <ArticleViewer summary={summary}/>
+        </Card>
+        </Container>
 }

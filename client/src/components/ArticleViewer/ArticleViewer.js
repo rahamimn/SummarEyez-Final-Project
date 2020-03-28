@@ -1,18 +1,36 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Button from '@material-ui/core/Button'
+import TextField from '@material-ui/core/TextField'
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import Typography from '@material-ui/core/Typography';
 
-export const ArticleViewer = ({json,type}) => {
+export const ArticleViewer = ({summary,type}) => {
     let paragraphs = [];
     let paragraphNum = -1;
-    let [color, setColor] = useState(90)
+    let [colorInput, setColorInput] = useState('');
+    let [color, setColor] = useState(90);
+    let [minWeight, setMinWeight] = useState(0);
+    let [topSentencesCount, setTopSentencesCount ] = useState(summary.length);
 
-    for(let i = 0 ; i < json.length; i++){
-        // const sent = <span key={'sent'+i} style={{backgroundColor:`hsl(90, 100%, ${100 - json[i].weight*50}%)`}} >{json[i].text}</span>
-        const sent = <span key={'sent'+i} style={{backgroundColor:`hsl(${color}, 100%, ${100 - json[i].normalized_weight*50}%)`}} >{json[i].text}</span>
+    useEffect(() => {
+        setTopSentencesCount(summary.length)
+    },[summary]);
+
+    const sortedSentences = [...summary].sort((a,b) => a.normalized_weight - b.normalized_weight);
+    console.log(sortedSentences);
+    console.log(sortedSentences.slice(0,topSentencesCount));
+    const topSentences = sortedSentences.slice(0,topSentencesCount);
+    debugger;
+    const backgroundColor = (sent) =>  (sent.normalized_weight > minWeight && topSentences.includes(sent)) ? 
+        `hsl(${color}, 100%, ${100 - sent.normalized_weight*50}%)` :
+        null;
+
+    for(let i = 0 ; i < summary.length; i++){
+        const sent = <span key={'sent'+i} style={{backgroundColor: backgroundColor(summary[i])}} >{summary[i].text}</span>
         
-        if(json[i].par_num !== paragraphNum){
+        if(summary[i].par_num !== paragraphNum){
             paragraphs.push([sent]);
-            paragraphNum = json[i].par_num;
+            paragraphNum = summary[i].par_num;
         }
         else{
             paragraphs[paragraphNum-1].push([sent])
@@ -21,22 +39,97 @@ export const ArticleViewer = ({json,type}) => {
 
     const sentHtml = paragraphs.map((par,i) => <p key={'par'+i}>{par}</p>);
 
-    return <div>
-            <Button onClick={() => setColor(90)}>yellow</Button>
-            <Button onClick={() => setColor(35)}>red</Button>
-            <Button onClick={() => setColor(200)}>blue</Button>
-            <div style={{
+    return <div style={{
                 backgroundColor: 'white',
-                border: '1px solid black',
-                width:'800px',
                 textAlign:'left',
                 color: 'black',
-                fontSize: '16px',
+                fontSize: '19px',
                 display:'flex',
                 justifyContent: 'center',
             }}>
-       
-                <div style={{ width:'700px', fontFamily: '"Times New Roman", Times, serif', fontWeight:'400'}}>{sentHtml}</div> </div>
-        </div>
+                <div style={{
+                    display:'flex',
+                    flexDirection:'column',
+                    padding:'30px',
+                    backgroundColor:'#dddddd'
+                    }}>
+                    <Typography variant="h5" style={{marginBottom:'20px'}}>
+                        Filters
+                    </Typography>
+                    <Autocomplete
+                        id="color-select"
+                        style={{ width: '180px', marginRight:10, marginBottom:'15px' }}
+                        options={colors}
+                        autoHighlight
+                        getOptionLabel={option => option.id}
+                        renderInput={params => (
+                            <TextField
+                            {...params}
+                            label="Choose a color"
+                            fullWidth
+                            inputProps={{
+                                ...params.inputProps,
+                                autoComplete: 'disabled', // disable autocomplete and autofill
+                            }}
+                            />
+                        )}
+                        onChange={(e,color) => 
+                            setColor(color.value)
+                        }
+                        onInputChange={(e, value) => 
+                            setColorInput(value)
+                        }
+                        inputValue={colorInput}
+                    />
+                    <TextField 
+                        style={{width:'180px', marginBottom:'15px'}}
+                        inputProps={{min:0,max:1, step:0.1}}
+                        type="number"
+                        value={minWeight}
+                        onChange={(e) => setMinWeight(e.target.value)}
+                        id="minimumWeight"
+                        label="minimum weight" />
+
+                    <TextField 
+                        style={{width:'180px', marginBottom:'15px'}}
+                        inputProps={{min:0,max:summary.length, step:1}}
+                        type="number"
+                        value={topSentencesCount}
+                        onChange={(e) => setTopSentencesCount(e.target.value)}
+                        id="minimumWeight"
+                        label="Top Sentences" />
+                </div>
+                <div style={{ 
+                    width:'800px',
+                    padding:'50px',
+                    fontFamily: '"Times New Roman", Times, serif', fontWeight:'400'}}>
+                    {sentHtml}
+                </div>
+        </div>       
 }
 
+
+const colors = [{
+    id:'yellow',
+    value: 90,
+},
+{
+    id:'red',
+    value: 35,
+},
+{
+    id:'blue',
+    value: 200,
+},
+{
+    id:'adir confused1',
+    value: 260,
+},
+{
+    id:'adir confused2',
+    value: 150,
+},
+{
+    id:'adir confused3',
+    value: 15,
+}];

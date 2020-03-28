@@ -30,7 +30,7 @@ export default function WelcomeDialog({
 
   const fetchExperiments = async () => {
     const res = await api.getExperiments();
-    setExperiments(res.data);
+    setExperiments(res.experiments);
   }
   const validate = () => {
     permit(false);

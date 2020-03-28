@@ -152,7 +152,7 @@ describe('ExperimentService Tests',() =>{
 
             const experiments = await experimentService.getExperiments();
             expect(experiments.status).toEqual(0);
-            expect(experiments.data).toEqual([{id:'exp1',data:exp1},{id:'exp2',data:exp2}]);
+            expect(experiments.experiments).toEqual([{id:'exp1',data:exp1},{id:'exp2',data:exp2}]);
         });
     });
 
