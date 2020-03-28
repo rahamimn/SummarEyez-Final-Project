@@ -9,7 +9,7 @@ import MockStorage from "./storage/mock/storage.mock";
 import { CollectionMock } from "./collections/mock/collections.mock";
 import {createImage} from '../utils/DTOCreators';
 import { fileTypes } from './storage/storageTypes';
-import * as csv from 'csvtojson';
+import * as csvToJson from 'csvtojson';
 
 import * as mockFS from 'mock-fs';
 
@@ -182,7 +182,7 @@ describe('ExperimentService Tests',() =>{
 
         it('success - auto', async () => {
             const {status, data} = await experimentService.getSummary(expName, 'auto',autoName);
-            const json = await csv({delimiter:'auto'}).fromString(sent_table.toString())
+            const json = await csvToJson({delimiter:'auto'}).fromString(sent_table.toString())
             expect(status).toEqual(0);
             expect(data).toEqual(json);
         }); 

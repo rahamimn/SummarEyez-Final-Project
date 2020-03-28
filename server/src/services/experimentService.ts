@@ -4,7 +4,7 @@ import { PythonScriptInterface } from "./pythonScripts/pythonScriptsTypes";
 const forEP = require('foreach-promise');
 //@ts-ignore
 import {promises as fs} from 'fs';
-import * as csv from 'csvtojson';
+import * as csvToJson from 'csvtojson';
 
 
 export class ExperimentService{
@@ -136,7 +136,7 @@ export class ExperimentService{
             const csvFile = await this.storageService.downloadToBuffer(autoSentTable.path)
             return {
                 status: 0,
-                data: await csv({delimiter:'auto'}).fromString(csvFile.toString())
+                data: await csvToJson({delimiter:'auto'}).fromString(csvFile.toString())
             };
         }
     }
