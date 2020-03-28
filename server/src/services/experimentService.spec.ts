@@ -11,7 +11,7 @@ import {createImage} from '../utils/DTOCreators';
 import { fileTypes } from './storage/storageTypes';
 import * as csv from 'csvtojson';
 
-import * as mock from 'mock-fs';
+import * as mockFS from 'mock-fs';
 
 describe('ExperimentService Tests',() =>{
     let experimentService: ExperimentService;
@@ -232,7 +232,7 @@ describe('ExperimentService Tests',() =>{
         });
 
         it('success - exists locally', async () => {
-            mock({
+            mockFS({
                 'automatic-algorithms':{
                     [algName]: new Buffer("fff"),
                 }
@@ -252,11 +252,11 @@ describe('ExperimentService Tests',() =>{
                 path,
             }))
 
-            mock.restore();
+            mockFS.restore();
         });
 
         it('success - doesn not exist locally need to download', async () => {
-            mock({
+            mockFS({
                 'automatic-algorithms':{}
             });
             const path = `images/${imageName}/algs/${algName}`;
@@ -276,7 +276,7 @@ describe('ExperimentService Tests',() =>{
                 path,
             }))
 
-            mock.restore();
+            mockFS.restore();
         });
 
         it('fail - name does not exists', async () => {
