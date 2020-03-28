@@ -21,7 +21,7 @@ export const ArticleMain = () => {
     },[]);
 
     return <Container>
-        <Card >
+        <Card elevation={4}>
             <ArticleViewer summary={summary}/>
         </Card>
         </Container>
