@@ -11,6 +11,8 @@ import {createImage} from '../utils/DTOCreators';
 import { fileTypes } from './storage/storageTypes';
 import * as csv from 'csvtojson';
 
+import * as mock from 'mock-fs';
+
 describe('ExperimentService Tests',() =>{
     let experimentService: ExperimentService;
     let collectionsService: CollectionMock;
@@ -216,10 +218,65 @@ describe('ExperimentService Tests',() =>{
         });
     });
    
-    describe('run automatic algs' , () => {
+    describe('run automatic algs' , async () => {
+        const expName = 'exp1';
+        const imageName = ' im1';
+        const algName = 'alg1.py';
+        const algPath = 'some/alg/path';
 
-        it('success', async () => {
-            expect(true).toEqual(true);
+        beforeEach( async () => {
+            await collectionsService.experiments().add(expName, {imageName});
+            await collectionsService.images().add(imageName, {});
+            await storageService.uploadBuffer(`images/${imageName}/text`,new Buffer(""),fileTypes.Text);
+            await storageService.uploadBuffer(`images/${imageName}/base_sent_table`,new Buffer(""),fileTypes.Csv);
+        });
+
+        it('success - exists locally', async () => {
+            mock({
+                'automatic-algorithms':{
+                    [algName]: new Buffer("fff"),
+                }
+            });
+            const sent_table = new Buffer('alg1');
+            const tables = [{name: algName, sent_table}];
+
+            pythonService.setRunAutomaticAlgsResult(tables);
+
+            await experimentService.runAutomaticAlgs([algName],expName);
+            
+            const path = `images/${imageName}/algs/${algName}`;
+            expect(await storageService.downloadToBuffer(path)).toBe(sent_table);
+            expect(await collectionsService.images().sentTablesOf(imageName).get(algName)).toEqual(expect.objectContaining({
+                type: 'auto',
+                name: algName,
+                path,
+            }))
+
+            mock.restore();
+        });
+
+        it('success - doesn not exist locally need to download', async () => {
+            mock({
+                'automatic-algorithms':{}
+            });
+            const path = `images/${imageName}/algs/${algName}`;
+
+            await collectionsService.automaticAlgos().add(algName,{ path: algPath });
+            await storageService.uploadBuffer(algPath, new Buffer('some-alg'), fileTypes.Text);
+            const sent_table = new Buffer('alg1');
+            const tables = [{name: algName, sent_table}];
+            pythonService.setRunAutomaticAlgsResult(tables);
+
+            await experimentService.runAutomaticAlgs([algName],expName);
+
+            expect(await storageService.downloadToBuffer(path)).toBe(sent_table);
+            expect(await collectionsService.images().sentTablesOf(imageName).get(algName)).toEqual(expect.objectContaining({
+                type: 'auto',
+                name: algName,
+                path,
+            }))
+
+            mock.restore();
         });
 
         it('fail - name does not exists', async () => {
