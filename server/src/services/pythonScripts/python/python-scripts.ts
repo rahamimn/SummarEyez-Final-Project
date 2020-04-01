@@ -98,6 +98,34 @@ export class PythonScripts implements PythonScriptInterface {
         );
     }
 
+
+
+    mergeTables(SummariesPercent: string[], sent_tables:Buffer [], base_sent_table: Buffer){
+        let options = {
+            mode: 'binary',
+            pythonOptions: ['-u'],
+            args: [String(SummariesPercent.length), ...SummariesPercent]
+            };
+        
+
+        //@ts-ignore
+        let pyshell = new PythonShell('./python_script/mergeTables.py', options);
+        
+        this.sendBuffer(base_sent_table, pyshell)
+        for(var i=0; i < sent_tables.length ; i++){
+            this.sendBuffer(sent_tables[i], pyshell)
+        }
+
+
+        return this.readFiles(
+            pyshell,
+            files => ({
+                merged_table: files[0],
+            })
+        );
+        
+    }
+
 }
 
 
