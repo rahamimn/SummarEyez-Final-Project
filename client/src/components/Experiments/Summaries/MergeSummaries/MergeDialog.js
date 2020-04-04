@@ -33,6 +33,7 @@ export default function MergeDialog({
 
     return (
     <div>
+      console.log("here2");
       <Dialog 
         open={true} 
         onClose={onClose}
