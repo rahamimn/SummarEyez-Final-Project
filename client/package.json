@@ -18,15 +18,17 @@
     "react-scripts": "3.4.0"
   },
   "scripts": {
-    "server": "cd ../server & npm run start",
-    "serverClient": "npm run server & react-scripts start",
+    "server": "cd ../server && npm run start",
+    "server-local": "cd ../server && npm run start-local ",
+    "serverClient": "npm-run-all -p server client",
+    "serverClient-local": "npm-run-all -p server-local client",
     "client": "react-scripts start",
     "start": "npm run client",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "test:e2e": "npm run serverClient & react-scripts test e2e",
-    "e2eNoBuild": "react-scripts test e2e"
+    "e2eNoBuild": "react-scripts test e2e",
+    "test:e2e": "npm-run-all -p -r serverClient-local e2eNoBuild"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -44,6 +46,7 @@
     ]
   },
   "devDependencies": {
+    "npm-run-all": "^4.1.5",
     "puppeteer": "^2.1.1"
   }
 }

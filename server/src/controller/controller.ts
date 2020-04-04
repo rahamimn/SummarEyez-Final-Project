@@ -1,7 +1,8 @@
 import { ExperimentService } from "../services/experimentService";
-import { Firestore } from "../services/collections/firebase/collections-firestore";
-import { GoogleStorage } from "../services/storage/googleStorage/googleStorage";
 import { PythonScripts } from "../services/pythonScripts/python/python-scripts";
+import { Storages } from "../services/storage/storage";
+import { Collections } from "../services/collections/collections";
+import { dataCreation } from "../utils/dataCreationForE2e";
 
 const cors = require('cors');
 const express = require('express');
@@ -14,13 +15,15 @@ app.use(cors())
 // app.use(bodyParser); 
 var upload = multer()
 
-const port = process.env.PORT || 4000
+const port = process.env.PORT || 4000;
+const localMode = process.argv.includes("-local");
 
 const experimentService = new ExperimentService({
-    collectionsService: new Firestore(),
-    storageService: new GoogleStorage(),
+    collectionsService: localMode? new Collections.CollectionMock() : new Collections.Firestore(),
+    storageService: localMode?  new Storages.MockStorage()  : new Storages.GoogleStorage(),
     pythonService: new PythonScripts()
 })
+
 
 
 const errorHandling = async (res, cb) => {
@@ -83,7 +86,6 @@ app.post('/api/experiments', bodyParser.json(), async (req, res) => {
     res.send(response);
 });
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 
 //upload algorithm 
@@ -98,6 +100,17 @@ app.post('/api/runAutoAlgs', bodyParser.json(), (req, res) => errorHandling(res,
     const {status} = await experimentService.runAutomaticAlgs(algNames, experimentName);
     res.send({status: status})
 }));
+
+
+if(localMode){
+    dataCreation(experimentService).then(() => {
+        app.listen(port, () => console.log(`Server runs on RAM storage is running on port ${port}!`))
+    });
+}
+else{
+    app.listen(port, () => console.log(`Server runs on Google storage is running on port ${port}!`))
+
+}
 
 //todo: handle the get if needed
 // app.get('/api/algorithms', (req, res) => errorHandling(res, async () => {
