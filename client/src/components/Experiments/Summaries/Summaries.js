@@ -58,14 +58,14 @@ export function Summaries({
           eyes: eyesSelected,
           merged: mergedSelected
         }} />
-      <ExpansionPanel>
+      <ExpansionPanel expanded>
         <ExpansionPanelSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
           <Typography className={classes.heading}>Automatic Summaries</Typography>
-        </ExpansionPanelSummary>
+        </ExpansionPanelSummary >
         <ExpansionPanelDetails>
           <TableSummaries 
             onChangeSelected={setAutoSelected}
