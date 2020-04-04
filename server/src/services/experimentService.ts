@@ -163,14 +163,10 @@ export class ExperimentService{
         const allAutomaticAlgs = await this.collectionsService.automaticAlgos().getAll();
 
         return{
-            status: 0,
-            data: {
-                auto: this.intersectAutomaticAlgs(allAutomaticAlgs, autoSentTables),
-                eyes: Array(15).fill(eyesExample),
-                merged: Array(15).fill(mergedExample),
-            }
+            auto: this.intersectAutomaticAlgs(allAutomaticAlgs, autoSentTables),
+            eyes: Array(/*15*/1).fill(eyesExample),
+            merged: Array(/*15*/1).fill(mergedExample),
         }
-
     }
 
     //TODO - check if exists download if needed
