@@ -66,7 +66,11 @@ export default function CustomizedSlider({
   setPercentage,
 }) {
   const classes = useStyles();
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = React.useState(getPercentage);
+
+  var percentTotalSum = mergeInput.reduce(function(totPercent, record) {
+      return totPercent + record.percent;
+    },0);
 
 
   const handleSliderChange = (event, newValue) => {
