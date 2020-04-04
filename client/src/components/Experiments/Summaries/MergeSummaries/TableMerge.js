@@ -16,19 +16,9 @@ const useStyles = makeStyles({
   },
 });
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
-
-export default function SimpleTable() {
+export default function SimpleTable({
+  mergeInput, setPercentageOf, getPercentageOf, setTotalSum
+}) {
   const classes = useStyles();
 
   return (
@@ -36,17 +26,28 @@ export default function SimpleTable() {
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Summary ID</TableCell>
-            <TableCell align="right">Weight</TableCell>
+            <TableCell>Name</TableCell>
+            <TableCell >Type</TableCell>
+            <TableCell align="center">Weight</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map(row => (
+          {mergeInput.map((row,index) => (
             <TableRow key={row.name}>
               <TableCell component="th" scope="row">
                 {row.name}
               </TableCell>
-              <TableCell align="right"><Slider /> </TableCell>
+              <TableCell component="th" scope="row">
+                {row.type}
+              </TableCell>
+              <TableCell align="right">
+                        <Slider
+                            setPercentage={setPercentageOf(index)}
+                            getPercentage={getPercentageOf(index)}
+                            mergeInput={mergeInput}
+                            setTotalSum = {setTotalSum}
+                            />
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

@@ -62,16 +62,26 @@ const PrettoSlider = withStyles({
 })(Slider);
 
 
-export default function CustomizedSlider() {
+export default function CustomizedSlider({
+  setPercentage, getPercentage, mergeInput, setTotalSum
+}) {
   const classes = useStyles();
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = React.useState(getPercentage);
+
+  var percentTotalSum = mergeInput.reduce(function(totPercent, record) {
+      return totPercent + record.percent;
+    },0);
 
   const handleSliderChange = (event, newValue) => {
     setValue(newValue);
+    setPercentage(newValue);
+    setTotalSum(percentTotalSum)
   };
 
   const handleInputChange = event => {
     setValue(event.target.value === '' ? '' : Number(event.target.value));
+    setPercentage(Number(event.target.value));
+    setTotalSum(percentTotalSum)
   };
 
   const handleBlur = () => {
@@ -84,8 +94,8 @@ export default function CustomizedSlider() {
 
   return (
     <div className={classes.root}>
-      <PrettoSlider valueLabelDisplay="on" aria-label="pretto slider" defaultValue={0} 
-        value={typeof value === 'number' ? value : 0}
+      <PrettoSlider valueLabelDisplay="on" aria-label="pretto slider" defaultValue={getPercentage} 
+        value={typeof value === 'number' ? value : getPercentage}
         onChange={handleSliderChange}
         aria-labelledby="input-slider"
       />

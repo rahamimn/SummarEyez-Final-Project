@@ -12,9 +12,35 @@ import TableMerge from './TableMerge';
 
 
 export default function MergeDialog({
-  onClose, selected,
+  onClose, selected, totalSum
 }) {
   const history = useHistory();
+
+  const addToInput = (selected) => [
+    ...selected.auto.map(a =>({name: a.data.name, type: a.data.type, percent: 0})),  
+
+             // ### NIR: Check for 'undefined' before using map(); ###
+  // ...selected.eyes.map(a =>({name: a.data.name, type: a.data.type, percent: 0})),
+  //...selected.merge.map(a =>({name: a.data.name, type: a.data.type, percent: 0}))
+  ]
+
+  const [mergeInput, setMergeInput] = useState(addToInput(selected))
+
+  const setPercentageOf = (index) => (value) => {
+    mergeInput[index].percent = value
+    console.log("mergeInput[",index,"].percent", mergeInput[index].percent)
+    setMergeInput(mergeInput)
+    console.log(mergeInput)
+  }
+  
+
+  const getPercentageOf = (index)  => {
+    return mergeInput[index].percent
+  }
+
+  const setTotalSum = (val) => {
+    totalSum = val};
+    console.log("totalSum", totalSum);
 
   return (
     <div>
@@ -24,13 +50,18 @@ export default function MergeDialog({
         onClose={onClose}
         aria-labelledby="form-dialog-title"
         disableBackdropClick = {!!!onClose}
+        fullWidth={true}
+        maxWidth = {'md'}
         > 
         <DialogTitle id="form-dialog-title">Summary-merge wizzard</DialogTitle>
         <DialogContent>
           <DialogContentText>
-          <TableMerge />
+          <TableMerge mergeInput={mergeInput} setPercentageOf={setPercentageOf} getPercentageOf={getPercentageOf} setTotalSum={setTotalSum}/>
           </DialogContentText>
-          <Button onClick={onClose}>Create</Button>
+          <Button
+            onClick={
+              /* Call api to make the merge */
+             onClose}>Create</Button>
         </DialogContent>
       </Dialog>
     </div>
