@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useState} from 'react'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import clsx from 'clsx';
@@ -7,6 +7,7 @@ import { lighten, makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import api from '../../../apiService';
 import {useParams} from 'react-router-dom'
+import MergeDialog from './MergeSummaries/MergeDialog'
 
 const useToolbarStyles = makeStyles(theme => ({
     root: {
@@ -32,6 +33,8 @@ const useToolbarStyles = makeStyles(theme => ({
     const classes = useToolbarStyles();
     const { experimentName } = useParams();
 
+    const [isMergeOpen, setIsMergeOpen] = useState(false);
+
     const allSelected = [...selected.auto, ...selected.eyes, ...selected.merged];
     const numSelected = allSelected.length;
     const disabled = selected.auto.filter((selected) => selected.disabled) 
@@ -42,6 +45,7 @@ const useToolbarStyles = makeStyles(theme => ({
     const oneNotDisable = allSelected.length === 1 && disabled.length === 0 && allSelected[0];
 
     return (
+      <div>
       <Toolbar
         className={clsx(classes.root, {
           [classes.highlight]: numSelected > 0,
@@ -74,10 +78,16 @@ const useToolbarStyles = makeStyles(theme => ({
         ]}
 
         {allSelected.length > 1 && disabled.length === 0 && [
-            <Button key="3" color="inherit">Merge</Button>,
+            <Button key="3" color="inherit" onClick={ ()=> setIsMergeOpen(true)  }>Merge</Button>,
             <Button key="4" color="inherit">Layers</Button>
         ]}
       </Toolbar>
+      {isMergeOpen && 
+        <MergeDialog
+            onClose = { ()=> setIsMergeOpen(false) }
+            selected = { selected } />
+      }
+      </div>
     );
   };
   
