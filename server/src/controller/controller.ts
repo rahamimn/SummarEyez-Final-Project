@@ -122,6 +122,18 @@ else{
 
 
 
+//the list of algs is the triplet of: algorithm name, type (automatic, test-begaze algo, merged algo), and the percentage of the weight.
+//newMergedAlgName is the name of the new merged algorithm
+//expirament ID is the name of the expirament
+app.post('/api/experiments/:experimentName/summary/merge', bodyParser.json(), (req, res) => errorHandling(res, async () => {
+    const experimentName = req.params.experimentName;
+    const {name, mergeInputs}  = req.body;
+    const summaries = await experimentService.merge_algorithms(experimentName, name, mergeInputs);
+    
+    res.send(summaries);
+}));
+
+
 
 
 

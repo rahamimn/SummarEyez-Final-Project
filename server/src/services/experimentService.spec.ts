@@ -334,16 +334,59 @@ describe('ExperimentService Tests',() =>{
     });
 
     describe('merge summaries' , () => {
+        const expName = 'expName';
+        const imageName = 'imageName';
+        const autoName1 = 'auto1.py';
+        const autoName2 = 'auto2.py';
+        const metaData = {};
+
+        beforeEach( async () => {
+            await collectionsService.automaticAlgos().add(autoName1,{});
+            await collectionsService.automaticAlgos().add(autoName2,{});
+            await collectionsService.experiments().add(expName, {imageName});
+            await collectionsService.images().add(imageName, {});
+            await collectionsService.images().sentTablesOf(imageName).add(autoName1, metaData);
+            await collectionsService.images().sentTablesOf(imageName).add(autoName2, metaData);
+        });
+
         it('success - auto and eyes', async () => {
             expect(true).toEqual(true);
         });
 
         it('fail - experiment does not exists', async () => {
-            expect(true).toEqual(true);
+            const {status, error} = await experimentService.merge_algorithms("not exist", "new name", [{name: 'Alg1.py', type: 'auto', percentage: '1.0'}]);
+            expect(status).toEqual(-1);
+            expect(error).toEqual('The name of the experiment does not exist in the system.');
         });
+        
 
         it('fail - auto does not exists', async () => {
-            expect(true).toEqual(true);
+            const {status, error} = await experimentService.merge_algorithms("expName", "new_name", [{name: 'Alg1.py', type: 'auto', percentage: '1.0'}]);
+            expect(status).toEqual(-1);
+            expect(error).toEqual('the sammaries name is not found');
+        });
+
+        it('auto algorithm exist for expirament(check assitent method)', async () => {
+            const {status, error} = await experimentService.getSummaryForMerge("expName", 'auto', 'auto1.py');
+            expect(status).toEqual(0);
+            expect(error).toEqual(undefined);
+        });
+
+        it('auto algorithm do not exist for expirament(check assitent method)', async () => {
+            const {status, error} = await experimentService.getSummaryForMerge("expName", 'auto', 'auto3.py');
+            expect(status).toEqual(-2);
+            expect(error).toEqual('auto summary name does not exist');
+        });
+
+        it('auto algorithm exist for expirament(check sent_table_initializer)', async () => {
+            const {status} = await experimentService.sent_table_initializer(['auto2.py'],['auto'], "expName");
+            expect(status).toEqual(0);
+        });
+
+        it('auto algorithm do not exist for expirament(check sent_table_initializer)', async () => {
+            const {status, error} = await experimentService.sent_table_initializer(['auto3.py'],['auto'], "expName");
+            expect(status).toEqual(-1);
+            expect(error).toEqual('the sammary name is not found');
         });
     });
 });

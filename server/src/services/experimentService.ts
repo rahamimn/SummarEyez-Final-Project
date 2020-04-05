@@ -1,3 +1,4 @@
+import { SentTable } from './collections/firebase/dal/sentTables';
 import { fileTypes, Storage } from "./storage/storageTypes";
 import { Collections } from "./collections/collectionsTypes";
 import { PythonScriptInterface } from "./pythonScripts/pythonScriptsTypes";
@@ -234,5 +235,158 @@ export class ExperimentService{
        return {status: 0};
     }
     
+    public getSummaryForMerge = async (experimentName, type, name_of_sammary) => {
+        const experiment_ = await this.collectionsService.experiments().get(experimentName);
 
+        if(!experiment_){
+            return {
+                status: -1,
+                error: 'experiment name does not exist'
+            }
+        }
+
+        if(type === 'auto'){
+            const autoSentTable = await this.collectionsService.images().sentTablesOf(experiment_.imageName).get(name_of_sammary);
+            if(!autoSentTable){
+                return {
+                    status: -2,
+                    error: 'auto summary name does not exist'
+                }
+            }
+
+            else {
+                const SentTable_ = await this.storageService.downloadToBuffer(autoSentTable.path)
+                return {
+                    status: 0,
+                    data:  SentTable_ 
+                }
+            }
+        }
+
+        //need to add handler for merge and eyes
+        if(type === 'merged'){
+            try {
+            const mergedSentTable = await this.storageService.downloadToBuffer(`experiments/${experimentName}/merged-sent/${name_of_sammary}`)
+
+            if(!mergedSentTable){
+                return {
+                    status: -3,
+                    error: 'merged summary name does not exist'
+                }
+            }
+
+            else {
+                // const SentTable_ = await this.storageService.downloadToBuffer(mergedSentTable.path)
+                return {
+                    status: 0,
+                    data:  mergedSentTable 
+                }
+            }
+        }
+        catch(error){
+            return {
+                status: -3,
+                error: 'merged summary name does not exist'
+            }
+        }
+        }
+
+
+        if(type === 'eyes'){
+            const eyesSentTable = await this.collectionsService.images().sentTablesOf(experiment_.imageName).get(name_of_sammary);
+            if(!eyesSentTable){
+                return {
+                    status: -4,
+                    error: 'eyes summary name does not exist'
+                }
+            }
+
+            else {
+                const SentTable_ = await this.storageService.downloadToBuffer(eyesSentTable.path)
+                return {
+                    status: 0,
+                    data:  SentTable_ 
+                }
+            }
+        }
+    }
+
+
+    merge_algorithms = async(experimentName, mergedName, sammaries_details ) =>{
+
+        var percents = sammaries_details.map(sammary => sammary.percentage)
+        var names = sammaries_details.map(sammary => sammary.name)
+
+        var types = sammaries_details.map(sammary => sammary.type)        
+        const expirament_ = await this.collectionsService.experiments().get(experimentName)
+        if(!expirament_)
+        {
+            return {status: -1, error: "The name of the experiment does not exist in the system."};  
+        }   
+
+        const experiment = await this.collectionsService.experiments().get(experimentName)
+
+
+        const imageName =  experiment.imageName;
+        const image = await this.collectionsService.images().get(imageName)
+        const base_sent_table = await this.storageService.downloadToBuffer(image.base_sent_table_path);
+
+        const {status, data: sent_tables}  = await this.sent_table_initializer(names,types, experimentName);
+        if(status!==0){
+            return {
+                status: -1,
+                error: "the sammaries name is not found"
+            };
+        }
+        try {
+        var {merged_table} = await this.pythonService.mergeTables(percents, sent_tables ,base_sent_table )  
+
+        
+        const path = `experiments/${experimentName}/merged-sent/${mergedName}`
+        await this.storageService.uploadBuffer(path, merged_table, fileTypes.Csv);
+        await this.collectionsService.experiments().mergedSentOf(experimentName).add(mergedName,{
+            type: 'merged',
+            name: mergedName,
+            mergedInput : sammaries_details,
+            path,
+            creation_date: Date.now()
+        });
+
+
+        return {
+            status: 0,
+            data: await csvToJson({delimiter:'auto'}).fromString(merged_table.toString())
+        };
+    }
+    catch(error){
+        return {
+            status: -2,
+            error: "there was a problem with the python"
+        };
+    }
+    } 
+
+
+    public async sent_table_initializer(names: string[],types: string [], experimentName: string) {
+        const sent_tables = []
+        for(var i=0; i<names.length; i++){
+            var element = names[i]
+            var new_sent_table = await this.getSummaryForMerge(experimentName, types[i], element);
+            if (new_sent_table.status != 0) {
+                return {
+                    status: -1,
+                    error: "the sammary name is not found"
+                };
+            }
+            //the sammary name is found
+            else {
+                await sent_tables.push(new_sent_table.data);
+            }
+        }
+ 
+        return {
+            status: 0,
+            data:sent_tables
+        };
+    }
 }
