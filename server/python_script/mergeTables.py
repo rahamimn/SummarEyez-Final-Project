@@ -58,7 +58,7 @@ if __name__ == "__main__":
         sent_tables.append(curr_sent_table)
         number_of_summaries_index += 1
 
-    base_sent_tables_output = main(base_sent_table, sent_tables, summary_percent_array)
-    base_sent_tables_output_utf8 = base_sent_tables_output.to_csv(sep="\t", index=False).encode('utf-8')
-    sys.stdout.buffer.write(len(base_sent_tables_output_utf8).to_bytes(4, byteorder="big", signed=False))
-    sys.stdout.buffer.write(base_sent_tables_output_utf8)
+    merged_sent_tables_output = main(base_sent_table, sent_tables, summary_percent_array)
+    merged_sent_tables_output_utf8 = merged_sent_tables_output.to_csv(sep="\t", index=False).encode('utf-8')
+    sys.stdout.buffer.write(len(merged_sent_tables_output_utf8).to_bytes(4, byteorder="big", signed=False))
+    sys.stdout.buffer.write(merged_sent_tables_output_utf8)

@@ -146,6 +146,41 @@ export class ExperimentService{
                 data: await csvToJson({delimiter:'auto'}).fromString(csvFile.toString())
             };
         }
+
+        if(type === 'merged'){
+            try {
+            const mergedSentDBObject =await this.collectionsService.experiments().mergedSentOf(experimentName).get(name)
+            const mergedSentTable = await this.storageService.downloadToBuffer(mergedSentDBObject.path)
+                
+            if(!mergedSentTable){
+                return {
+                    status: -3,
+                    error: 'merged summary name does not exist'
+                }
+            }
+
+            else {
+                return {
+                    status: 0,
+                    data:  mergedSentTable 
+                }
+            }
+        }
+        catch(error){
+            return {
+                status: -3,
+                error: 'merged summary name does not exist'
+            }
+        }
+        }
+
+        if(type === 'eyes'){
+            //waiting for implementation of eyes in DB
+            return {
+                status: -4,
+                error: 'eyes summary is not implemented yet'
+            }
+        }
     }
 
     getSummaries = async (experimentName)=> {
@@ -263,11 +298,10 @@ export class ExperimentService{
             }
         }
 
-        //need to add handler for merge and eyes
         if(type === 'merged'){
             try {
-            const mergedSentTable = await this.storageService.downloadToBuffer(`experiments/${experimentName}/merged-sent/${name_of_sammary}`)
-
+            const mergedSentDBObject =await this.collectionsService.experiments().mergedSentOf(experimentName).get(name_of_sammary)
+            const mergedSentTable = await this.storageService.downloadToBuffer(mergedSentDBObject.path)
             if(!mergedSentTable){
                 return {
                     status: -3,
@@ -276,7 +310,6 @@ export class ExperimentService{
             }
 
             else {
-                // const SentTable_ = await this.storageService.downloadToBuffer(mergedSentTable.path)
                 return {
                     status: 0,
                     data:  mergedSentTable 
@@ -293,20 +326,25 @@ export class ExperimentService{
 
 
         if(type === 'eyes'){
-            const eyesSentTable = await this.collectionsService.images().sentTablesOf(experiment_.imageName).get(name_of_sammary);
-            if(!eyesSentTable){
-                return {
-                    status: -4,
-                    error: 'eyes summary name does not exist'
-                }
-            }
+            //waiting for implementation of eyes in DB
+            // const eyesSentTable = await this.collectionsService.images().sentTablesOf(experiment_.imageName).get(name_of_sammary);
+            // if(!eyesSentTable){
+                // return {
+                //     status: -4,
+                //     error: 'eyes summary name does not exist'
+                // }
+            // }
+            // else {
+            //     const SentTable_ = await this.storageService.downloadToBuffer(eyesSentTable.path)
+            //     return {
+            //         status: 0,
+            //         data:  SentTable_ 
+            //     }
+            // }
 
-            else {
-                const SentTable_ = await this.storageService.downloadToBuffer(eyesSentTable.path)
-                return {
-                    status: 0,
-                    data:  SentTable_ 
-                }
+            return {
+                status: -4,
+                error: 'eyes summary is not implemented yet'
             }
         }
     }
