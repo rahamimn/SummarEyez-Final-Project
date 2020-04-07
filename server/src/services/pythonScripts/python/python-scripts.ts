@@ -74,6 +74,31 @@ export class PythonScripts implements PythonScriptInterface {
             })
         );
     }
+    //jen table from eyze מתממשק
+    // להוציא את הקבצים מהענן ולהביא אותם לכאן. צריך 3 קבצים
+    // מחזיר 2 דברים
+    genTableFromEyez(fixations, word_ocr, base_sentences_table){
+        console.log("fixations");
+        let options = {
+            mode: 'binary',
+            pythonOptions: ['-u'], 
+            };
+
+        //@ts-ignore
+        let pyshell = new PythonShell('./python_script/genTablesFromEyez.py', options);
+        this.sendBuffer(fixations, pyshell)
+        this.sendBuffer(word_ocr, pyshell)
+        this.sendBuffer(base_sentences_table, pyshell)
+       
+        return this.readFiles(
+            pyshell,
+            files => ({
+                word_table: files[0],
+                sentences_table: files[1],
+            })
+        );
+    }
+
 
     runAutomaticAlgs(algsNames: string[], text, base_sent_table){
         let options = {

@@ -8,6 +8,8 @@ import {promises as fs} from 'fs';
 import * as csvToJson from 'csvtojson';
 
 const response = (status,{data=null, error=null}) => ({status, data, error});
+import * as numberGenerator from "number-generator";
+
 export class ExperimentService{
     private collectionsService : Collections;
     private storageService: Storage;
@@ -58,7 +60,42 @@ export class ExperimentService{
         }
         return algNames;
     }
+    // כמו זה, גם פה צריך להיות קוד דומה ללמטה
+// קונטרולק, אחכ אקספירימנט סרביס,פייטון-פייטון סקריפט,גן טייבל פרום אייז
+//מתוך ההניסוי אני מוציא את התמונה ואז מתןך התמונה אני יכול להוציא את הטבלאות
+// דוגמה בהוספת ניסוי
 
+
+//מתוך הקולקשין סרביס להוציא  את שם התמונה 
+addTest = async (params) => {
+    console.log(params.experimentName);
+    const imgName= await this.collectionsService.experiments().get(params.experimentName)
+    console.log(imgName);
+    const picture= await this.collectionsService.images().get(imgName.imageName)
+    const word_ocr = await this.storageService.downloadToBuffer(picture.word_ocr_path);
+    const base_sentences_table = await this.storageService.downloadToBuffer(picture.base_sent_table_path);
+    const tables = await this.pythonService.genTableFromEyez(params.fixations, word_ocr, base_sentences_table)
+    console.log('yyy');
+    const id= numberGenerator.aleaRNGFactory(2);
+    const expUploadPaths = {sent_table:`experiments/${id}/testSentTables`,
+                            word_table:`experiments/${id}/testWordTables`}
+    await this.storageService.uploadBuffer(expUploadPaths.word_table, tables.word_table, fileTypes.Text);
+    await this.storageService.uploadBuffer(expUploadPaths.sent_table, tables.sentences_table, fileTypes.Text);
+    await this.collectionsService.experiments().getTests(params.experimentName).add(id,{
+        formId: params.formId,
+        creation_date: Date.now(),
+        sent_table: expUploadPaths.sent_table ,
+        word_table: expUploadPaths.word_table,
+    });
+
+    return {
+        status: 0
+    }     
+}
+
+
+
+///////////////////////////////
     addImage = async (name, buffer) => {
         const image = await this.collectionsService.images().get(name);
         if(image){
@@ -67,7 +104,7 @@ export class ExperimentService{
                 error: 'image name already exists'
             }
         }
-
+        //vהיווש
         const files = await this.pythonService.processImage(buffer)
         await this.storageService.uploadBuffer(`images/${name}/image`, buffer, fileTypes.Image);
         await this.storageService.uploadBuffer(`images/${name}/text`, files.text, fileTypes.Text);
@@ -76,6 +113,7 @@ export class ExperimentService{
         await this.collectionsService.images().add(name,{
             name,
             uploaded_date: Date.now(),
+            //כתובות של המידע שלי באחסון
             image_path: `images/${name}/image`,
             text_path: `images/${name}/text`,
             word_ocr_path: `images/${name}/word_ocr`,
@@ -127,6 +165,7 @@ export class ExperimentService{
         let path;
 
         if(type === 'auto'){
+            //vvhhua
             const autoSentTable = await this.collectionsService.images().sentTablesOf(experiment.imageName).get(name);
             if(!autoSentTable){
                 return null;
@@ -177,6 +216,7 @@ export class ExperimentService{
         const autoSentTables = await this.collectionsService.images().sentTablesOf(experiment.imageName).getAll();
         const allAutomaticAlgs = await this.collectionsService.automaticAlgos().getAll();
         const allMergedTables = await this.collectionsService.experiments().mergedSentOf(experimentName).getAll();
+        //this.collectionsService.experiments().getTests(..).add(צריך להוסיף את המבנה נתונים שיש בטרלו)
 
         return{
             status: 0,
@@ -203,8 +243,10 @@ export class ExperimentService{
             }
         });
     };
-
-    runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
+//דוגמה לשליפה מהשרת עדיף לשלוף ניתב
+// מפה אני מעלה לשרת סטראג ולא מגלגל חזרה לקונטרולר
+//vhuaa    
+runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
         const experiment = await this.collectionsService.experiments().get(experimentName);
         if(!experiment){
             return {

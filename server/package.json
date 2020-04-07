@@ -24,6 +24,7 @@
     "lexrank": "^1.0.5",
     "mock-fs": "^4.11.0",
     "multer": "^1.4.2",
+    "number-generator": "^4.0.4",
     "python-shell": "^1.0.8",
     "ts-jest": "^24.3.0"
   },

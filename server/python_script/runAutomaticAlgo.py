@@ -7,6 +7,7 @@ from sklearn import preprocessing
 from io import StringIO
 from sklearn.preprocessing import PowerTransformer
 from sklearn.preprocessing import MinMaxScaler
+import logging
 
 mm_scaler = preprocessing.MinMaxScaler()
 
@@ -27,15 +28,32 @@ def main(base_sent_table, text, paths_algs):
 
 
 def normalWeight(sent_table): 
+    logging.basicConfig(filename='etay2.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+    logging.warning('88')
     tmp_arr_for_normal_calc= []
     for j in range(len(sent_table)):
         tmp_arr_for_normal_calc.append([sent_table['normalized_weight'].get(j)])
     pt = PowerTransformer()
+    logging.warning('44')
     transformed = pt.fit_transform(tmp_arr_for_normal_calc)
     minmax = MinMaxScaler()
     minmaxTransformed = minmax.fit_transform(transformed)
-    for p in range(len(sent_table)):
-        sent_table['normalized_weight'][p] = minmaxTransformed[p][0] 
+    logging.warning('00')
+    logging.warning(len(sent_table))
+    try:
+        for p in range(len(sent_table)):
+            try:
+                logging.warning(p)
+                sent_table['normalized_weight'][p] = minmaxTransformed[p][0] 
+            except Exception as e:  
+                logging.warning(p)
+                logging.warning(sent_table['normalized_weight']) 
+                logging.warning(minmaxTransformed[p])
+                logging.warning(minmaxTransformed[p][0])
+                logging.warning(e)
+    except Exception as e:  
+        logging.warning('11111')
+    logging.warning('99')
     return sent_table
 
 if __name__ == "__main__":
