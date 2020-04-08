@@ -162,13 +162,14 @@ export class ExperimentService{
 
         const autoSentTables = await this.collectionsService.images().sentTablesOf(experiment.imageName).getAll();
         const allAutomaticAlgs = await this.collectionsService.automaticAlgos().getAll();
+        const allMergedTables = await this.collectionsService.experiments().mergedSentOf(experimentName).getAll();
 
         return{
             status: 0,
             data: {
                 auto: this.intersectAutomaticAlgs(allAutomaticAlgs, autoSentTables),
                 eyes: Array(15).fill(eyesExample),
-                merged: Array(15).fill(mergedExample),
+                merged: allMergedTables,
             }
         }
 

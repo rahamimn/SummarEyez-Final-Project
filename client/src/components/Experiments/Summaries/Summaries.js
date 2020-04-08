@@ -39,10 +39,20 @@ export function Summaries({
   const [eyesSelected,setEyesSelected] = useState([]); 
   const [mergedSelected,setMergedSelected] = useState([]); 
 
+  const formatData = (summaries) => {
+    summaries.merged = summaries.merged.map(merged => ({
+      ...merged,
+      data: {
+        ...merged.data,
+        numOfOrigins: merged.data.mergedInput.length 
+      }
+    }));
+    return summaries;
+  }
 
   const fetchSummaries = async () => {
     const res = await api.getSummaries(experimentName); 
-    setSummaries(res.data);
+    setSummaries(formatData(res.data));
   }
 
   useEffect(() => {

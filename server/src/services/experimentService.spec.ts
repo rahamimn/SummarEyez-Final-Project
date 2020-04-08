@@ -306,6 +306,8 @@ describe('ExperimentService Tests',() =>{
         const imageName = 'imageName';
         const autoName1 = 'auto1.py';
         const autoName2 = 'auto2.py';
+        const merged1 = 'merged1';
+        const merged2 = 'merged2';
         const metaData = {};
 
         beforeEach( async () => {
@@ -314,14 +316,17 @@ describe('ExperimentService Tests',() =>{
             await collectionsService.experiments().add(expName, {imageName});
             await collectionsService.images().add(imageName, {});
             await collectionsService.images().sentTablesOf(imageName).add(autoName1, metaData);
+            await collectionsService.experiments().mergedSentOf(expName).add(merged1, metaData);
+            await collectionsService.experiments().mergedSentOf(expName).add(merged2, metaData);
         });
 
-        it('success - (only auto)', async () => {
+        it('success - (without eyes auto)', async () => {
             const {status, data} = await experimentService.getSummaries(expName);
 
             expect(status).toEqual(0);
             expect(data).toEqual(expect.objectContaining({
-                auto: [{id:autoName1, data: metaData, disabled: false},{id:autoName2, data: metaData, disabled:true}]
+                auto: [{id:autoName1, data: metaData, disabled: false},{id:autoName2, data: metaData, disabled:true}],
+                merged: [{id:merged1, data: metaData},{id:merged2, data: metaData}]
             }));
         });
 
