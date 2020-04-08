@@ -7,7 +7,7 @@ const forEP = require('foreach-promise');
 import {promises as fs} from 'fs';
 import * as csvToJson from 'csvtojson';
 
-
+const response = (status,{data=null, error=null}) => ({status, data, error});
 export class ExperimentService{
     private collectionsService : Collections;
     private storageService: Storage;
@@ -122,36 +122,47 @@ export class ExperimentService{
         return { status: 0, experiments};
     }
 
-    getSummary = async (experimentName, type, name) => {
-        const experiment = await this.collectionsService.experiments().get(experimentName);
-        if(!experiment){
-            return {
-                status: -1,
-                error: 'experiment name does not exist'
-            }
-        }
+    //precondition: experiment metadata exists.
+    private getSentTableFile = async (experiment, type, name) => {
+        let path;
 
         if(type === 'auto'){
             const autoSentTable = await this.collectionsService.images().sentTablesOf(experiment.imageName).get(name);
             if(!autoSentTable){
-                return {
-                    status: -2,
-                    error: 'summary name does not exist'
-                }
+                return null;
             }
-            const csvFile = await this.storageService.downloadToBuffer(autoSentTable.path);
-
-            return {
-                status: 0,
-                data: await csvToJson({delimiter:'auto'}).fromString(csvFile.toString())
-            };
+            path = autoSentTable.path;
         }
+
+        if(type === 'merged'){
+            const mergedSentTable = await this.collectionsService.experiments().mergedSentOf(experiment.name).get(name);
+            if(!mergedSentTable){
+                return null;
+            }
+            path = mergedSentTable.path;
+        }
+        
+        return await this.storageService.downloadToBuffer(path);
+    }
+
+    getSummary = async (experimentName, type, name) => {
+        const experiment = await this.collectionsService.experiments().get(experimentName);
+        if(!experiment){
+            return response(-1, {error:'experiment name does not exist'})
+        }
+
+        const csvFile = await this.getSentTableFile(experiment, type, name);
+        if(!csvFile){
+            return response(-2, {error:'summary does not exist'})
+        }
+
+        return response(0, {
+            data: await csvToJson({delimiter:'auto'}).fromString(csvFile.toString())
+        });
     }
 
     getSummaries = async (experimentName)=> {
         const eyesExample = {id: 'eye1',data:{name:'eye1', creation_date:Date.now()}}
-        const mergedExample = {id: 'eye1',data:{name:'eye1', creation_date:Date.now()}}
-        //
         const experiment = await this.collectionsService.experiments().get(experimentName);
         if(!experiment){
             return {

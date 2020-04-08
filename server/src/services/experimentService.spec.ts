@@ -184,20 +184,26 @@ describe('ExperimentService Tests',() =>{
         const imageName = ' im1';
         const autoName = 'auto1.py';
         const autoFilePath = 'some/path';
-        const sent_table = new Buffer("");
+        const mergedName = 'merged1';
+        const mergedFilePath = 'some/merged/path';
+        const sent_table_file = new Buffer("");
 
         beforeEach( async () => {
-            await collectionsService.experiments().add(expName, {imageName});
+            await collectionsService.experiments().add(expName, {imageName, name: expName});
             await collectionsService.images().add(imageName, {});
             await collectionsService.images().sentTablesOf(imageName).add(autoName,{
-                path:autoFilePath
+                path: autoFilePath
             });
-            await storageService.uploadBuffer(autoFilePath,new Buffer(""),fileTypes.Csv);
+            await collectionsService.experiments().mergedSentOf(expName).add(mergedName,{
+                path: mergedFilePath
+            });
+            await storageService.uploadBuffer(autoFilePath,sent_table_file,fileTypes.Csv);
+            await storageService.uploadBuffer(mergedFilePath,sent_table_file,fileTypes.Csv);
         });
 
         it('success - auto', async () => {
             const {status, data} = await experimentService.getSummary(expName, 'auto',autoName);
-            const json = await csvToJson({delimiter:'auto'}).fromString(sent_table.toString())
+            const json = await csvToJson({delimiter:'auto'}).fromString(sent_table_file.toString())
             expect(status).toEqual(0);
             expect(data).toEqual(json);
         }); 
@@ -207,7 +213,10 @@ describe('ExperimentService Tests',() =>{
         });
 
         it('success - merged', async () => {
-            expect(true).toEqual(true);
+            const {status, data} = await experimentService.getSummary(expName, 'merged',mergedName);
+            const json = await csvToJson({delimiter:'auto'}).fromString(sent_table_file.toString())
+            expect(status).toEqual(0);
+            expect(data).toEqual(json);
         });
         
         it('fail - experiment not exists', async () => {
@@ -221,7 +230,7 @@ describe('ExperimentService Tests',() =>{
             const notExistsAutoSummaryName = 'NotExistsAuto';
             const {status, error} = await experimentService.getSummary(expName, 'auto',notExistsAutoSummaryName);
             expect(status).toEqual(-2);
-            expect(error).toEqual('summary name does not exist');
+            expect(error).toEqual('summary does not exist');
         });
 
         it('fail - eyes not exists', async () => {
@@ -229,7 +238,10 @@ describe('ExperimentService Tests',() =>{
         });
 
         it('fail - merged not exists', async () => {
-            expect(true).toEqual(true);
+            const notExistsMergedSummaryName = 'NotExistsMerged';
+            const {status, error} = await experimentService.getSummary(expName, 'merged',notExistsMergedSummaryName);
+            expect(status).toEqual(-2);
+            expect(error).toEqual('summary does not exist');
         });
     });
    
