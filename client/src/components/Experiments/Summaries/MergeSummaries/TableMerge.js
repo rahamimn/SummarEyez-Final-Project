@@ -17,7 +17,7 @@ const useStyles = makeStyles({
 });
 
 export default function SimpleTable({
-  mergeInput, setPercentageOf, getPercentageOf, setTotalSum
+  mergeInput, setPercentageOf,
 }) {
   const classes = useStyles();
 
@@ -42,10 +42,7 @@ export default function SimpleTable({
               </TableCell>
               <TableCell align="right">
                         <Slider
-                            setPercentage={setPercentageOf(index)}
-                            getPercentage={getPercentageOf(index)}
-                            mergeInput={mergeInput}
-                            setTotalSum = {setTotalSum}
+                            setPercentage={setPercentageOf(index)}                          
                             />
               </TableCell>
             </TableRow>

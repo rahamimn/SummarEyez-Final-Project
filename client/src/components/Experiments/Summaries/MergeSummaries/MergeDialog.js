@@ -1,50 +1,38 @@
 import React,{useState} from 'react';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
+import TextField from '@material-ui/core/TextField'
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import {
-  useHistory,
-} from "react-router-dom";
+import api from '../../../../apiService';
 import TableMerge from './TableMerge';
 
 
 export default function MergeDialog({
-  onClose, selected, totalSum
+  onClose, selected 
 }) {
-  const history = useHistory();
-
   const addToInput = (selected) => [
-    ...selected.auto.map(a =>({name: a.data.name, type: a.data.type, percent: 0})),  
-
-             // ### NIR: Check for 'undefined' before using map(); ###
-  // ...selected.eyes.map(a =>({name: a.data.name, type: a.data.type, percent: 0})),
-  //...selected.merge.map(a =>({name: a.data.name, type: a.data.type, percent: 0}))
+   ...selected.auto.map(a =>({name: a.data.name, type: a.data.type, percentage: 0})),  
+   ...selected.eyes.map(a =>({name: a.data.name, type: a.data.type, percentage: 0})),
+   ...selected.merged.map(a =>({name: a.data.name, type: a.data.type, percentage: 0}))
   ]
 
+  var percentTotalSum = () => 
+    mergeInput.reduce((totPercent, record) => totPercent + record.percent,0);
+  
   const [mergeInput, setMergeInput] = useState(addToInput(selected))
 
   const setPercentageOf = (index) => (value) => {
-    mergeInput[index].percent = value
-    console.log("mergeInput[",index,"].percent", mergeInput[index].percent)
-    setMergeInput(mergeInput)
-    console.log(mergeInput)
-  }
-  
-
-  const getPercentageOf = (index)  => {
-    return mergeInput[index].percent
+    const mergeInputCopy = [...mergeInput];
+    mergeInputCopy[index].percent = value
+    setMergeInput(mergeInputCopy)
   }
 
-  const setTotalSum = (val) => {
-    totalSum = val};
-    console.log("totalSum", totalSum);
+  const isDisabled = percentTotalSum() !== 100;
 
-  return (
+    return (
     <div>
-      console.log("here2");
       <Dialog 
         open={true} 
         onClose={onClose}
@@ -56,11 +44,18 @@ export default function MergeDialog({
         <DialogTitle id="form-dialog-title">Summary-merge wizzard</DialogTitle>
         <DialogContent>
           <DialogContentText>
-          <TableMerge mergeInput={mergeInput} setPercentageOf={setPercentageOf} getPercentageOf={getPercentageOf} setTotalSum={setTotalSum}/>
+          <TableMerge mergeInput={mergeInput} setPercentageOf={setPercentageOf}/>
           </DialogContentText>
+          
+          {/* <TextField 
+                  style={{width: '200px',marginTop:'10px', marginBottom: '20px'}}
+                  label="New Summary Name" />
+                  default={}
+                  InputProps={{endAdornment: <YOUR_COPY_ICON_BUTTON />}} */}
+
           <Button
-            onClick={
-              /* Call api to make the merge */
+            disabled={isDisabled}
+            onClick={ /* api.mergeAlgorithms("experimentName_"+100*Math.random(1000), "mergedName_"+100*Math.random(1000), mergeInput),*/ 
              onClose}>Create</Button>
         </DialogContent>
       </Dialog>
