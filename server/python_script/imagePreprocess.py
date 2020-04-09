@@ -109,31 +109,19 @@ if __name__ == "__main__":
 
     image = Image.open(io.BytesIO(imageBuffer))
 
-    
     text, word_ocr, base_sentences_table = main(image)
 
-    word_ocr_utf8 = word_ocr.to_csv(sep="\t").encode('utf-8')
-    base_sentences_table_utf8 = base_sentences_table.to_csv(sep="\t").encode('utf-8')
-    text_utf8 = text.encode('utf-8')
-    # text = text.decode('latin-1').encode('utf-8')
-    # print(text)
-    # print(len(text))
-    sys.stdout.buffer.write(len(text_utf8).to_bytes(4, byteorder="big", signed=False))
-    # sys.stderr.write(len(text))
-    sys.stdout.buffer.write(text_utf8)
+    word_ocr_utf16 = word_ocr.to_csv(sep="\t").encode('utf-16')
+    base_sentences_table_utf16 = base_sentences_table.to_csv(sep="\t").encode('utf-16')
+    text_utf16 = text.encode('utf-16')
 
-    f = open("fff.txt", "a")
-    f.write(text)
-    f.close()
+    sys.stdout.buffer.write(len(text_utf16).to_bytes(4, byteorder="big", signed=False))
+    sys.stdout.buffer.write(text_utf16)
+    
+    sys.stdout.buffer.write(len(word_ocr_utf16).to_bytes(4, byteorder="big",signed=False))
+    sys.stdout.buffer.write(word_ocr_utf16)
 
-    # ssys.stderr.write(text)
-    # print('11111'+str(len(word_ocr_string)))
-    sys.stdout.buffer.write(len(word_ocr_utf8).to_bytes(4, byteorder="big",signed=False))
-    sys.stdout.buffer.write(word_ocr_utf8)
-    # # print(base_sentences_table.to_string())
-    sys.stdout.buffer.write(len(base_sentences_table_utf8).to_bytes(4, byteorder="big",signed=False))
-    sys.stdout.buffer.write(base_sentences_table_utf8)
+    sys.stdout.buffer.write(len(base_sentences_table_utf16).to_bytes(4, byteorder="big",signed=False))
+    sys.stdout.buffer.write(base_sentences_table_utf16)
 
 
-# sys.stdout.flush()
-# sys.stdout.write(open('./readByPy.txt', 'r').read())

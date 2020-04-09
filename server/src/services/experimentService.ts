@@ -157,7 +157,7 @@ export class ExperimentService{
         }
 
         return response(0, {
-            data: await csvToJson({delimiter:'auto'}).fromString(csvFile.toString())
+            data: await csvToJson({delimiter:'auto'}).fromString(csvFile.toString('utf16le'))
         });
     }
 
