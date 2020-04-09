@@ -1,3 +1,4 @@
+import { SentTable } from './../../collections/firebase/dal/sentTables';
 import { PythonScripts } from "./python-scripts";
 //@ts-ignore
 import {promises as fs} from 'fs';
@@ -23,6 +24,18 @@ describe('pythonScript',() => {
   
         const res = await pythonService.processImage(image);
         console.log(res);
+        expect(true).toBe(true);
+    })
+
+
+
+    it('mergePreprocess with algorithms only 1',async () => {
+        // const text = await fs.readFile('./inputForTests/text.txt');
+        // const base_sent_table = await fs.readFile('./inputForTests/base_sent_table.tsv');
+        // const algs_summerization = await pythonService.runAutomaticAlgs(['Alg1.py','Alg2.py'],text,base_sent_table);     
+        // const sentTables = algs_summerization.tables.map(table => table.sent_table);
+        // const merged_table = await pythonService.mergeTables(['0.4', '0.6'], sentTables , base_sent_table)
+        // console.log("merged table: \n\n\n" , merged_table)
         expect(true).toBe(true);
     })
 })

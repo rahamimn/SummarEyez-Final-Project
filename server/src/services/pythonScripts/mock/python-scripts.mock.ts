@@ -3,6 +3,7 @@ import { PythonScriptInterface } from '../pythonScriptsTypes';
 export class MockPythonScripts implements PythonScriptInterface{
     private processImageResult;
     private runAutomaticAlgsResult;
+    private mergeTablesResult;
     constructor(){
     }
 
@@ -19,6 +20,11 @@ export class MockPythonScripts implements PythonScriptInterface{
         this.runAutomaticAlgsResult = { tables: tables || [] };
     }
 
+    setMergeTablesResult( merged_sent_table :Buffer){
+        
+        this.mergeTablesResult = { sent_table_of_merged: merged_sent_table };
+    }
+
     
     processImage(imageBuffer: Buffer){
       return Promise.resolve(this.processImageResult)
@@ -26,6 +32,10 @@ export class MockPythonScripts implements PythonScriptInterface{
 
     runAutomaticAlgs(algs ,text, sent_tables){
         return Promise.resolve(this.runAutomaticAlgsResult)
+    }
+
+    mergeTables(algsPercent, sent_tables, base_sent_table){
+        return Promise.resolve(this.mergeTablesResult)
     }
     
 

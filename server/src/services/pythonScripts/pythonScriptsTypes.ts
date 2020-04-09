@@ -12,5 +12,9 @@ export interface PythonScriptInterface {
                 name:string,
                 sent_table: Buffer}[]
         }>;
-       
+
+    mergeTables: (sammariesPercent: string[], sent_tables: Buffer[], base_sent_table:Buffer) =>
+        Promise<{
+            merged_table?: Buffer
+        }>;
 }

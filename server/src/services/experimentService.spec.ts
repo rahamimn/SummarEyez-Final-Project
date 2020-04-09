@@ -184,20 +184,26 @@ describe('ExperimentService Tests',() =>{
         const imageName = ' im1';
         const autoName = 'auto1.py';
         const autoFilePath = 'some/path';
-        const sent_table = new Buffer("");
+        const mergedName = 'merged1';
+        const mergedFilePath = 'some/merged/path';
+        const sent_table_file = new Buffer("");
 
         beforeEach( async () => {
-            await collectionsService.experiments().add(expName, {imageName});
+            await collectionsService.experiments().add(expName, {imageName, name: expName});
             await collectionsService.images().add(imageName, {});
             await collectionsService.images().sentTablesOf(imageName).add(autoName,{
-                path:autoFilePath
+                path: autoFilePath
             });
-            await storageService.uploadBuffer(autoFilePath,new Buffer(""),fileTypes.Csv);
+            await collectionsService.experiments().mergedSentOf(expName).add(mergedName,{
+                path: mergedFilePath
+            });
+            await storageService.uploadBuffer(autoFilePath,sent_table_file,fileTypes.Csv);
+            await storageService.uploadBuffer(mergedFilePath,sent_table_file,fileTypes.Csv);
         });
 
         it('success - auto', async () => {
             const {status, data} = await experimentService.getSummary(expName, 'auto',autoName);
-            const json = await csvToJson({delimiter:'auto'}).fromString(sent_table.toString())
+            const json = await csvToJson({delimiter:'auto'}).fromString(sent_table_file.toString())
             expect(status).toEqual(0);
             expect(data).toEqual(json);
         }); 
@@ -207,7 +213,10 @@ describe('ExperimentService Tests',() =>{
         });
 
         it('success - merged', async () => {
-            expect(true).toEqual(true);
+            const {status, data} = await experimentService.getSummary(expName, 'merged',mergedName);
+            const json = await csvToJson({delimiter:'auto'}).fromString(sent_table_file.toString())
+            expect(status).toEqual(0);
+            expect(data).toEqual(json);
         });
         
         it('fail - experiment not exists', async () => {
@@ -221,7 +230,7 @@ describe('ExperimentService Tests',() =>{
             const notExistsAutoSummaryName = 'NotExistsAuto';
             const {status, error} = await experimentService.getSummary(expName, 'auto',notExistsAutoSummaryName);
             expect(status).toEqual(-2);
-            expect(error).toEqual('summary name does not exist');
+            expect(error).toEqual('summary does not exist');
         });
 
         it('fail - eyes not exists', async () => {
@@ -229,7 +238,10 @@ describe('ExperimentService Tests',() =>{
         });
 
         it('fail - merged not exists', async () => {
-            expect(true).toEqual(true);
+            const notExistsMergedSummaryName = 'NotExistsMerged';
+            const {status, error} = await experimentService.getSummary(expName, 'merged',notExistsMergedSummaryName);
+            expect(status).toEqual(-2);
+            expect(error).toEqual('summary does not exist');
         });
     });
    
@@ -306,6 +318,8 @@ describe('ExperimentService Tests',() =>{
         const imageName = 'imageName';
         const autoName1 = 'auto1.py';
         const autoName2 = 'auto2.py';
+        const merged1 = 'merged1';
+        const merged2 = 'merged2';
         const metaData = {};
 
         beforeEach( async () => {
@@ -314,14 +328,17 @@ describe('ExperimentService Tests',() =>{
             await collectionsService.experiments().add(expName, {imageName});
             await collectionsService.images().add(imageName, {});
             await collectionsService.images().sentTablesOf(imageName).add(autoName1, metaData);
+            await collectionsService.experiments().mergedSentOf(expName).add(merged1, metaData);
+            await collectionsService.experiments().mergedSentOf(expName).add(merged2, metaData);
         });
 
-        it('success - (only auto)', async () => {
+        it('success - (without eyes auto)', async () => {
             const {status, data} = await experimentService.getSummaries(expName);
 
             expect(status).toEqual(0);
             expect(data).toEqual(expect.objectContaining({
-                auto: [{id:autoName1, data: metaData, disabled: false},{id:autoName2, data: metaData, disabled:true}]
+                auto: [{id:autoName1, data: metaData, disabled: false},{id:autoName2, data: metaData, disabled:true}],
+                merged: [{id:merged1, data: metaData},{id:merged2, data: metaData}]
             }));
         });
 
@@ -334,16 +351,59 @@ describe('ExperimentService Tests',() =>{
     });
 
     describe('merge summaries' , () => {
+        const expName = 'expName';
+        const imageName = 'imageName';
+        const autoName1 = 'auto1.py';
+        const autoName2 = 'auto2.py';
+        const metaData = {};
+
+        beforeEach( async () => {
+            await collectionsService.automaticAlgos().add(autoName1,{});
+            await collectionsService.automaticAlgos().add(autoName2,{});
+            await collectionsService.experiments().add(expName, {imageName});
+            await collectionsService.images().add(imageName, {});
+            await collectionsService.images().sentTablesOf(imageName).add(autoName1, metaData);
+            await collectionsService.images().sentTablesOf(imageName).add(autoName2, metaData);
+        });
+
         it('success - auto and eyes', async () => {
             expect(true).toEqual(true);
         });
 
         it('fail - experiment does not exists', async () => {
-            expect(true).toEqual(true);
+            const {status, error} = await experimentService.merge_algorithms("not exist", "new name", [{name: 'Alg1.py', type: 'auto', percentage: '1.0'}]);
+            expect(status).toEqual(-1);
+            expect(error).toEqual('The name of the experiment does not exist in the system.');
         });
+        
 
         it('fail - auto does not exists', async () => {
-            expect(true).toEqual(true);
+            const {status, error} = await experimentService.merge_algorithms("expName", "new_name", [{name: 'Alg1.py', type: 'auto', percentage: '1.0'}]);
+            expect(status).toEqual(-1);
+            expect(error).toEqual('the sammaries name is not found');
+        });
+
+        it('auto algorithm exist for expirament(check assitent method)', async () => {
+            const {status, error} = await experimentService.getSummaryForMerge("expName", 'auto', 'auto1.py');
+            expect(status).toEqual(0);
+            expect(error).toEqual(undefined);
+        });
+
+        it('auto algorithm do not exist for expirament(check assitent method)', async () => {
+            const {status, error} = await experimentService.getSummaryForMerge("expName", 'auto', 'auto3.py');
+            expect(status).toEqual(-2);
+            expect(error).toEqual('auto summary name does not exist');
+        });
+
+        it('auto algorithm exist for expirament(check sent_table_initializer)', async () => {
+            const {status} = await experimentService.sent_table_initializer(['auto2.py'],['auto'], "expName");
+            expect(status).toEqual(0);
+        });
+
+        it('auto algorithm do not exist for expirament(check sent_table_initializer)', async () => {
+            const {status, error} = await experimentService.sent_table_initializer(['auto3.py'],['auto'], "expName");
+            expect(status).toEqual(-1);
+            expect(error).toEqual('the sammary name is not found');
         });
     });
 });
