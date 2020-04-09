@@ -68,6 +68,15 @@ const api = {
         });
         return res.data;
     },
+
+    mergeAlgorithms: async(experimentName, mergedName, mergeInput) =>{
+        const res = await axios.post('/api/experiments/${experimentName}',{
+            mergedName,
+            mergeInput
+        });
+        return res.data;
+
+    }
 }
 
 export default api;

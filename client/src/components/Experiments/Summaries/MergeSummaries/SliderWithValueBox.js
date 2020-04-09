@@ -62,16 +62,22 @@ const PrettoSlider = withStyles({
 })(Slider);
 
 
-export default function CustomizedSlider() {
+export default function CustomizedSlider({
+  setPercentage,
+}) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
+
+
   const handleSliderChange = (event, newValue) => {
     setValue(newValue);
+    setPercentage(newValue);
   };
 
   const handleInputChange = event => {
     setValue(event.target.value === '' ? '' : Number(event.target.value));
+    setPercentage(Number(event.target.value));
   };
 
   const handleBlur = () => {
@@ -84,7 +90,7 @@ export default function CustomizedSlider() {
 
   return (
     <div className={classes.root}>
-      <PrettoSlider valueLabelDisplay="on" aria-label="pretto slider" defaultValue={0} 
+      <PrettoSlider valueLabelDisplay="on" aria-label="pretto slider" defaultValue={50} 
         value={typeof value === 'number' ? value : 0}
         onChange={handleSliderChange}
         aria-labelledby="input-slider"
