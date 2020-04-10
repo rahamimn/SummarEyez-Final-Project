@@ -17,6 +17,7 @@ export class PythonScripts implements PythonScriptInterface {
     private readFiles = (pyshell: PythonShell, handleFiles: (files: Buffer[]) => any) => {
         let inputFiles: Buffer[] = [];
         let remainingBytes = 0;
+
         return new Promise((resolve,reject) => {
             pyshell.stdout.on('data', function (buffer: Buffer) {
                 
@@ -43,10 +44,6 @@ export class PythonScripts implements PythonScriptInterface {
                 }
             });
 
-            pyshell.stderr.on('data', function (buffer) {
-                console.log(buffer);
-            });
-
             pyshell.end((err,code,signal) => {
                 if(code === 0 ){
                     resolve(handleFiles(inputFiles))
@@ -61,6 +58,7 @@ export class PythonScripts implements PythonScriptInterface {
         let options = {
             mode: 'binary',
             pythonOptions: ['-u'],
+            stderrParser: 'text'
         };
 
         // @ts-ignorets
@@ -81,7 +79,8 @@ export class PythonScripts implements PythonScriptInterface {
         let options = {
             mode: 'binary',
             pythonOptions: ['-u'],
-            args: algsNames
+            args: algsNames,
+            stderrParser: 'text'
             };
 
         //@ts-ignore
@@ -104,7 +103,8 @@ export class PythonScripts implements PythonScriptInterface {
         let options = {
             mode: 'binary',
             pythonOptions: ['-u'],
-            args: [String(SummariesPercent.length), ...SummariesPercent]
+            args: [String(SummariesPercent.length), ...SummariesPercent],
+            stderrParser: 'text'
             };
         
 
