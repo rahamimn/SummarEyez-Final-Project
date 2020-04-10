@@ -23,14 +23,22 @@ export const ArticleViewer = ({summary,type}) => {
         null;
 
     for(let i = 0 ; i < summary.length; i++){
-        const sent = <span key={'sent'+i} style={{backgroundColor: backgroundColor(summary[i])}} >{summary[i].text}</span>
+        const isSamePar = summary[i].par_num === paragraphNum;
+        const Sent = (
+            <span 
+                key={'sent'+i}
+                style={{backgroundColor: backgroundColor(summary[i])}}>
+                    {isSamePar && <span>&nbsp;</span>}
+                    {summary[i].text}
+            </span>
+        );
         
-        if(summary[i].par_num !== paragraphNum){
-            paragraphs.push([sent]);
+        if(!isSamePar){
+            paragraphs.push([Sent]);
             paragraphNum = summary[i].par_num;
         }
         else{
-            paragraphs[paragraphNum-1].push([sent])
+            paragraphs[paragraphNum-1].push(Sent)
         }
     }
 
