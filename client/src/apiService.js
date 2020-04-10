@@ -70,12 +70,11 @@ const api = {
     },
 
     mergeAlgorithms: async(experimentName, mergedName, mergeInput) =>{
-        const res = await axios.post('/api/experiments/${experimentName}',{
-            mergedName,
-            mergeInput
+        const res = await axios.post(`/api/experiments/${experimentName}/summary/merge`,{
+            name: mergedName,
+            mergeInputs: mergeInput
         });
         return res.data;
-
     }
 }
 
