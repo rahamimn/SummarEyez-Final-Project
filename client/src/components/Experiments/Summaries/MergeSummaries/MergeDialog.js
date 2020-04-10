@@ -7,6 +7,9 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import api from '../../../../apiService';
 import TableMerge from './TableMerge';
+import {useParams} from 'react-router-dom'
+import CircularProgress from '@material-ui/core/CircularProgress'
+
 
 
 export default function MergeDialog({
@@ -18,18 +21,26 @@ export default function MergeDialog({
    ...selected.merged.map(a =>({name: a.data.name, type: a.data.type, percentage: 0}))
   ]
 
+  const {experimentName} = useParams();
+
   var percentTotalSum = () => 
-    mergeInput.reduce((totPercent, record) => totPercent + record.percent,0);
+    mergeInput.reduce((totPercent, record) => totPercent + record.percentage,0);
   
   const [mergeInput, setMergeInput] = useState(addToInput(selected))
+  const [mergeName, setMergeName] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+
 
   const setPercentageOf = (index) => (value) => {
     const mergeInputCopy = [...mergeInput];
-    mergeInputCopy[index].percent = value
+    mergeInputCopy[index].percentage = value
     setMergeInput(mergeInputCopy)
   }
 
   const isDisabled = percentTotalSum() !== 100;
+
+  const handleChangeName = (event) => setMergeName(event.target.value)
+  
 
     return (
     <div>
@@ -46,17 +57,37 @@ export default function MergeDialog({
           <DialogContentText>
           <TableMerge mergeInput={mergeInput} setPercentageOf={setPercentageOf}/>
           </DialogContentText>
+        
           
-          {/* <TextField 
-                  style={{width: '200px',marginTop:'10px', marginBottom: '20px'}}
-                  label="New Summary Name" />
-                  default={}
-                  InputProps={{endAdornment: <YOUR_COPY_ICON_BUTTON />}} */}
+          <TextField 
+                // error={this.state.isNameExists}
+                // helperText={this.state.isNameExists && "Name already exsits, please choose different name" }
+                value={mergeName}
+                style={{marginBottom: '20px'}}
+                onChange={handleChangeName}
+                id="standard-basic"
+                label="Insert merge-product name"
+                />
+
 
           <Button
             disabled={isDisabled}
-            onClick={ /* api.mergeAlgorithms("experimentName_"+100*Math.random(1000), "mergedName_"+100*Math.random(1000), mergeInput),*/ 
-             onClose}>Create</Button>
+            onClick={
+              async () => {
+                setIsLoading(true);
+                const res = await api.mergeAlgorithms(experimentName, mergeName, mergeInput);
+                setIsLoading(false);
+                onClose(mergeName);
+              }
+              }>Create</Button>
+              
+          
+          {isLoading &&
+            <div style={{ width: '100%', textAlign:'center', marginTop:'20px'}}>
+              <CircularProgress />
+            </div>
+          }
+
         </DialogContent>
       </Dialog>
     </div>

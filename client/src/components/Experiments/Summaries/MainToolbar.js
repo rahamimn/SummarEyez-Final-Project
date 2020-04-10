@@ -84,7 +84,14 @@ const useToolbarStyles = makeStyles(theme => ({
       </Toolbar>
       {isMergeOpen && 
         <MergeDialog
-            onClose = { ()=> setIsMergeOpen(false) }
+            onClose = { async (mergedName)=> {
+              if (mergedName){
+                await updateList();
+                window.open(`/article/${experimentName}/merged/${mergedName}`,'_blank')
+              }
+              setIsMergeOpen(false)
+            }        
+            }
             selected = { selected } />
       }
       </div>
