@@ -53,6 +53,9 @@ export function Summaries({
   const fetchSummaries = async () => {
     const res = await api.getSummaries(experimentName); 
     setSummaries(formatData(res.data));
+    setAutoSelected([]);
+    setEyesSelected([]);
+    setMergedSelected([]);
   }
 
   useEffect(() => {
