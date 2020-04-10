@@ -4,7 +4,7 @@ import TextField from '@material-ui/core/TextField'
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Typography from '@material-ui/core/Typography';
 
-export const ArticleViewer = ({summary,type}) => {
+export const ArticleViewer = ({summary, title}) => {
     let paragraphs = [];
     let paragraphNum = -1;
     let [colorInput, setColorInput] = useState('');
@@ -108,6 +108,7 @@ export const ArticleViewer = ({summary,type}) => {
                     width:'800px',
                     padding:'50px',
                     fontFamily: '"Times New Roman", Times, serif', fontWeight:'400'}}>
+                    <strong><div style={{fontSize:"30px"}}>{title}</div></strong>
                     {sentHtml}
                 </div>
         </div>       

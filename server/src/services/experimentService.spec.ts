@@ -181,7 +181,7 @@ describe('ExperimentService Tests',() =>{
     });
     describe('get summary' , () => {
         const expName = 'exp1';
-        const imageName = ' im1';
+        const imageName = 'im1';
         const autoName = 'auto1.py';
         const autoFilePath = 'some/path';
         const mergedName = 'merged1';
@@ -205,7 +205,10 @@ describe('ExperimentService Tests',() =>{
             const {status, data} = await experimentService.getSummary(expName, 'auto',autoName);
             const json = await csvToJson({delimiter:'auto'}).fromString(sent_table_file.toString())
             expect(status).toEqual(0);
-            expect(data).toEqual(json);
+            expect(data).toEqual(expect.objectContaining({
+                summary: json,
+                title: imageName
+            }));
         }); 
 
         it('success - eyes', async () => {
@@ -216,7 +219,10 @@ describe('ExperimentService Tests',() =>{
             const {status, data} = await experimentService.getSummary(expName, 'merged',mergedName);
             const json = await csvToJson({delimiter:'auto'}).fromString(sent_table_file.toString())
             expect(status).toEqual(0);
-            expect(data).toEqual(json);
+            expect(data).toEqual(expect.objectContaining({
+                summary: json,
+                title: imageName
+            }));
         });
         
         it('fail - experiment not exists', async () => {
