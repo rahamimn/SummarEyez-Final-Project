@@ -104,12 +104,14 @@ if __name__ == "__main__":
 
     logging.warning('4')
     word_table, sentences_table = main(fixations, word_ocr, base_sentences_table)
+    logging.warning('5')    
+    word_table_utf16 = word_table.to_csv(sep="\t", index=False).encode('utf-16')
+    sys.stdout.buffer.write(len(word_table_utf16).to_bytes(4, byteorder="big", signed=False))
+    sys.stdout.buffer.write(word_table_utf16)
 
-    logging.warning('5')
-    sys.stdout.buffer.write(len(word_table).to_bytes(4, byteorder="big",signed=False))
-    sys.stdout.buffer.write(word_table)
     logging.warning('6')
-    sys.stdout.buffer.write(len(sentences_table).to_bytes(4, byteorder="big",signed=False))
-    sys.stdout.buffer.write(sentences_table)
+    sentences_table_utf16 = sentences_table.to_csv(sep="\t", index=False).encode('utf-16')
+    sys.stdout.buffer.write(len(sentences_table_utf16).to_bytes(4, byteorder="big", signed=False))
+    sys.stdout.buffer.write(sentences_table_utf16)
     logging.warning('7')
-
+    
