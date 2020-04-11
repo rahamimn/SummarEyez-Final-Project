@@ -43,6 +43,9 @@ export class PythonScripts implements PythonScriptInterface {
                     }
                 }
             });
+            pyshell.stderr.on('data', function (buffer) {
+                console.log(buffer);
+            });
 
             pyshell.end((err,code,signal) => {
                 if(code === 0 ){
@@ -74,14 +77,11 @@ export class PythonScripts implements PythonScriptInterface {
             })
         );
     }
-    //jen table from eyze מתממשק
-    // להוציא את הקבצים מהענן ולהביא אותם לכאן. צריך 3 קבצים
-    // מחזיר 2 דברים
     genTableFromEyez(fixations, word_ocr, base_sentences_table){
-        console.log("fixations");
         let options = {
             mode: 'binary',
             pythonOptions: ['-u'], 
+            stderrParser: 'text'
             };
 
         //@ts-ignore

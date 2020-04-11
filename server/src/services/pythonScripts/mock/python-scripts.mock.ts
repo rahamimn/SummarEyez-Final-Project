@@ -23,10 +23,10 @@ export class MockPythonScripts implements PythonScriptInterface{
         this.runAutomaticAlgsResult = { tables: tables || [] };
     }
 
-    setGenTableFromEyezResult (props : {text?: Buffer, word_table?:Buffer, sentences_table?: Buffer} ){
+    setGenTableFromEyezResult (tables : {word_table:Buffer, sentences_table: Buffer} ){
         const result = {
-            word_table: props.word_table || new Buffer('word-table-file'),
-            sentences_table: props.sentences_table || new Buffer('sentences-table-file'),
+            word_table: tables.word_table || new Buffer('word-table-file'),
+            sentences_table: tables.sentences_table || new Buffer('sentences-table-file'),
         }
         this.genTableFromEyezResult = result;
     }

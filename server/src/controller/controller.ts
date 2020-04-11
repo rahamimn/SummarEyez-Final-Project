@@ -105,15 +105,16 @@ app.post('/api/experiments/:experimentName/tests', upload.single('fixations'), (
     const jsonData = JSON.parse(req.query.data);
     console.log(jsonData);
     const params={
+        testId: jsonData.testId,
         formId : jsonData.formId,
         answers : jsonData.answers,
         score : jsonData.score,
         sentanceWeights : jsonData.sentanceWeights,
         experimentName: req.params.experimentName,
         fixations: req.file.buffer }
-        console.log('pass');
-    const {status} = await experimentService.addTest(params);
-    res.send({status: 1})
+        
+    const {status, error} = await experimentService.addTest(params);
+    res.send({status: status, error: error})
 }));
 
 

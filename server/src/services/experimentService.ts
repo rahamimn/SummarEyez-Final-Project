@@ -8,7 +8,7 @@ import {promises as fs} from 'fs';
 import * as csvToJson from 'csvtojson';
 
 const response = (status,{data=null, error=null}) => ({status, data, error});
-import * as numberGenerator from "number-generator";
+
 
 export class ExperimentService{
     private collectionsService : Collections;
@@ -60,32 +60,57 @@ export class ExperimentService{
         }
         return algNames;
     }
-    // כמו זה, גם פה צריך להיות קוד דומה ללמטה
-// קונטרולק, אחכ אקספירימנט סרביס,פייטון-פייטון סקריפט,גן טייבל פרום אייז
-//מתוך ההניסוי אני מוציא את התמונה ואז מתןך התמונה אני יכול להוציא את הטבלאות
-// דוגמה בהוספת ניסוי
-
-
-//מתוך הקולקשין סרביס להוציא  את שם התמונה 
+ 
 addTest = async (params) => {
-    console.log(params.experimentName);
-    const imgName= await this.collectionsService.experiments().get(params.experimentName)
-    console.log(imgName);
-    const picture= await this.collectionsService.images().get(imgName.imageName)
+    const experiment= await this.collectionsService.experiments().get(params.experimentName)
+    if(!experiment){
+        return {
+            status: -1,
+            error: 'experiment name does not exist'
+        }
+    }
+    const picture= await this.collectionsService.images().get(experiment.imageName)
+    if(!picture){
+        return {
+            status: -1,
+            error: 'picture does not exist'
+        }
+    }
     const word_ocr = await this.storageService.downloadToBuffer(picture.word_ocr_path);
+    if(!word_ocr){
+        return {
+            status: -1,
+            error: 'word_ocr does not exist'
+        }
+    }
     const base_sentences_table = await this.storageService.downloadToBuffer(picture.base_sent_table_path);
-    const tables = await this.pythonService.genTableFromEyez(params.fixations, word_ocr, base_sentences_table)
-    console.log('yyy');
-    const id= numberGenerator.aleaRNGFactory(2);
-    const expUploadPaths = {sent_table:`experiments/${id}/testSentTables`,
-                            word_table:`experiments/${id}/testWordTables`}
+    if(!base_sentences_table){
+        return {
+            status: -1,
+            error: 'base_sentences_table does not exist'
+        }
+    }
+   
+    const test = await this.collectionsService.experiments().getTests(params.experimentName);
+    if(await test.get(params.testId)){
+        return {
+            status: -1,
+            error: 'testId already exist exist'
+        }
+    }
+    
+    const tables = await this.pythonService.genTableFromEyez(params.fixations, word_ocr, base_sentences_table);
+    const expUploadPaths = {sent_table:`experiments/${params.experimentName}/tests/${params.testId}/testSentTables`,
+                            word_table:`experiments/${params.experimentName}/tests/${params.testId}/testWordTables`}
+    
     await this.storageService.uploadBuffer(expUploadPaths.word_table, tables.word_table, fileTypes.Text);
     await this.storageService.uploadBuffer(expUploadPaths.sent_table, tables.sentences_table, fileTypes.Text);
-    await this.collectionsService.experiments().getTests(params.experimentName).add(id,{
+    await this.collectionsService.experiments().getTests(params.experimentName).add(params.testId,{
+        testId:params.testId,
         formId: params.formId,
         creation_date: Date.now(),
-        sent_table: expUploadPaths.sent_table ,
-        word_table: expUploadPaths.word_table,
+        sent_table_path: expUploadPaths.sent_table ,
+        word_table_path: expUploadPaths.word_table,
     });
 
     return {
@@ -94,8 +119,6 @@ addTest = async (params) => {
 }
 
 
-
-///////////////////////////////
     addImage = async (name, buffer) => {
         const image = await this.collectionsService.images().get(name);
         if(image){
@@ -104,7 +127,7 @@ addTest = async (params) => {
                 error: 'image name already exists'
             }
         }
-        //vהיווש
+
         const files = await this.pythonService.processImage(buffer)
         await this.storageService.uploadBuffer(`images/${name}/image`, buffer, fileTypes.Image);
         await this.storageService.uploadBuffer(`images/${name}/text`, files.text, fileTypes.Text);
@@ -113,7 +136,6 @@ addTest = async (params) => {
         await this.collectionsService.images().add(name,{
             name,
             uploaded_date: Date.now(),
-            //כתובות של המידע שלי באחסון
             image_path: `images/${name}/image`,
             text_path: `images/${name}/text`,
             word_ocr_path: `images/${name}/word_ocr`,
@@ -165,7 +187,6 @@ addTest = async (params) => {
         let path;
 
         if(type === 'auto'){
-            //vvhhua
             const autoSentTable = await this.collectionsService.images().sentTablesOf(experiment.imageName).get(name);
             if(!autoSentTable){
                 return null;
@@ -243,9 +264,7 @@ addTest = async (params) => {
             }
         });
     };
-//דוגמה לשליפה מהשרת עדיף לשלוף ניתב
-// מפה אני מעלה לשרת סטראג ולא מגלגל חזרה לקונטרולר
-//vhuaa    
+
 runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
         const experiment = await this.collectionsService.experiments().get(experimentName);
         if(!experiment){
