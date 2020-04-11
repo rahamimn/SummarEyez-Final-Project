@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState, useEffect} from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField'
 import Dialog from '@material-ui/core/Dialog';
@@ -24,6 +24,10 @@ export default function MergeDialog({
   ]
 
   const {experimentName} = useParams();
+  
+  useEffect(() => {
+    setMergeInput(addToInput(selected));
+  },[selected])
   
   const [mergeInput, setMergeInput] = useState(addToInput(selected))
   const [mergeName, setMergeName] = useState("")
