@@ -95,11 +95,12 @@ addTest = async (params) => {
     await this.storageService.uploadBuffer(expUploadPaths.word_table, tables.word_table, fileTypes.Text);
     await this.storageService.uploadBuffer(expUploadPaths.sent_table, tables.sentences_table, fileTypes.Text);
     await this.collectionsService.experiments().getTests(params.experimentName).add(params.testId,{
-        testId:params.testId,
+        name: params.testId,
         formId: params.formId,
         creation_date: Date.now(),
-        sent_table_path: expUploadPaths.sent_table ,
+        sent_table_path: expUploadPaths.sent_table,
         word_table_path: expUploadPaths.word_table,
+        type:'eyes'
     });
 
     return response(0);    
@@ -183,6 +184,14 @@ addTest = async (params) => {
             }
             path = mergedSentTable.path;
         }
+
+        if(type === 'eyes'){
+            const testSentTable = await this.collectionsService.experiments().getTests(experiment.name).get(name);
+            if(!testSentTable){
+                return null;
+            }
+            path = testSentTable.sent_table_path;
+        }
         
         return await this.storageService.downloadToBuffer(path);
     }
@@ -207,7 +216,7 @@ addTest = async (params) => {
     }
 
     getSummaries = async (experimentName)=> {
-        const eyesExample = {id: 'eye1',data:{name:'eye1', creation_date:Date.now()}}
+        // const eyesExample = {id: 'eye1',data:{name:'eye1', creation_date:Date.now()}}
         const experiment = await this.collectionsService.experiments().get(experimentName);
         if(!experiment){
             return response(-1, {error:'experiment name does not exist'});
@@ -216,12 +225,12 @@ addTest = async (params) => {
         const autoSentTables = await this.collectionsService.images().sentTablesOf(experiment.imageName).getAll();
         const allAutomaticAlgs = await this.collectionsService.automaticAlgos().getAll();
         const allMergedTables = await this.collectionsService.experiments().mergedSentOf(experimentName).getAll();
-        //this.collectionsService.experiments().getTests(..).add(צריך להוסיף את המבנה נתונים שיש בטרלו)
+        const allTestsTable = await this.collectionsService.experiments().getTests(experimentName).getAll();
 
         return response(0, {
             data:{
                 auto: this.intersectAutomaticAlgs(allAutomaticAlgs, autoSentTables),
-                eyes: Array(15).fill(eyesExample),
+                eyes: allTestsTable,
                 merged: allMergedTables,
             }
         });
@@ -315,7 +324,6 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
             path,
             creation_date: Date.now()
         });
-
 
         return response(0,{
             data: await csvToJson({delimiter:'auto'}).fromString(merged_table.toString())

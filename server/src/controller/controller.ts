@@ -86,8 +86,6 @@ app.post('/api/experiments', bodyParser.json(), async (req, res) => {
     res.send(response);
 });
 
-
-
 //upload algorithm 
 app.post('/api/algorithms',upload.single('algorithmBuffer'), (req, res) => errorHandling(res, async () => {
     const {status, error} = await experimentService.addAutomaticAlgorithms(req.body.algorithmName, req.file.buffer);
@@ -117,27 +115,6 @@ app.post('/api/experiments/:experimentName/tests', upload.single('fixations'), (
     res.send({status: status, error: error})
 }));
 
-
-if(localMode){
-    dataCreation(experimentService).then(() => {
-        app.listen(port, () => console.log(`Server runs on RAM storage is running on port ${port}!`))
-    });
-}
-else{
-    app.listen(port, () => console.log(`Server runs on Google storage is running on port ${port}!`))
-
-}
-
-//todo: handle the get if needed
-// app.get('/api/algorithms', (req, res) => errorHandling(res, async () => {
-//     const algorithms = await experimentService.get();
-//     res.send(algorithms);
-// }));
-//upload algorithms until here
-
-
-
-
 //the list of algs is the triplet of: algorithm name, type (automatic, test-begaze algo, merged algo), and the percentage of the weight.
 //newMergedAlgName is the name of the new merged algorithm
 //expirament ID is the name of the expirament
@@ -149,92 +126,11 @@ app.post('/api/experiments/:experimentName/summary/merge', bodyParser.json(), (r
     res.send(summaries);
 }));
 
-
-
-
-
-
-// app.get('/process', (req, res) => {
-//     let errStr = '';
-//     const pythonProcess = spawn('python3',["./python_script/marker.py", "-i", "./uploads/inputImage.jpg"]);
-//     pythonProcess.on('exit', (code) => {
-//         console.log(`child process exited with code ${code}`);
-//         if(code === 0){
-//                 res.sendFile('output/docWords.docx',{ root: __dirname });
-//         }
-//         else{
-//             res.end(errStr);
-//         }
-  
-//     })
-//     pythonProcess.stdout.on('data', function(data) {
-//         errStr += data.toString()
-//     });
-//     pythonProcess.stderr.on('data', function(data) {
-//         errStr += data.toString()
-//     });
-// })
-
-// should be called by google, when form submited
-// body should include {experimentId}
-// save on firebase test{ name, id, answers, score, csvFixationUrl }
-// app.post('/tests', (req, res) => { 
-//     //not implemented
-//     console.log(req.body);
-//     res.send({status:7});
-// });
-
-//real api
-
-
-
-// //should return tests id/googleUrl/grade/
-// app.get('/experiments/:experimentId/tests', (req, res) => {  
-//     //not implemented
-//     res.send({status:-1});
-// });
-
-// //should return sentance_table json from sent-table
-// app.get('/experiments/:experimentId/sent-table/:tableId', (req, res) => {  
-//     //not implemented
-//     res.send({status:-1});
-// });
-
-// //should return sentance grades json from word-table
-// app.get('/experiments/:experimentId/word-table/:tableId', (req, res) => {  
-//     //not implemented
-//     res.send({status:-1});
-// });
-
-// /**
-//  * input: gradeTableIds , and percentages
-//  * output: id of new gradeTableId
-//  **/
-// app.post('/experiments/:experimentId/sent-grades/merge/save', (req, res) => {  
-//     //not implemented
-//     res.send({status:-1});
-// });
-// /**
-//  * input: colors-spectrum
-//  * output: word doc/ or url to watch online
-//  **/
-// app.post('/experiments/:experimentId/sent-grades/:tableId/doc', (req, res) => {  
-//     //not implemented
-//     res.send({status:-1});
-// });
-// /**
-//  * output: excel or csv file with the grades 
-//  **/
-// app.post('/experiments/:experimentId/sent-grades/:tableId/export', (req, res) => {  
-//     //not implemented
-//     res.send({status:-1});
-// });
-
-// /*
-//  * input: gradeTableIds, colors per table
-//  * output: word doc/ or url to watch online
-//  */
-// app.post('/experiments/:experimentId/sent-grades/layers/doc', (req, res) => {  
-//     //not implemented
-//     res.send({status:-1});
-// });
+if(localMode){
+    dataCreation(experimentService).then(() => {
+        app.listen(port, () => console.log(`Server runs on RAM storage is running on port ${port}!`))
+    });
+}
+else{
+    app.listen(port, () => console.log(`Server runs on Google storage is running on port ${port}!`))
+}

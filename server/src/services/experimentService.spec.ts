@@ -185,20 +185,28 @@ describe('ExperimentService Tests',() =>{
         const autoName = 'auto1.py';
         const autoFilePath = 'some/path';
         const mergedName = 'merged1';
+        const eyesName = 'eyes1';
         const mergedFilePath = 'some/merged/path';
+        const eyesSentFilePath = 'some/eyes/path';
         const sent_table_file = new Buffer("");
 
         beforeEach( async () => {
             await collectionsService.experiments().add(expName, {imageName, name: expName});
             await collectionsService.images().add(imageName, {});
+
             await collectionsService.images().sentTablesOf(imageName).add(autoName,{
                 path: autoFilePath
             });
             await collectionsService.experiments().mergedSentOf(expName).add(mergedName,{
                 path: mergedFilePath
             });
+            await collectionsService.experiments().getTests(expName).add(eyesName,{
+                sent_table_path: eyesSentFilePath
+            });
+
             await storageService.uploadBuffer(autoFilePath,sent_table_file,fileTypes.Csv);
             await storageService.uploadBuffer(mergedFilePath,sent_table_file,fileTypes.Csv);
+            await storageService.uploadBuffer(eyesSentFilePath,sent_table_file,fileTypes.Csv);
         });
 
         it('success - auto', async () => {
@@ -212,7 +220,13 @@ describe('ExperimentService Tests',() =>{
         }); 
 
         it('success - eyes', async () => {
-            expect(true).toEqual(true);
+            const {status, data} = await experimentService.getSummary(expName, 'eyes',eyesName);
+            const json = await csvToJson({delimiter:'auto'}).fromString(sent_table_file.toString())
+            expect(status).toEqual(0);
+            expect(data).toEqual(expect.objectContaining({
+                summary: json,
+                title: imageName
+            }));
         });
 
         it('success - merged', async () => {
@@ -240,7 +254,10 @@ describe('ExperimentService Tests',() =>{
         });
 
         it('fail - eyes not exists', async () => {
-            expect(true).toEqual(true);
+            const notExistsEyesSummaryName = 'NotExistsAuto';
+            const {status, error} = await experimentService.getSummary(expName, 'eyes',notExistsEyesSummaryName);
+            expect(status).toEqual(-2);
+            expect(error).toEqual('summary does not exist');
         });
 
         it('fail - merged not exists', async () => {
@@ -326,6 +343,8 @@ describe('ExperimentService Tests',() =>{
         const autoName2 = 'auto2.py';
         const merged1 = 'merged1';
         const merged2 = 'merged2';
+        const eyes1 = 'eyes1';
+        const eyes2 = 'eyes2';
         const metaData = {};
 
         beforeEach( async () => {
@@ -334,6 +353,8 @@ describe('ExperimentService Tests',() =>{
             await collectionsService.experiments().add(expName, {imageName});
             await collectionsService.images().add(imageName, {});
             await collectionsService.images().sentTablesOf(imageName).add(autoName1, metaData);
+            await collectionsService.experiments().getTests(expName).add(eyes1,metaData)
+            await collectionsService.experiments().getTests(expName).add(eyes2,metaData)
             await collectionsService.experiments().mergedSentOf(expName).add(merged1, metaData);
             await collectionsService.experiments().mergedSentOf(expName).add(merged2, metaData);
         });
@@ -344,7 +365,8 @@ describe('ExperimentService Tests',() =>{
             expect(status).toEqual(0);
             expect(data).toEqual(expect.objectContaining({
                 auto: [{id:autoName1, data: metaData, disabled: false},{id:autoName2, data: metaData, disabled:true}],
-                merged: [{id:merged1, data: metaData},{id:merged2, data: metaData}]
+                merged: [{id:merged1, data: metaData},{id:merged2, data: metaData}],
+                eyes: [{id:eyes1, data: metaData},{id:eyes2, data: metaData}]
             }));
         });
 
@@ -459,10 +481,11 @@ describe('ExperimentService Tests',() =>{
             expect(await storageService.downloadToBuffer(expUploadPaths.sent_table_path)).toBe(sent_table);
             expect(await storageService.downloadToBuffer(expUploadPaths.word_table_path)).toBe(word_table);
             expect(await collectionsService.experiments().getTests(params.experimentName).get(params.testId)).toEqual(expect.objectContaining({
-                testId:params.testId,
+                name: params.testId,
                 formId: params.formId,
                 sent_table_path: expUploadPaths.sent_table_path ,
                 word_table_path: expUploadPaths.word_table_path,
+                type: 'eyes'
             }))
 
         });
