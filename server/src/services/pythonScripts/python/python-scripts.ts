@@ -43,6 +43,9 @@ export class PythonScripts implements PythonScriptInterface {
                     }
                 }
             });
+            pyshell.stderr.on('data', function (buffer) {
+                console.log(buffer);
+            });
 
             pyshell.end((err,code,signal) => {
                 if(code === 0 ){
@@ -74,6 +77,28 @@ export class PythonScripts implements PythonScriptInterface {
             })
         );
     }
+    genTableFromEyez(fixations, word_ocr, base_sentences_table){
+        let options = {
+            mode: 'binary',
+            pythonOptions: ['-u'], 
+            stderrParser: 'text'
+            };
+
+        //@ts-ignore
+        let pyshell = new PythonShell('./python_script/genTablesFromEyez.py', options);
+        this.sendBuffer(fixations, pyshell)
+        this.sendBuffer(word_ocr, pyshell)
+        this.sendBuffer(base_sentences_table, pyshell)
+       
+        return this.readFiles(
+            pyshell,
+            files => ({
+                word_table: files[0],
+                sentences_table: files[1],
+            })
+        );
+    }
+
 
     runAutomaticAlgs(algsNames: string[], text, base_sent_table){
         let options = {

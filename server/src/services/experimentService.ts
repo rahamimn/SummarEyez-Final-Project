@@ -8,6 +8,8 @@ import {promises as fs} from 'fs';
 import * as csvToJson from 'csvtojson';
 
 const response = (status,{data=null, error=null}) => ({status, data, error});
+
+
 export class ExperimentService{
     private collectionsService : Collections;
     private storageService: Storage;
@@ -58,6 +60,64 @@ export class ExperimentService{
         }
         return algNames;
     }
+ 
+addTest = async (params) => {
+    const experiment= await this.collectionsService.experiments().get(params.experimentName)
+    if(!experiment){
+        return {
+            status: -1,
+            error: 'experiment name does not exist'
+        }
+    }
+    const picture= await this.collectionsService.images().get(experiment.imageName)
+    if(!picture){
+        return {
+            status: -1,
+            error: 'picture does not exist'
+        }
+    }
+    const word_ocr = await this.storageService.downloadToBuffer(picture.word_ocr_path);
+    if(!word_ocr){
+        return {
+            status: -1,
+            error: 'word_ocr does not exist'
+        }
+    }
+    const base_sentences_table = await this.storageService.downloadToBuffer(picture.base_sent_table_path);
+    if(!base_sentences_table){
+        return {
+            status: -1,
+            error: 'base_sentences_table does not exist'
+        }
+    }
+   
+    const test = await this.collectionsService.experiments().getTests(params.experimentName);
+    if(await test.get(params.testId)){
+        return {
+            status: -1,
+            error: 'testId already exist exist'
+        }
+    }
+    
+    const tables = await this.pythonService.genTableFromEyez(params.fixations, word_ocr, base_sentences_table);
+    const expUploadPaths = {sent_table:`experiments/${params.experimentName}/tests/${params.testId}/testSentTables`,
+                            word_table:`experiments/${params.experimentName}/tests/${params.testId}/testWordTables`}
+    
+    await this.storageService.uploadBuffer(expUploadPaths.word_table, tables.word_table, fileTypes.Text);
+    await this.storageService.uploadBuffer(expUploadPaths.sent_table, tables.sentences_table, fileTypes.Text);
+    await this.collectionsService.experiments().getTests(params.experimentName).add(params.testId,{
+        testId:params.testId,
+        formId: params.formId,
+        creation_date: Date.now(),
+        sent_table_path: expUploadPaths.sent_table ,
+        word_table_path: expUploadPaths.word_table,
+    });
+
+    return {
+        status: 0
+    }     
+}
+
 
     addImage = async (name, buffer) => {
         const image = await this.collectionsService.images().get(name);
@@ -177,6 +237,7 @@ export class ExperimentService{
         const autoSentTables = await this.collectionsService.images().sentTablesOf(experiment.imageName).getAll();
         const allAutomaticAlgs = await this.collectionsService.automaticAlgos().getAll();
         const allMergedTables = await this.collectionsService.experiments().mergedSentOf(experimentName).getAll();
+        //this.collectionsService.experiments().getTests(..).add(צריך להוסיף את המבנה נתונים שיש בטרלו)
 
         return{
             status: 0,
@@ -204,7 +265,7 @@ export class ExperimentService{
         });
     };
 
-    runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
+runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
         const experiment = await this.collectionsService.experiments().get(experimentName);
         if(!experiment){
             return {
