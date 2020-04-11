@@ -359,7 +359,7 @@ describe('ExperimentService Tests',() =>{
             await collectionsService.experiments().mergedSentOf(expName).add(merged2, metaData);
         });
 
-        it('success - (without eyes auto)', async () => {
+        it('success', async () => {
             const {status, data} = await experimentService.getSummaries(expName);
 
             expect(status).toEqual(0);
@@ -441,7 +441,16 @@ describe('ExperimentService Tests',() =>{
        
         const word_ocr_path = `images/${imageName}/word_ocr`;
         const base_sent_table_path = `images/${imageName}/base_sent_table`;
-     
+        
+        const params={
+            testId: 'testId',
+            formId : '5',
+            answers : '5',
+            score : '5',
+            sentanceWeights : '5',
+            experimentName: expName,
+            fixations: 'buffer' 
+        };            
         beforeEach( async () => {
             await collectionsService.experiments().add(expName, {imageName});
             await collectionsService.images().add(imageName, {
@@ -452,6 +461,8 @@ describe('ExperimentService Tests',() =>{
             });
             await storageService.uploadBuffer(base_sent_table_path,new Buffer("sent_table"),fileTypes.Csv);
             await storageService.uploadBuffer(word_ocr_path,new Buffer("word_table"),fileTypes.Csv);
+
+            params.experimentName = expName;
         });
 
         it('success - run genTablesFromEyez with testId = testId', async () => {
@@ -459,14 +470,7 @@ describe('ExperimentService Tests',() =>{
             const word_table = new Buffer('word_table');
             const sent_table = new Buffer('sent_table');
             const tables = {word_table: word_table, sentences_table: sent_table};
-            const params={
-                testId: 'testId',
-                formId : '5',
-                answers : '5',
-                score : '5',
-                sentanceWeights : '5',
-                experimentName: expName,
-                fixations: 'buffer' }
+
             pythonService.setGenTableFromEyezResult(tables);
 
             const {status, error} = await experimentService.addTest(params);
@@ -483,6 +487,9 @@ describe('ExperimentService Tests',() =>{
             expect(await collectionsService.experiments().getTests(params.experimentName).get(params.testId)).toEqual(expect.objectContaining({
                 name: params.testId,
                 formId: params.formId,
+                answers : params.answers,
+                score : params.score,
+                sentanceWeights :params.sentanceWeights,
                 sent_table_path: expUploadPaths.sent_table_path ,
                 word_table_path: expUploadPaths.word_table_path,
                 type: 'eyes'
@@ -495,14 +502,8 @@ describe('ExperimentService Tests',() =>{
             const word_table = new Buffer('word_table');
             const sent_table = new Buffer('sent_table');
             const tables = {word_table: word_table, sentences_table: sent_table};
-            const params={
-                testId: 'testId',
-                formId : '5',
-                answers : '5',
-                score : '5',
-                sentanceWeights : '5',
-                experimentName: 'notExist',
-                fixations: 'buffer' }
+            params.experimentName =  'notExist';
+
             pythonService.setGenTableFromEyezResult(tables);
 
             const {status, error} = await experimentService.addTest(params);
@@ -517,14 +518,8 @@ describe('ExperimentService Tests',() =>{
             const expNameWithoutImage = 'exp2';
             await collectionsService.experiments().add(expNameWithoutImage, {});
             const tables = {word_table: word_table, sentences_table: sent_table};
-            const params={
-                testId: 'testId',
-                formId : '5',
-                answers : '5',
-                score : '5',
-                sentanceWeights : '5',
-                experimentName: expNameWithoutImage,
-                fixations: 'buffer' }
+            params.experimentName =  expNameWithoutImage;
+
             pythonService.setGenTableFromEyezResult(tables);
 
             const {status, error} = await experimentService.addTest(params);
@@ -552,14 +547,9 @@ describe('ExperimentService Tests',() =>{
             const word_table = new Buffer('word_table');
             const sent_table = new Buffer('sent_table');
             const tables = {word_table: word_table, sentences_table: sent_table};
-            const params={
-                testId: 'testId',
-                formId : '5',
-                answers : '5',
-                score : '5',
-                sentanceWeights : '5',
-                experimentName: expNameWithoutWord_ocr,
-                fixations: 'buffer' }
+
+            params.experimentName =  expNameWithoutWord_ocr;
+
             pythonService.setGenTableFromEyezResult(tables);
             
             const {status, error} = await experimentService.addTest(params);
@@ -590,14 +580,8 @@ describe('ExperimentService Tests',() =>{
             const word_table = new Buffer('word_table');
             const sent_table = new Buffer('sent_table');
             const tables = {word_table: word_table, sentences_table: sent_table};
-            const params={
-                testId: 'testId',
-                formId : '5',
-                answers : '5',
-                score : '5',
-                sentanceWeights : '5',
-                experimentName: expNameWithoutWord_ocr,
-                fixations: 'buffer' }
+     
+            params.experimentName = expNameWithoutWord_ocr;
 
             pythonService.setGenTableFromEyezResult(tables);
             
@@ -612,14 +596,6 @@ describe('ExperimentService Tests',() =>{
             const word_table = new Buffer('word_table');
             const sent_table = new Buffer('sent_table');
             const tables = {word_table: word_table, sentences_table: sent_table};
-            const params={
-                testId: 'testId',
-                formId : '5',
-                answers : '5',
-                score : '5',
-                sentanceWeights : '5',
-                experimentName: expName,
-                fixations: 'buffer' }
             pythonService.setGenTableFromEyezResult(tables);
 
             const expUploadPaths = 

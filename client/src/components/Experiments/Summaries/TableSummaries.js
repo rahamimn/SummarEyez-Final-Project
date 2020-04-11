@@ -55,9 +55,13 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function TableSummaries(props) {
+export default function TableSummaries({
+  selected,
+  onChangeSelected,
+  headers,
+  rows
+}) {
   const classes = useStyles();
-  const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
@@ -78,8 +82,7 @@ export default function TableSummaries(props) {
       );
     }
 
-    setSelected(newSelected);
-    props.onChangeSelected && props.onChangeSelected(newSelected);
+    onChangeSelected && onChangeSelected(newSelected);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -103,9 +106,9 @@ export default function TableSummaries(props) {
             size={'small'}
             aria-label="enhanced table"
           >
-            <EnhancedTableHead headers={props.headers}/>
+            <EnhancedTableHead headers={headers}/>
             <TableBody>
-                {props.rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   const isItemSelected = isSelected(row);
                   const labelId = `enhanced-table-checkbox-${index}`;
@@ -130,7 +133,7 @@ export default function TableSummaries(props) {
                       <TableCell component="th" id={labelId} scope="row" padding="none">
                         {data.name}
                       </TableCell>
-                      {props.headers.slice(1).map(
+                      {headers.slice(1).map(
                         header => {
                           return <TableCell key={`${header.id}-${index}`} align="right">{
                             header.type ==='date' && data[header.id] ?
@@ -147,7 +150,7 @@ export default function TableSummaries(props) {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={props.rows.length}
+          count={rows.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onChangePage={handleChangePage}
@@ -159,6 +162,7 @@ export default function TableSummaries(props) {
 
 TableSummaries.propTypes = {
   onChangeSelected: PropTypes.func.isRequired,
+  selected: PropTypes.array,
   headers: PropTypes.array.isRequired,
   rows: PropTypes.array.isRequired
 };

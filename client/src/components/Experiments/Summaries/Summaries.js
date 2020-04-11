@@ -71,7 +71,7 @@ export function Summaries({
           eyes: eyesSelected,
           merged: mergedSelected
         }} />
-      <ExpansionPanel expanded>
+      <ExpansionPanel>
         <ExpansionPanelSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
@@ -81,6 +81,7 @@ export function Summaries({
         </ExpansionPanelSummary >
         <ExpansionPanelDetails>
           <TableSummaries 
+            selected={autoSelected}
             onChangeSelected={setAutoSelected}
             headers={autoHeaders}
             rows={summaries.auto}/>
@@ -96,6 +97,7 @@ export function Summaries({
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <TableSummaries 
+            selected={eyesSelected}
             onChangeSelected={setEyesSelected}
             headers={eyesHeaders}
             rows={summaries.eyes}/>
@@ -111,6 +113,7 @@ export function Summaries({
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <TableSummaries 
+            selected={mergedSelected}
             onChangeSelected={setMergedSelected}
             headers={mergedHeaders}
             rows={summaries.merged}/>

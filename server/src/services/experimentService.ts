@@ -97,6 +97,9 @@ addTest = async (params) => {
     await this.collectionsService.experiments().getTests(params.experimentName).add(params.testId,{
         name: params.testId,
         formId: params.formId,
+        answers : params.answers || [],
+        score : params.score || 0,
+        sentanceWeights : params.sentanceWeights || [],
         creation_date: Date.now(),
         sent_table_path: expUploadPaths.sent_table,
         word_table_path: expUploadPaths.word_table,
