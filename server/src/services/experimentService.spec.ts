@@ -250,7 +250,7 @@ describe('ExperimentService Tests',() =>{
             expect(error).toEqual('summary does not exist');
         });
     });
-   
+    /////
     describe('run automatic algs' , async () => {
         const expName = 'exp1';
         const imageName = ' im1';
@@ -411,5 +411,213 @@ describe('ExperimentService Tests',() =>{
             expect(status).toEqual(-1);
             expect(error).toEqual('the sammary name is not found');
         });
+    });
+
+    describe('generate tables from eyez' , async () => {
+        const expName = 'exp1';
+        const imageName = 'im1';
+       
+        const word_ocr_path = `images/${imageName}/word_ocr`;
+        const base_sent_table_path = `images/${imageName}/base_sent_table`;
+     
+        beforeEach( async () => {
+            await collectionsService.experiments().add(expName, {imageName});
+            await collectionsService.images().add(imageName, {
+                base_sent_table_path: base_sent_table_path,
+                name: imageName,
+                word_ocr_path: word_ocr_path
+
+            });
+            await storageService.uploadBuffer(base_sent_table_path,new Buffer("sent_table"),fileTypes.Csv);
+            await storageService.uploadBuffer(word_ocr_path,new Buffer("word_table"),fileTypes.Csv);
+        });
+
+        it('success - run genTablesFromEyez with testId = testId', async () => {
+
+            const word_table = new Buffer('word_table');
+            const sent_table = new Buffer('sent_table');
+            const tables = {word_table: word_table, sentences_table: sent_table};
+            const params={
+                testId: 'testId',
+                formId : '5',
+                answers : '5',
+                score : '5',
+                sentanceWeights : '5',
+                experimentName: expName,
+                fixations: 'buffer' }
+            pythonService.setGenTableFromEyezResult(tables);
+
+            const {status, error} = await experimentService.addTest(params);
+            expect(status).toEqual(0);
+
+            const expUploadPaths = 
+                {
+                sent_table_path:`experiments/${params.experimentName}/tests/${params.testId}/testSentTables`,
+                word_table_path:`experiments/${params.experimentName}/tests/${params.testId}/testWordTables`
+                }
+
+            expect(await storageService.downloadToBuffer(expUploadPaths.sent_table_path)).toBe(sent_table);
+            expect(await storageService.downloadToBuffer(expUploadPaths.word_table_path)).toBe(word_table);
+            expect(await collectionsService.experiments().getTests(params.experimentName).get(params.testId)).toEqual(expect.objectContaining({
+                testId:params.testId,
+                formId: params.formId,
+                sent_table_path: expUploadPaths.sent_table_path ,
+                word_table_path: expUploadPaths.word_table_path,
+            }))
+
+        });
+
+        it('fail - experimentName not exist', async () => {
+
+            const word_table = new Buffer('word_table');
+            const sent_table = new Buffer('sent_table');
+            const tables = {word_table: word_table, sentences_table: sent_table};
+            const params={
+                testId: 'testId',
+                formId : '5',
+                answers : '5',
+                score : '5',
+                sentanceWeights : '5',
+                experimentName: 'notExist',
+                fixations: 'buffer' }
+            pythonService.setGenTableFromEyezResult(tables);
+
+            const {status, error} = await experimentService.addTest(params);
+            expect(status).toEqual(-1);
+            expect(error).toEqual('experiment name does not exist');
+        });
+
+        it('fail - picture not exist', async () => {
+
+            const word_table = new Buffer('word_table');
+            const sent_table = new Buffer('sent_table');
+            const expNameWithoutImage = 'exp2';
+            await collectionsService.experiments().add(expNameWithoutImage, {});
+            const tables = {word_table: word_table, sentences_table: sent_table};
+            const params={
+                testId: 'testId',
+                formId : '5',
+                answers : '5',
+                score : '5',
+                sentanceWeights : '5',
+                experimentName: expNameWithoutImage,
+                fixations: 'buffer' }
+            pythonService.setGenTableFromEyezResult(tables);
+
+            const {status, error} = await experimentService.addTest(params);
+            expect(status).toEqual(-1);
+            expect(error).toEqual('picture does not exist');
+
+        });
+
+        it('fail - word_ocr does not exist', async () => {
+            const expNameWithoutWord_ocr = 'exp2';
+            const imageNameWithoutWord_ocr = 'im2';
+       
+            const word_ocr_path = `images/${imageNameWithoutWord_ocr}/word_ocr`;
+            const base_sent_table_path = `images/${imageNameWithoutWord_ocr}/base_sent_table`;
+
+            await collectionsService.experiments().add(expNameWithoutWord_ocr, {'imageName':imageNameWithoutWord_ocr});
+            await collectionsService.images().add(imageNameWithoutWord_ocr, {
+                base_sent_table_path: base_sent_table_path,
+                name: imageNameWithoutWord_ocr,
+                word_ocr_path: word_ocr_path
+             });
+
+            await storageService.uploadBuffer(base_sent_table_path,new Buffer("sent_table"),fileTypes.Csv);
+      
+            const word_table = new Buffer('word_table');
+            const sent_table = new Buffer('sent_table');
+            const tables = {word_table: word_table, sentences_table: sent_table};
+            const params={
+                testId: 'testId',
+                formId : '5',
+                answers : '5',
+                score : '5',
+                sentanceWeights : '5',
+                experimentName: expNameWithoutWord_ocr,
+                fixations: 'buffer' }
+            pythonService.setGenTableFromEyezResult(tables);
+            
+            const {status, error} = await experimentService.addTest(params);
+            expect(status).toEqual(-1);
+            expect(error).toEqual('word_ocr does not exist');
+
+        });
+
+
+        it('fail - base_sentences_table does not exist', async () => {
+            const expNameWithoutWord_ocr = 'exp2';
+            const imageNameWithoutWord_ocr = 'im2';
+       
+            const word_ocr_path = `images/${imageNameWithoutWord_ocr}/word_ocr`;
+            const base_sent_table_path = `images/${imageNameWithoutWord_ocr}/base_sent_table`;
+     
+
+            await collectionsService.experiments().add(expNameWithoutWord_ocr, {'imageName':imageNameWithoutWord_ocr});
+            await collectionsService.images().add(imageNameWithoutWord_ocr, {
+                base_sent_table_path: base_sent_table_path,
+                name: imageNameWithoutWord_ocr,
+                word_ocr_path: word_ocr_path
+
+             });
+
+            await storageService.uploadBuffer(word_ocr_path,new Buffer("word_table"),fileTypes.Csv);
+      
+            const word_table = new Buffer('word_table');
+            const sent_table = new Buffer('sent_table');
+            const tables = {word_table: word_table, sentences_table: sent_table};
+            const params={
+                testId: 'testId',
+                formId : '5',
+                answers : '5',
+                score : '5',
+                sentanceWeights : '5',
+                experimentName: expNameWithoutWord_ocr,
+                fixations: 'buffer' }
+
+            pythonService.setGenTableFromEyezResult(tables);
+            
+            const {status, error} = await experimentService.addTest(params);
+            expect(status).toEqual(-1);
+            expect(error).toEqual('base_sentences_table does not exist');
+
+        });
+
+        it('fail - test id already exist', async () => {
+
+            const word_table = new Buffer('word_table');
+            const sent_table = new Buffer('sent_table');
+            const tables = {word_table: word_table, sentences_table: sent_table};
+            const params={
+                testId: 'testId',
+                formId : '5',
+                answers : '5',
+                score : '5',
+                sentanceWeights : '5',
+                experimentName: expName,
+                fixations: 'buffer' }
+            pythonService.setGenTableFromEyezResult(tables);
+
+            const expUploadPaths = 
+                {
+                sent_table_path:`experiments/${params.experimentName}/tests/${params.testId}/testSentTables`,
+                word_table_path:`experiments/${params.experimentName}/tests/${params.testId}/testWordTables`
+                }
+
+            await collectionsService.experiments().getTests(params.experimentName).add(params.testId,{
+                testId:params.testId,
+                formId: params.formId,
+                sent_table_path: expUploadPaths.sent_table_path ,
+                word_table_path: expUploadPaths.sent_table_path,
+            });
+
+            const {status, error} = await experimentService.addTest(params);
+            expect(status).toEqual(-1);
+            expect(error).toEqual('testId already exist exist');
+     
+        });
+      
+  
     });
 });
