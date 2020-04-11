@@ -4,7 +4,6 @@ import numpy as np
 from runAutomaticAlgo import normalWeight
 import sys
 from io import StringIO
-import logging
 
 def find_index_of_nearest_xy(y_array, x_array, y_point, x_point):
     distance = (y_array - y_point) ** 2 + (x_array - x_point) ** 2
@@ -57,7 +56,6 @@ def calculate_weight(fixations, word_table, sentences_table):
             sentences_table.at[sent_num,'weight']  +=  int(row[1]['Event Duration [ms]'])       
        
     word_table, sentences_table = normalize_weights(word_table, sentences_table)
-    logging.warning('d')
     word_table = word_table[['text', 'sent_num', 'par_num', 'weight', 'normalized_weight']]
     return word_table, sentences_table
 
@@ -66,7 +64,6 @@ def main(fixations, word_ocr, base_sentences_table):
 
 
 if __name__ == "__main__":
-    #logging.basicConfig(filename='log.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
   
     size = int.from_bytes( sys.stdin.buffer.read(4), byteorder='big', signed=False )
     fixations = sys.stdin.buffer.read(size).decode("ascii")

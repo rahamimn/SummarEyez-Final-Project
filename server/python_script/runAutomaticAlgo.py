@@ -7,7 +7,6 @@ from sklearn import preprocessing
 from io import StringIO
 from sklearn.preprocessing import PowerTransformer
 from sklearn.preprocessing import MinMaxScaler
-import logging
 
 mm_scaler = preprocessing.MinMaxScaler()
 
@@ -28,7 +27,6 @@ def main(base_sent_table, text, paths_algs):
 
 
 def normalWeight(sent_table): 
-    #logging.basicConfig(filename='log.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
     tmp_arr_for_normal_calc= []
     for j in range(len(sent_table)):
         tmp_arr_for_normal_calc.append([sent_table['normalized_weight'].get(j)])

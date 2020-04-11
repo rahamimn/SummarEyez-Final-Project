@@ -43,10 +43,7 @@ export class PythonScripts implements PythonScriptInterface {
                     }
                 }
             });
-            pyshell.stderr.on('data', function (buffer) {
-                console.log(buffer);
-            });
-
+            
             pyshell.end((err,code,signal) => {
                 if(code === 0 ){
                     resolve(handleFiles(inputFiles))
