@@ -72,12 +72,12 @@ export default function CustomizedSlider({
 
   const handleSliderChange = (event, newValue) => {
     setValue(newValue);
-    setPercentage(newValue);
+    setPercentage(newValue / 100);
   };
 
   const handleInputChange = event => {
     setValue(event.target.value === '' ? '' : Number(event.target.value));
-    setPercentage(Number(event.target.value));
+    setPercentage(Number(event.target.value) / 100);
   };
 
   const handleBlur = () => {

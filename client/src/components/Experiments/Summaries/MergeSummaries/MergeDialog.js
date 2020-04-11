@@ -37,7 +37,7 @@ export default function MergeDialog({
     setMergeInput(mergeInputCopy)
   }
 
-  const isDisabled = percentTotalSum() !== 100;
+  const isDisabled = percentTotalSum() !== 1;
 
   const handleChangeName = (event) => setMergeName(event.target.value)
   
