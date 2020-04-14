@@ -109,21 +109,22 @@ export const ArticleViewer = ({summary, title}) => {
                         onChange={(e) => setTopSentencesCount(e.target.value)}
                         id="minimumWeight"
                         label="Top Sentences" />
-                    <ToggleButton
-                        value="check"
-                        selected={isGradinet}
-                        onChange={() => {
-                            setIsGradient(!isGradinet);
-                        }}
-                        >
-                        <CheckIcon />
-                    </ToggleButton>
-
-
-
-
-  
-
+                    <div style={{
+                        display:'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between'
+                    }}>
+                        <Typography color="textSecondary">Gradient</Typography>
+                        <ToggleButton
+                            value="check"
+                            selected={isGradinet}
+                            onChange={() => {
+                                setIsGradient(!isGradinet);
+                            }}
+                            >
+                            <CheckIcon />
+                        </ToggleButton> 
+                    </div>
                 </div>
                 <div style={{ 
                     width:'800px',
