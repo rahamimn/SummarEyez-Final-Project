@@ -65,7 +65,7 @@ export class ExperimentService{
 addTest = async (params) => {
     const experiment= await this.collectionsService.experiments().get(params.experimentName)
     const paramsList = {'testId': params.testId};
-    const ans= this.validateParams(paramsList);
+    const ans= this.validateIds(paramsList);
 
     if(ans != ''){
         return response(-1,{error: ans} );
@@ -122,9 +122,7 @@ addTest = async (params) => {
         if(image){
             return response(-1,{error:"image name already exists"});
         }
-
-        const paramsList= {'name': name};
-        const ans= this.validateParams(paramsList);
+        const ans= this.validateIds({'name': name});
         if(ans != ''){
             return response(-1,{error: ans} );
         }
@@ -284,8 +282,7 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
     }
 
     addAutomaticAlgorithms = async (name: string, buffer) => {
-        const paramsList= {'name': name};
-        const ans= this.validateParams(paramsList);
+        const ans= this.validateIds({'name': name});
         if(ans != ''){
             return response(-1,{error: ans} );
         }
@@ -307,7 +304,7 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
 
     addExperiment = async (experimentName, imageName)=>{
         const paramsList= {'experimentName': experimentName, 'imageName': imageName};
-        const ans= this.validateParams(paramsList);
+        const ans= this.validateIds(paramsList);
         if(ans != ''){
             return response(-1,{error: ans} );
         }
@@ -379,7 +376,7 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
             data:sent_tables
         };
     }
-    private validateParams(paramsList){
+    private validateIds(paramsList){
         let ans = '';
         for(var param in paramsList){
             var val = paramsList[param];
