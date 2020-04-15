@@ -383,73 +383,90 @@ describe('ExperimentService Tests',() =>{
         const imageName = 'imageName';
         const autoName1 = 'auto1.py';
         const autoName2 = 'auto2.py';
-        const metaData = {};
-        const algName = 'alg1.py';
         const algPath = 'some/alg/path';
+        const auto_sent_table = new Buffer('alg1');
+        const merged_sent_table = new Buffer('merged1');
+        const path_of_merged = 'experiments/expName/merged-sent/newMerged';
+        const tables = [{name: autoName1, sent_table:auto_sent_table }];
+        const storage_path = `experiments/${expName}/merged-sent/newMerged`
+
 
         beforeEach( async () => {
             await collectionsService.automaticAlgos().add(autoName1,{});
             await collectionsService.automaticAlgos().add(autoName2,{});
             await collectionsService.experiments().add(expName, {imageName});
             await collectionsService.images().add(imageName, {});
-            await collectionsService.experiments().mergedSentOf(expName).add('newMerged', new Buffer("newMergedBuffer"));
-            await collectionsService.images().sentTablesOf(imageName).add(autoName1, metaData);
-            await collectionsService.images().sentTablesOf(imageName).add(autoName2, metaData);
-            await storageService.uploadBuffer(`images/${imageName}/text`,new Buffer(""),fileTypes.Text);
-            await storageService.uploadBuffer(`images/${imageName}/base_sent_table`,new Buffer(""),fileTypes.Csv);
+            await collectionsService.images().sentTablesOf(imageName).add(autoName1, {path: algPath});
+            await collectionsService.images().sentTablesOf(imageName).add(autoName2, {path: algPath});
+            await storageService.uploadBuffer(algPath, new Buffer('some-alg'), fileTypes.Text);
         });
 
 
         it('add merged success', async () => {
-            mockFS({
-                'automatic-algorithms':{}
-            });
-
-            await collectionsService.automaticAlgos().add(algName,{ path: algPath });
-            await storageService.uploadBuffer(algPath, new Buffer('some-alg'), fileTypes.Text);
-            const auto_sent_table = new Buffer('alg1');
-            const merged_sent_table = new Buffer('merged1');
-            const tables = [{name: algName, sent_table:auto_sent_table }];
             pythonService.setRunAutomaticAlgsResult(tables);
             pythonService.setMergeTablesResult(merged_sent_table);
-
-            await experimentService.runAutomaticAlgs([algName],expName);
-            await experimentService.merge_algorithms(expName, "newMerged", [{name: algName, type:'auto', percentage: '1.0'}]);
-
-            const path_of_merged = 'experiments/expName/merged-sent/newMerged'
+            const merged_response = await experimentService.mergeSummaries(expName, "newMerged", [{name: autoName1, type:'auto', percentage: '1.0'}]);
+            expect(merged_response.status).toBe(0)
             const object_of_merged = await collectionsService.experiments().mergedSentOf(expName).get('newMerged');
             expect(object_of_merged.path).toEqual(path_of_merged)
             expect(object_of_merged.name).toEqual("newMerged")
             expect(object_of_merged.type).toEqual("merged")
-            mockFS.restore();
+            const merged_storage = await storageService.downloadToBuffer(storage_path); 
+            expect(merged_storage).toBe(merged_sent_table)
         });
 
 
         it('add merged 2 auto algorithms success', async () => {
-            mockFS({
-                'automatic-algorithms':{}
-            });
-            await collectionsService.automaticAlgos().add(algName,{ path: algPath });
-            await storageService.uploadBuffer(algPath, new Buffer('some-alg'), fileTypes.Text);
-            const auto_sent_table1 = new Buffer('alg1');
-
-            const merged_sent_table = new Buffer('merged1');
-            const tables1 = [{name: algName, sent_table:auto_sent_table1 }];
-            pythonService.setRunAutomaticAlgsResult(tables1);
+            pythonService.setRunAutomaticAlgsResult(tables);
             pythonService.setMergeTablesResult(merged_sent_table);
-
-            await experimentService.runAutomaticAlgs([algName],expName);
-            await experimentService.merge_algorithms(expName, "newMerged", [{name: algName, type:'auto', percentage: '0.3'},{name: algName, type:'auto', percentage: '0.7'}]);
-
-            const path_of_merged = 'experiments/expName/merged-sent/newMerged'
+            const merged_response = await experimentService.mergeSummaries(expName, "newMerged", [{name: autoName1, type:'auto', percentage: '0.3'},{name: autoName1, type:'auto', percentage: '0.7'}]);
+            expect(merged_response.status).toBe(0)
             const object_of_merged = await collectionsService.experiments().mergedSentOf(expName).get('newMerged');
             expect(object_of_merged.path).toEqual(path_of_merged)
             expect(object_of_merged.name).toEqual("newMerged")
             expect(object_of_merged.type).toEqual("merged")
-            expect(object_of_merged.mergedInput).toEqual([{"name": "alg1.py", "percentage": "0.3", "type": "auto"}, {"name": "alg1.py", "percentage": "0.7", "type": "auto"}])
-
-            mockFS.restore();
+            expect(object_of_merged.mergedInput).toEqual([{"name": "auto1.py", "percentage": "0.3", "type": "auto"}, {"name": "auto1.py", "percentage": "0.7", "type": "auto"}])
+            const merged_storage = await storageService.downloadToBuffer(storage_path); 
+            expect(merged_storage).toBe(merged_sent_table)
         });
+
+        it('add merged 2 different auto algorithms success', async () => {
+            const tables_1_2 = [{name: autoName1, sent_table:auto_sent_table },{name: autoName2, sent_table:auto_sent_table }]
+            pythonService.setRunAutomaticAlgsResult(tables_1_2);
+            pythonService.setMergeTablesResult(merged_sent_table);
+            const merged_response = await experimentService.mergeSummaries(expName, "newMerged", [{name: autoName1, type:'auto', percentage: '0.3'},{name: autoName2, type:'auto', percentage: '0.7'}]);
+            expect(merged_response.status).toBe(0)
+            const object_of_merged = await collectionsService.experiments().mergedSentOf(expName).get('newMerged');
+            expect(object_of_merged.path).toEqual(path_of_merged)
+            expect(object_of_merged.name).toEqual("newMerged")
+            expect(object_of_merged.type).toEqual("merged")
+            expect(object_of_merged.mergedInput).toEqual([{"name": "auto1.py", "percentage": "0.3", "type": "auto"}, {"name": "auto2.py", "percentage": "0.7", "type": "auto"}])
+            const merged_storage = await storageService.downloadToBuffer(storage_path); 
+            expect(merged_storage).toBe(merged_sent_table)
+        });
+
+
+        it('add merged 3 auto algorithms success', async () => {
+            const tables_1_2 = [{name: autoName1, sent_table:auto_sent_table },{name: autoName2, sent_table:auto_sent_table }]
+            pythonService.setRunAutomaticAlgsResult(tables_1_2);
+            pythonService.setMergeTablesResult(merged_sent_table);
+            const merged_response = await experimentService.mergeSummaries(expName, "newMerged", [{name: autoName1, type:'auto', percentage: '0.3'},{name: autoName2, type:'auto', percentage: '0.5'},{name: autoName2, type:'auto', percentage: '0.2'}]);
+            expect(merged_response.status).toBe(0)
+            const object_of_merged = await collectionsService.experiments().mergedSentOf(expName).get('newMerged');
+            expect(object_of_merged.path).toEqual(path_of_merged)
+            expect(object_of_merged.name).toEqual("newMerged")
+            expect(object_of_merged.type).toEqual("merged")
+            expect(object_of_merged.mergedInput).toEqual([{"name": "auto1.py", "percentage": "0.3", "type": "auto"}, {"name": "auto2.py", "percentage": "0.5", "type": "auto"}, {"name": "auto2.py", "percentage": "0.2", "type": "auto"}])
+            const merged_storage = await storageService.downloadToBuffer(storage_path); 
+            expect(merged_storage).toBe(merged_sent_table)
+        });
+
+        it('no input for merge summary provided', async () => {
+            const merged_response = await experimentService.mergeSummaries(expName, "newMerged", []);
+            expect(merged_response.status).toBe(-1)
+            expect(merged_response.error).toBe('no summaries input provided')
+        });
+
 
 
         it('success - auto and eyes', async () => {
@@ -457,39 +474,16 @@ describe('ExperimentService Tests',() =>{
         });
 
         it('fail - experiment does not exists', async () => {
-            const {status, error} = await experimentService.merge_algorithms("not exist", "new name", [{name: 'Alg1.py', type: 'auto', percentage: '1.0'}]);
+            const {status, error} = await experimentService.mergeSummaries("not exist", "new name", [{name: 'Alg1.py', type: 'auto', percentage: '1.0'}]);
             expect(status).toEqual(-1);
             expect(error).toEqual('The name of the experiment does not exist in the system.');
         });
         
 
         it('fail - auto does not exists', async () => {
-            const {status, error} = await experimentService.merge_algorithms("expName", "new_name", [{name: 'Alg1.py', type: 'auto', percentage: '1.0'}]);
+            const {status, error} = await experimentService.mergeSummaries("expName", "new_name", [{name: 'Alg1.py', type: 'auto', percentage: '1.0'}]);
             expect(status).toEqual(-1);
             expect(error).toEqual('the sammaries name is not found');
-        });
-
-        it('auto algorithm exist for expirament(check assitent method)', async () => {
-            // const {status, error} = await experimentService.getSummaryForMerge("expName", 'auto', 'auto1.py');
-            // expect(status).toEqual(0);
-            // expect(error).toEqual(undefined);
-        });
-
-        it('auto algorithm do not exist for expirament(check assitent method)', async () => {
-            // const {status, error} = await experimentService.getSummaryForMerge("expName", 'auto', 'auto3.py');
-            // expect(status).toEqual(-2);
-            // expect(error).toEqual('auto summary name does not exist');
-        });
-
-        it('auto algorithm exist for expirament(check sent_table_initializer)', async () => {
-            // const {status} = await experimentService.sent_table_initializer(['auto2.py'],['auto'], "expName");
-            // expect(status).toEqual(0);
-        });
-
-        it('auto algorithm do not exist for expirament(check sent_table_initializer)', async () => {
-            // const {status, error} = await experimentService.sent_table_initializer(['auto3.py'],['auto'], "expName");
-            // expect(status).toEqual(-1);
-            // expect(error).toEqual('the sammary name is not found');
         });
     });
 
