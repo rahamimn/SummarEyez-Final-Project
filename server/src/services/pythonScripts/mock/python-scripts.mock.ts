@@ -32,7 +32,7 @@ export class MockPythonScripts implements PythonScriptInterface{
     }
 
     setMergeTablesResult( merged_sent_table :Buffer){
-        this.mergeTablesResult = { sent_table_of_merged: merged_sent_table };
+        this.mergeTablesResult = { merged_table: merged_sent_table };
     }
     
     processImage(imageBuffer: Buffer){
