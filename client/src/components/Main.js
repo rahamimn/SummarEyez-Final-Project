@@ -8,7 +8,8 @@ import {
 import WelcomeDialog from './WelcomeDialog/WelcomeDialog';
 import MainExperiments from './Experiments/MainExperiments';
 import MainTests from './Tests/MainTests';
-import {ArticleMain} from './ArticleViewer/ArticleMain';
+import {ArticleMain} from './Viewers/ArticleViewer/ArticleMain';
+import {LayersMain} from './Viewers/LayersViewer/LayersMain';
 
 
 function Main() {
@@ -20,6 +21,9 @@ function Main() {
       <Switch>
         <Route path="/article/:experimentName/:type/:name">
           <ArticleMain/>
+        </Route>
+        <Route path="/article-layers/:experimentName">
+          <LayersMain/>
         </Route>
         <Route path="/experiments-new" render={ () => {
           if(experimentsPermission || true) {

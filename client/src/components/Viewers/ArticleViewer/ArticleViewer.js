@@ -24,7 +24,7 @@ export const ArticleViewer = ({summary, title}) => {
     const topSentences = sortedSentences.slice(0,topSentencesCount);
     const backgroundColor = (sent) =>  (sent.normalized_weight > minWeight && topSentences.includes(sent)) ? 
         (isGradinet? `hsl(${color}, 100%, ${100 - sent.normalized_weight*50}%)` :
-        `hsl(${color}, 100%, ${100 - 50}%)` ) :
+        `hsl(${color}, 100%, 50%)` ) :
             null;
 
     for(let i = 0 ; i < summary.length; i++){
