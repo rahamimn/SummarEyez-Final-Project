@@ -125,6 +125,14 @@ app.post('/api/experiments/:experimentName/summary/merge', bodyParser.json(), (r
     res.send(summaries);
 }));
 
+app.post('/api/images/:experimentName/questions', bodyParser.json(), (req, res) => errorHandling(res, async () => {
+    const experimentName = req.params.experimentName;
+    const {question, answers, correctAnswer}  = req.body;
+    const questionAdded = await experimentService.addquestion(experimentName,question, answers, correctAnswer);
+    
+    res.send(questionAdded);
+}));
+
 if(localMode){
     dataCreation(experimentService).then(() => {
         app.listen(port, () => console.log(`Server runs on RAM storage is running on port ${port}!`))

@@ -317,6 +317,25 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
         return response(0);
     }
 
+    addquestion = async (experimentName,question, answers, correctAnswer)=>{
+        var possible_answers = answers.map(answer => answer.answer);
+        const expriment = await this.collectionsService.experiments().get(experimentName);
+        if(!expriment){
+            return response(-1,{error: "The name of the experiment does not exist in the system."});
+        }
+        
+        if(correctAnswer >4 || correctAnswer <0){
+            return response(-1,{error: "the value of the correct answer is not valid"});
+        }
+        
+        await this.collectionsService.experiments().getQuestions(experimentName).add(question, {
+            possible_answers,
+            correctAnswer: correctAnswer,
+            creation_date: Date.now()
+        });
+        return response(0, {data:"the question was addes succesfully!"});
+    }
+
     merge_algorithms = async(experimentName, mergedName, sammaries_details ) =>{
 
         var percents = sammaries_details.map(sammary => sammary.percentage)
@@ -351,7 +370,7 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
         return response(0,{
             data: await csvToJson({delimiter:'auto'}).fromString(merged_table.toString())
         });
-    } 
+    }
 
 
     public async sent_table_initializer(names: string[],types: string [], experiment: any) {
