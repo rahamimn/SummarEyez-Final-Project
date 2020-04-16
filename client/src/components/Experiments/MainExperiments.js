@@ -6,6 +6,12 @@ import Hidden from '@material-ui/core/Hidden';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import DashboardIcon from '@material-ui/icons/Dashboard';
+import AssessmentIcon from '@material-ui/icons/Assessment';
+import AssignmentIcon from '@material-ui/icons/Assignment';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import DeveloperBoardIcon from '@material-ui/icons/DeveloperBoard';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   Switch,
@@ -66,22 +72,37 @@ function MainExperiments({permit}) {
       <List>
 
         <ListItem button key={'Upload Algorithm'} onClick={e => history.push(experimetPage('algorithm'))}>
+          <ListItemIcon>
+            <CloudUploadIcon />
+          </ListItemIcon>
           <ListItemText primary={'Upload Algorithm'} />
         </ListItem>
         {experimentName &&
           [<ListItem button key={'Summaries'} onClick={e => history.push(experimetPage('summaries'))}>
+          <ListItemIcon>
+            <AssignmentIcon />
+          </ListItemIcon>
             <ListItemText primary={'Summaries'} />
           </ListItem>,
 
           <ListItem button key={'Forms'} onClick={e => history.push(experimetPage('forms'))}>
+          <ListItemIcon>
+            <DeveloperBoardIcon />
+          </ListItemIcon>
             <ListItemText primary={'Test Forms Manager'} />
           </ListItem>,
 
           <ListItem button key={'Tests'} onClick={e => history.push(experimetPage('tests'))}>
+            <ListItemIcon>
+              <AssessmentIcon />
+            </ListItemIcon>   
             <ListItemText primary={'Test pool'} />
           </ListItem>,
 
           <ListItem button key={'Upload Fixations'} onClick={e => history.push(experimetPage('uploadFixations'))}>
+            <ListItemIcon>
+              <DashboardIcon />
+            </ListItemIcon>
             <ListItemText primary={'Upload Fixations'} />
           </ListItem>]
         }
@@ -165,4 +186,3 @@ function MainExperiments({permit}) {
 }
 
 export default MainExperiments;
-
