@@ -1,4 +1,4 @@
-## Text-summrization: final-project
+## Text-summarization: final-project
 
 >  ###### Extract text based on reader`s eye movements 
 
