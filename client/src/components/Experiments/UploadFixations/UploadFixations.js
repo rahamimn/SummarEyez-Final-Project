@@ -20,7 +20,11 @@ export class UploadFixations extends Component{
   handleAddFixation = async () => {
     this.setState({uploading: true});
     const {status} = await api.uploadFixations(this.props.experimentName,this.state.fixationName, this.state.files[0]);
-    this.setState({uploading: false, isNameExists: status === -1}); 
+    this.setState({uploading: false, isNameExists: status === -1});
+
+    if(status === 0){
+      this.props.onSuccess();
+    }
   }
 
   handleChangeFile = (files) => {

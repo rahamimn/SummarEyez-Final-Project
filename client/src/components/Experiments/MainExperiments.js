@@ -139,7 +139,9 @@ function MainExperiments({permit}) {
               <UploadAlgorithm/>
             </Route>
             <Route path={experimetRoutePage('uploadFixations')}>
-              <UploadFixations experimentName={experimentName}/>
+              <UploadFixations
+                onSuccess={() => history.push(`/experiments/${experimentName}/summaries`)}
+                experimentName={experimentName}/>
             </Route>
             {/* here we add all sub pages : (may be inners goes in sub component)
               *   forms:
