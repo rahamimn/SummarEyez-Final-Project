@@ -139,7 +139,7 @@ function MainExperiments({permit}) {
               <UploadAlgorithm/>
             </Route>
             <Route path={experimetRoutePage('uploadFixations')}>
-              <UploadFixations/>
+              <UploadFixations experimentName={experimentName}/>
             </Route>
             {/* here we add all sub pages : (may be inners goes in sub component)
               *   forms:

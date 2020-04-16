@@ -19,7 +19,7 @@ export class UploadFixations extends Component{
 
   handleAddFixation = async () => {
     this.setState({uploading: true});
-    const {status} = await api.UploadFixations(this.state.fixationName, this.state.files[0]);
+    const {status} = await api.uploadFixations(this.props.experimentName,this.state.fixationName, this.state.files[0]);
     this.setState({uploading: false, isNameExists: status === -1}); 
   }
 
@@ -61,7 +61,7 @@ export class UploadFixations extends Component{
               <DropzoneArea
                 filesLimit={1}
                   onChange={this.handleChangeFile}
-                  // acceptedFiles={["text/py/*"]}
+                  acceptedFiles={["text/csv"]}
                   dropzoneText={"Upload fixation file here"}
                 />
 

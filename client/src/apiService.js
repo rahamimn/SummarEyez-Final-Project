@@ -77,14 +77,13 @@ const api = {
         return res.data;
     },
 
-
-    // TODO: Not working yet, basically just copied from uploadAlgorithm
     uploadFixations: async (experimentName, name, buffer) => {
         const formData = new FormData();
-        formData.append('fixationBuffer', buffer);
-        formData.append('fixationName', name);
-
-        const res = await axios.post(`/api/experiments/${experimentName}/tests`, formData,{ 
+        formData.append('fixations', buffer);
+        const data = JSON.stringify({
+            testId: name,
+        })
+        const res = await axios.post(`/api/experiments/${experimentName}/tests?data=${data}`, formData,{ 
             headers:{
                 "Content-Type": "multipart/form-data"
             },
