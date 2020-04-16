@@ -2,6 +2,8 @@ import React, {useState} from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import Toolbar from '@material-ui/core/Toolbar';
+import LibraryAddIcon from '@material-ui/icons/LibraryAdd';
+import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import WelcomeDialog from '../WelcomeDialog/WelcomeDialog';
@@ -41,10 +43,10 @@ export const TopNav = ({
           SummarEyez
         </Typography>
         <div>
-          {isExperimentMode && <Button color="inherit" onClick={() => history.push(
+          {isExperimentMode && <Button style={{marginRight: '8px'}} endIcon={<LibraryAddIcon/>} color="inherit" onClick={() => history.push(
             experimentName ? `/experiments/${experimentName}/new` : '/experiments-new'
             )}>New Experiment</Button>}
-          <Button color="inherit" onClick={() => setShowModeSelection(true)}>Mode</Button>
+          <Button endIcon={<OpenInBrowserIcon/>} color="inherit" onClick={() => setShowModeSelection(true)}>Mode</Button>
         </div>
         </div>
       </Toolbar>

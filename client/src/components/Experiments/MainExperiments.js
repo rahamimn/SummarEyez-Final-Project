@@ -8,8 +8,8 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import DashboardIcon from '@material-ui/icons/Dashboard';
+import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import AssessmentIcon from '@material-ui/icons/Assessment';
-import AssignmentIcon from '@material-ui/icons/Assignment';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import DeveloperBoardIcon from '@material-ui/icons/DeveloperBoard';
 import { makeStyles } from '@material-ui/core/styles';
@@ -80,7 +80,7 @@ function MainExperiments({permit}) {
         {experimentName &&
           [<ListItem button key={'Summaries'} onClick={e => history.push(experimetPage('summaries'))}>
           <ListItemIcon>
-            <AssignmentIcon />
+            <LibraryBooksIcon />
           </ListItemIcon>
             <ListItemText primary={'Summaries'} />
           </ListItem>,

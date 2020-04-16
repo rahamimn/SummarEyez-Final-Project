@@ -61,7 +61,8 @@ export const ArticleViewer = ({summary, title}) => {
                     display:'flex',
                     flexDirection:'column',
                     padding:'30px',
-                    backgroundColor:'#dddddd'
+                    backgroundColor:'#dddddd',
+                    width: '190px',
                     }}>
                     <Typography variant="h5" style={{marginBottom:'20px'}}>
                         Filters
