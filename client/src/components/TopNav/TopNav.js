@@ -38,7 +38,7 @@ export const TopNav = ({
         }}>
 
         <Typography variant="h6" noWrap>
-          Summareyez
+          SummarEyez
         </Typography>
         <div>
           {isExperimentMode && <Button color="inherit" onClick={() => history.push(

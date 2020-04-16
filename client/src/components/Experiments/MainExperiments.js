@@ -16,7 +16,8 @@ import {
 import { NewExperiment } from './NewExperiment/NewExperiment';
 import TopNav from '../TopNav/TopNav';
 import {Summaries} from './Summaries/Summaries';
-import {UploadAlgorithm} from './UploadAutomaticAlg-notImpl/UploadAutomaticAlg';
+import {UploadAlgorithm} from './UploadAutomaticAlg/UploadAutomaticAlg';
+import {UploadFixations} from './UploadFixations/UploadFixations';
 
 
 const drawerWidth = 240;
@@ -73,15 +74,15 @@ function MainExperiments({permit}) {
           </ListItem>,
 
           <ListItem button key={'Forms'} onClick={e => history.push(experimetPage('forms'))}>
-            <ListItemText primary={'Forms -> all/Edit/New Form'} />
+            <ListItemText primary={'Test Forms Manager'} />
           </ListItem>,
 
           <ListItem button key={'Tests'} onClick={e => history.push(experimetPage('tests'))}>
-            <ListItemText primary={'Tests their Summaries'} />
+            <ListItemText primary={'Test pool'} />
           </ListItem>,
 
-          <ListItem button key={'New Form'} onClick={e => history.push(experimetPage('newForm'))}>
-            <ListItemText primary={'Create from eyes (manualy) -opt'} />
+          <ListItem button key={'Upload Fixations'} onClick={e => history.push(experimetPage('uploadFixations'))}>
+            <ListItemText primary={'Upload Fixations'} />
           </ListItem>]
         }
 
@@ -136,6 +137,9 @@ function MainExperiments({permit}) {
             </Route>
             <Route path={experimetRoutePage('algorithm')}>
               <UploadAlgorithm/>
+            </Route>
+            <Route path={experimetRoutePage('uploadFixations')}>
+              <UploadFixations/>
             </Route>
             {/* here we add all sub pages : (may be inners goes in sub component)
               *   forms:

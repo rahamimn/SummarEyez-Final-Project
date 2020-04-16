@@ -75,6 +75,21 @@ const api = {
             mergeInputs: mergeInput
         });
         return res.data;
+    },
+
+
+    // TODO: Not working yet, basically just copied from uploadAlgorithm
+    uploadFixations: async (experimentName, name, buffer) => {
+        const formData = new FormData();
+        formData.append('fixationBuffer', buffer);
+        formData.append('fixationName', name);
+
+        const res = await axios.post(`/api/experiments/${experimentName}/tests`, formData,{ 
+            headers:{
+                "Content-Type": "multipart/form-data"
+            },
+        });
+        return res.data;
     }
 }
 
