@@ -1,6 +1,6 @@
 # Text-summrization - Final-project
 
->>>  ###### Extract text based on reader`s eye movements 
+>  ###### Extract text based on reader`s eye movements 
 
-![](https://i.ibb.co/GWbnBtr/Untitled.png)
+![](https://i.ibb.co/kJrqX37/Summar-Eyez-Logo.png)
 
