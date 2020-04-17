@@ -3,12 +3,16 @@ import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Typography from '@material-ui/core/Typography';
+import CheckIcon from '@material-ui/icons/Check';
+import ToggleButton from '@material-ui/lab/ToggleButton';
 
-export const ArticleViewer = ({summary,type}) => {
+
+export const ArticleViewer = ({summary, title}) => {
     let paragraphs = [];
     let paragraphNum = -1;
     let [colorInput, setColorInput] = useState('');
     let [color, setColor] = useState(90);
+    let [isGradinet, setIsGradient] = useState(false);
     let [minWeight, setMinWeight] = useState(0);
     let [topSentencesCount, setTopSentencesCount ] = useState(summary.length);
 
@@ -19,18 +23,27 @@ export const ArticleViewer = ({summary,type}) => {
     const sortedSentences = [...summary].sort((a,b) => b.normalized_weight - a.normalized_weight);
     const topSentences = sortedSentences.slice(0,topSentencesCount);
     const backgroundColor = (sent) =>  (sent.normalized_weight > minWeight && topSentences.includes(sent)) ? 
-        `hsl(${color}, 100%, ${100 - sent.normalized_weight*50}%)` :
-        null;
+        (isGradinet? `hsl(${color}, 100%, ${100 - sent.normalized_weight*50}%)` :
+        `hsl(${color}, 100%, ${100 - 50}%)` ) :
+            null;
 
     for(let i = 0 ; i < summary.length; i++){
-        const sent = <span key={'sent'+i} style={{backgroundColor: backgroundColor(summary[i])}} >{summary[i].text}</span>
+        const isSamePar = summary[i].par_num === paragraphNum;
+        const Sent = (
+            <span 
+                key={'sent'+i}
+                style={{backgroundColor: backgroundColor(summary[i])}}>
+                    {isSamePar && <span>&nbsp;</span>}
+                    {summary[i].text}
+            </span>
+        );
         
-        if(summary[i].par_num !== paragraphNum){
-            paragraphs.push([sent]);
+        if(!isSamePar){
+            paragraphs.push([Sent]);
             paragraphNum = summary[i].par_num;
         }
         else{
-            paragraphs[paragraphNum-1].push([sent])
+            paragraphs[paragraphNum-1].push(Sent)
         }
     }
 
@@ -53,6 +66,7 @@ export const ArticleViewer = ({summary,type}) => {
                     <Typography variant="h5" style={{marginBottom:'20px'}}>
                         Filters
                     </Typography>
+                    
                     <Autocomplete
                         id="color-select"
                         style={{ width: '180px', marginRight:10, marginBottom:'15px' }}
@@ -95,11 +109,28 @@ export const ArticleViewer = ({summary,type}) => {
                         onChange={(e) => setTopSentencesCount(e.target.value)}
                         id="minimumWeight"
                         label="Top Sentences" />
+                    <div style={{
+                        display:'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between'
+                    }}>
+                        <Typography color="textSecondary">Gradient</Typography>
+                        <ToggleButton
+                            value="check"
+                            selected={isGradinet}
+                            onChange={() => {
+                                setIsGradient(!isGradinet);
+                            }}
+                            >
+                            <CheckIcon />
+                        </ToggleButton> 
+                    </div>
                 </div>
                 <div style={{ 
                     width:'800px',
                     padding:'50px',
                     fontFamily: '"Times New Roman", Times, serif', fontWeight:'400'}}>
+                    <strong><div style={{fontSize:"30px"}}>{title}</div></strong>
                     {sentHtml}
                 </div>
         </div>       

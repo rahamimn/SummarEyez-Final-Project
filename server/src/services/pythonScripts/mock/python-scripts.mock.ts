@@ -1,9 +1,12 @@
 import { PythonScriptInterface } from '../pythonScriptsTypes';
 
 export class MockPythonScripts implements PythonScriptInterface{
+  
     private processImageResult;
     private runAutomaticAlgsResult;
     private mergeTablesResult;
+    private genTableFromEyezResult;
+
     constructor(){
     }
 
@@ -20,11 +23,17 @@ export class MockPythonScripts implements PythonScriptInterface{
         this.runAutomaticAlgsResult = { tables: tables || [] };
     }
 
-    setMergeTablesResult( merged_sent_table :Buffer){
-        
-        this.mergeTablesResult = { sent_table_of_merged: merged_sent_table };
+    setGenTableFromEyezResult (tables : {word_table:Buffer, sentences_table: Buffer} ){
+        const result = {
+            word_table: tables.word_table || new Buffer('word-table-file'),
+            sentences_table: tables.sentences_table || new Buffer('sentences-table-file'),
+        }
+        this.genTableFromEyezResult = result;
     }
 
+    setMergeTablesResult( merged_sent_table :Buffer){
+        this.mergeTablesResult = { merged_table: merged_sent_table };
+    }
     
     processImage(imageBuffer: Buffer){
       return Promise.resolve(this.processImageResult)
@@ -36,6 +45,10 @@ export class MockPythonScripts implements PythonScriptInterface{
 
     mergeTables(algsPercent, sent_tables, base_sent_table){
         return Promise.resolve(this.mergeTablesResult)
+    }
+    
+    genTableFromEyez (fixations: any, word_ocr: any, base_sentences_table: any){
+        return Promise.resolve(this.genTableFromEyezResult)
     }
     
 

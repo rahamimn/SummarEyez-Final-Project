@@ -17,4 +17,11 @@ export interface PythonScriptInterface {
         Promise<{
             merged_table?: Buffer
         }>;
+        
+    genTableFromEyez: (fixations, word_ocr, base_sentences_table) =>
+        Promise<{
+                word_table?:Buffer,
+                sentences_table?: Buffer
+        }>;    
+       
 }

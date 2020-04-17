@@ -152,7 +152,7 @@ describe('ExperimentService Tests',() =>{
 
             const experiments = await experimentService.getExperiments();
             expect(experiments.status).toEqual(0);
-            expect(experiments.experiments).toEqual([{id:'exp1',data:exp1},{id:'exp2',data:exp2}]);
+            expect(experiments.data).toEqual([{id:'exp1',data:exp1},{id:'exp2',data:exp2}]);
         });
     });
 
@@ -161,7 +161,7 @@ describe('ExperimentService Tests',() =>{
             const expName= "exp_1";
             const imageName= "img_1";
             const res = await experimentService.addExperiment(expName, imageName);
-            expect(res).toEqual({"status": 0});
+            expect(res.status).toEqual(0);
             
             expect(await collectionsService.experiments().get(expName)).toEqual(expect.objectContaining({
                     name: expName,
@@ -181,33 +181,62 @@ describe('ExperimentService Tests',() =>{
     });
     describe('get summary' , () => {
         const expName = 'exp1';
-        const imageName = ' im1';
+        const imageName = 'im1';
         const autoName = 'auto1.py';
         const autoFilePath = 'some/path';
-        const sent_table = new Buffer("");
+        const mergedName = 'merged1';
+        const eyesName = 'eyes1';
+        const mergedFilePath = 'some/merged/path';
+        const eyesSentFilePath = 'some/eyes/path';
+        const sent_table_file = new Buffer("");
 
         beforeEach( async () => {
-            await collectionsService.experiments().add(expName, {imageName});
+            await collectionsService.experiments().add(expName, {imageName, name: expName});
             await collectionsService.images().add(imageName, {});
+
             await collectionsService.images().sentTablesOf(imageName).add(autoName,{
-                path:autoFilePath
+                path: autoFilePath
             });
-            await storageService.uploadBuffer(autoFilePath,new Buffer(""),fileTypes.Csv);
+            await collectionsService.experiments().mergedSentOf(expName).add(mergedName,{
+                path: mergedFilePath
+            });
+            await collectionsService.experiments().getTests(expName).add(eyesName,{
+                sent_table_path: eyesSentFilePath
+            });
+
+            await storageService.uploadBuffer(autoFilePath,sent_table_file,fileTypes.Csv);
+            await storageService.uploadBuffer(mergedFilePath,sent_table_file,fileTypes.Csv);
+            await storageService.uploadBuffer(eyesSentFilePath,sent_table_file,fileTypes.Csv);
         });
 
         it('success - auto', async () => {
             const {status, data} = await experimentService.getSummary(expName, 'auto',autoName);
-            const json = await csvToJson({delimiter:'auto'}).fromString(sent_table.toString())
+            const json = await csvToJson({delimiter:'auto'}).fromString(sent_table_file.toString())
             expect(status).toEqual(0);
-            expect(data).toEqual(json);
+            expect(data).toEqual(expect.objectContaining({
+                summary: json,
+                title: imageName
+            }));
         }); 
 
         it('success - eyes', async () => {
-            expect(true).toEqual(true);
+            const {status, data} = await experimentService.getSummary(expName, 'eyes',eyesName);
+            const json = await csvToJson({delimiter:'auto'}).fromString(sent_table_file.toString())
+            expect(status).toEqual(0);
+            expect(data).toEqual(expect.objectContaining({
+                summary: json,
+                title: imageName
+            }));
         });
 
         it('success - merged', async () => {
-            expect(true).toEqual(true);
+            const {status, data} = await experimentService.getSummary(expName, 'merged',mergedName);
+            const json = await csvToJson({delimiter:'auto'}).fromString(sent_table_file.toString())
+            expect(status).toEqual(0);
+            expect(data).toEqual(expect.objectContaining({
+                summary: json,
+                title: imageName
+            }));
         });
         
         it('fail - experiment not exists', async () => {
@@ -221,19 +250,25 @@ describe('ExperimentService Tests',() =>{
             const notExistsAutoSummaryName = 'NotExistsAuto';
             const {status, error} = await experimentService.getSummary(expName, 'auto',notExistsAutoSummaryName);
             expect(status).toEqual(-2);
-            expect(error).toEqual('summary name does not exist');
+            expect(error).toEqual('summary does not exist');
         });
 
         it('fail - eyes not exists', async () => {
-            expect(true).toEqual(true);
+            const notExistsEyesSummaryName = 'NotExistsAuto';
+            const {status, error} = await experimentService.getSummary(expName, 'eyes',notExistsEyesSummaryName);
+            expect(status).toEqual(-2);
+            expect(error).toEqual('summary does not exist');
         });
 
         it('fail - merged not exists', async () => {
-            expect(true).toEqual(true);
+            const notExistsMergedSummaryName = 'NotExistsMerged';
+            const {status, error} = await experimentService.getSummary(expName, 'merged',notExistsMergedSummaryName);
+            expect(status).toEqual(-2);
+            expect(error).toEqual('summary does not exist');
         });
     });
-   
-    describe('run automatic algs' , async () => {
+
+    describe('run automatic algs', () => {
         const expName = 'exp1';
         const imageName = ' im1';
         const algName = 'alg1.py';
@@ -306,6 +341,10 @@ describe('ExperimentService Tests',() =>{
         const imageName = 'imageName';
         const autoName1 = 'auto1.py';
         const autoName2 = 'auto2.py';
+        const merged1 = 'merged1';
+        const merged2 = 'merged2';
+        const eyes1 = 'eyes1';
+        const eyes2 = 'eyes2';
         const metaData = {};
 
         beforeEach( async () => {
@@ -314,14 +353,20 @@ describe('ExperimentService Tests',() =>{
             await collectionsService.experiments().add(expName, {imageName});
             await collectionsService.images().add(imageName, {});
             await collectionsService.images().sentTablesOf(imageName).add(autoName1, metaData);
+            await collectionsService.experiments().getTests(expName).add(eyes1,metaData)
+            await collectionsService.experiments().getTests(expName).add(eyes2,metaData)
+            await collectionsService.experiments().mergedSentOf(expName).add(merged1, metaData);
+            await collectionsService.experiments().mergedSentOf(expName).add(merged2, metaData);
         });
 
-        it('success - (only auto)', async () => {
+        it('success', async () => {
             const {status, data} = await experimentService.getSummaries(expName);
 
             expect(status).toEqual(0);
             expect(data).toEqual(expect.objectContaining({
-                auto: [{id:autoName1, data: metaData, disabled: false},{id:autoName2, data: metaData, disabled:true}]
+                auto: [{id:autoName1, data: metaData, disabled: false},{id:autoName2, data: metaData, disabled:true}],
+                merged: [{id:merged1, data: metaData},{id:merged2, data: metaData}],
+                eyes: [{id:eyes1, data: metaData},{id:eyes2, data: metaData}]
             }));
         });
 
@@ -338,73 +383,54 @@ describe('ExperimentService Tests',() =>{
         const imageName = 'imageName';
         const autoName1 = 'auto1.py';
         const autoName2 = 'auto2.py';
-        const metaData = {};
-        const algName = 'alg1.py';
         const algPath = 'some/alg/path';
+        const newMergedName = "newMerged";
+        const merged_sent_table = new Buffer('merged1');
+        const path_of_merged = 'experiments/expName/merged-sent/newMerged';
+        const storage_path = `experiments/${expName}/merged-sent/newMerged`
 
         beforeEach( async () => {
             await collectionsService.automaticAlgos().add(autoName1,{});
             await collectionsService.automaticAlgos().add(autoName2,{});
             await collectionsService.experiments().add(expName, {imageName});
             await collectionsService.images().add(imageName, {});
-            await collectionsService.experiments().mergedSentOf(expName).add('newMerged', new Buffer("newMergedBuffer"));
-            await collectionsService.images().sentTablesOf(imageName).add(autoName1, metaData);
-            await collectionsService.images().sentTablesOf(imageName).add(autoName2, metaData);
-            await storageService.uploadBuffer(`images/${imageName}/text`,new Buffer(""),fileTypes.Text);
-            await storageService.uploadBuffer(`images/${imageName}/base_sent_table`,new Buffer(""),fileTypes.Csv);
+            await collectionsService.images().sentTablesOf(imageName).add(autoName1, {path: algPath});
+            await collectionsService.images().sentTablesOf(imageName).add(autoName2, {path: algPath});
+            await storageService.uploadBuffer(algPath, new Buffer('some-alg'), fileTypes.Text);
         });
 
 
         it('add merged success', async () => {
-            mockFS({
-                'automatic-algorithms':{}
-            });
-
-            await collectionsService.automaticAlgos().add(algName,{ path: algPath });
-            await storageService.uploadBuffer(algPath, new Buffer('some-alg'), fileTypes.Text);
-            const auto_sent_table = new Buffer('alg1');
-            const merged_sent_table = new Buffer('merged1');
-            const tables = [{name: algName, sent_table:auto_sent_table }];
-            pythonService.setRunAutomaticAlgsResult(tables);
             pythonService.setMergeTablesResult(merged_sent_table);
-
-            await experimentService.runAutomaticAlgs([algName],expName);
-            await experimentService.merge_algorithms(expName, "newMerged", [{name: algName, type:'auto', percentage: '1.0'}]);
-
-            const path_of_merged = 'experiments/expName/merged-sent/newMerged'
-            const object_of_merged = await collectionsService.experiments().mergedSentOf(expName).get('newMerged');
+            const merged_response = await experimentService.mergeSummaries(expName, newMergedName, [{name: autoName1, type:'auto', percentage: '1.0'}]);
+            expect(merged_response.status).toBe(0)
+            const object_of_merged = await collectionsService.experiments().mergedSentOf(expName).get(newMergedName);
             expect(object_of_merged.path).toEqual(path_of_merged)
-            expect(object_of_merged.name).toEqual("newMerged")
+            expect(object_of_merged.name).toEqual(newMergedName)
             expect(object_of_merged.type).toEqual("merged")
-            mockFS.restore();
+            const merged_storage = await storageService.downloadToBuffer(storage_path); 
+            expect(merged_storage).toBe(merged_sent_table)
         });
 
-
-        it('add merged 2 auto algorithms success', async () => {
-            mockFS({
-                'automatic-algorithms':{}
-            });
-            await collectionsService.automaticAlgos().add(algName,{ path: algPath });
-            await storageService.uploadBuffer(algPath, new Buffer('some-alg'), fileTypes.Text);
-            const auto_sent_table1 = new Buffer('alg1');
-
-            const merged_sent_table = new Buffer('merged1');
-            const tables1 = [{name: algName, sent_table:auto_sent_table1 }];
-            pythonService.setRunAutomaticAlgsResult(tables1);
+        it('add merged 2 different auto algorithms success', async () => {
             pythonService.setMergeTablesResult(merged_sent_table);
-
-            await experimentService.runAutomaticAlgs([algName],expName);
-            await experimentService.merge_algorithms(expName, "newMerged", [{name: algName, type:'auto', percentage: '0.3'},{name: algName, type:'auto', percentage: '0.7'}]);
-
-            const path_of_merged = 'experiments/expName/merged-sent/newMerged'
-            const object_of_merged = await collectionsService.experiments().mergedSentOf(expName).get('newMerged');
+            const merged_response = await experimentService.mergeSummaries(expName, newMergedName, [{name: autoName1, type:'auto', percentage: '0.3'},{name: autoName2, type:'auto', percentage: '0.7'}]);
+            expect(merged_response.status).toBe(0)
+            const object_of_merged = await collectionsService.experiments().mergedSentOf(expName).get(newMergedName);
             expect(object_of_merged.path).toEqual(path_of_merged)
-            expect(object_of_merged.name).toEqual("newMerged")
+            expect(object_of_merged.name).toEqual(newMergedName)
             expect(object_of_merged.type).toEqual("merged")
-            expect(object_of_merged.mergedInput).toEqual([{"name": "alg1.py", "percentage": "0.3", "type": "auto"}, {"name": "alg1.py", "percentage": "0.7", "type": "auto"}])
-
-            mockFS.restore();
+            expect(object_of_merged.mergedInput).toEqual([{"name": "auto1.py", "percentage": "0.3", "type": "auto"}, {"name": "auto2.py", "percentage": "0.7", "type": "auto"}])
+            const merged_storage = await storageService.downloadToBuffer(storage_path); 
+            expect(merged_storage).toBe(merged_sent_table)
         });
+
+        it('no input for merge summary provided', async () => {
+            const merged_response = await experimentService.mergeSummaries(expName, newMergedName, []);
+            expect(merged_response.status).toBe(-1)
+            expect(merged_response.error).toBe('no summaries input provided')
+        });
+
 
 
         it('success - auto and eyes', async () => {
@@ -412,39 +438,201 @@ describe('ExperimentService Tests',() =>{
         });
 
         it('fail - experiment does not exists', async () => {
-            const {status, error} = await experimentService.merge_algorithms("not exist", "new name", [{name: 'Alg1.py', type: 'auto', percentage: '1.0'}]);
+            const {status, error} = await experimentService.mergeSummaries("not exist", "new name", [{name: 'Alg1.py', type: 'auto', percentage: '1.0'}]);
             expect(status).toEqual(-1);
             expect(error).toEqual('The name of the experiment does not exist in the system.');
         });
         
 
         it('fail - auto does not exists', async () => {
-            const {status, error} = await experimentService.merge_algorithms("expName", "new_name", [{name: 'Alg1.py', type: 'auto', percentage: '1.0'}]);
+            const {status, error} = await experimentService.mergeSummaries("expName", "new_name", [{name: 'Alg1.py', type: 'auto', percentage: '1.0'}]);
             expect(status).toEqual(-1);
             expect(error).toEqual('the sammaries name is not found');
         });
+    });
 
-        it('auto algorithm exist for expirament(check assitent method)', async () => {
-            const {status, error} = await experimentService.getSummaryForMerge("expName", 'auto', 'auto1.py');
+    describe('generate tables from eyez' , () => {
+        const expName = 'exp1';
+        const imageName = 'im1';
+       
+        const word_ocr_path = `images/${imageName}/word_ocr`;
+        const base_sent_table_path = `images/${imageName}/base_sent_table`;
+        
+        const params={
+            testId: 'testId',
+            formId : '5',
+            answers : '5',
+            score : '5',
+            sentanceWeights : '5',
+            experimentName: expName,
+            fixations: 'buffer' 
+        };            
+        beforeEach( async () => {
+            await collectionsService.experiments().add(expName, {imageName});
+            await collectionsService.images().add(imageName, {
+                base_sent_table_path: base_sent_table_path,
+                name: imageName,
+                word_ocr_path: word_ocr_path
+
+            });
+            await storageService.uploadBuffer(base_sent_table_path,new Buffer("sent_table"),fileTypes.Csv);
+            await storageService.uploadBuffer(word_ocr_path,new Buffer("word_table"),fileTypes.Csv);
+
+            params.experimentName = expName;
+        });
+
+        it('success - run genTablesFromEyez with testId = testId', async () => {
+
+            const word_table = new Buffer('word_table');
+            const sent_table = new Buffer('sent_table');
+            const tables = {word_table: word_table, sentences_table: sent_table};
+
+            pythonService.setGenTableFromEyezResult(tables);
+
+            const {status, error} = await experimentService.addTest(params);
             expect(status).toEqual(0);
-            expect(error).toEqual(undefined);
+
+            const expUploadPaths = 
+                {
+                sent_table_path:`experiments/${params.experimentName}/tests/${params.testId}/testSentTables`,
+                word_table_path:`experiments/${params.experimentName}/tests/${params.testId}/testWordTables`
+                }
+
+            expect(await storageService.downloadToBuffer(expUploadPaths.sent_table_path)).toBe(sent_table);
+            expect(await storageService.downloadToBuffer(expUploadPaths.word_table_path)).toBe(word_table);
+            expect(await collectionsService.experiments().getTests(params.experimentName).get(params.testId)).toEqual(expect.objectContaining({
+                name: params.testId,
+                formId: params.formId,
+                answers : params.answers,
+                score : params.score,
+                sentanceWeights :params.sentanceWeights,
+                sent_table_path: expUploadPaths.sent_table_path ,
+                word_table_path: expUploadPaths.word_table_path,
+                type: 'eyes'
+            }))
+
         });
 
-        it('auto algorithm do not exist for expirament(check assitent method)', async () => {
-            const {status, error} = await experimentService.getSummaryForMerge("expName", 'auto', 'auto3.py');
-            expect(status).toEqual(-2);
-            expect(error).toEqual('auto summary name does not exist');
-        });
+        it('fail - experimentName not exist', async () => {
 
-        it('auto algorithm exist for expirament(check sent_table_initializer)', async () => {
-            const {status} = await experimentService.sent_table_initializer(['auto2.py'],['auto'], "expName");
-            expect(status).toEqual(0);
-        });
+            const word_table = new Buffer('word_table');
+            const sent_table = new Buffer('sent_table');
+            const tables = {word_table: word_table, sentences_table: sent_table};
+            params.experimentName =  'notExist';
 
-        it('auto algorithm do not exist for expirament(check sent_table_initializer)', async () => {
-            const {status, error} = await experimentService.sent_table_initializer(['auto3.py'],['auto'], "expName");
+            pythonService.setGenTableFromEyezResult(tables);
+
+            const {status, error} = await experimentService.addTest(params);
             expect(status).toEqual(-1);
-            expect(error).toEqual('the sammary name is not found');
+            expect(error).toEqual('experiment name does not exist');
         });
+
+        it('fail - picture not exist', async () => {
+
+            const word_table = new Buffer('word_table');
+            const sent_table = new Buffer('sent_table');
+            const expNameWithoutImage = 'exp2';
+            await collectionsService.experiments().add(expNameWithoutImage, {});
+            const tables = {word_table: word_table, sentences_table: sent_table};
+            params.experimentName =  expNameWithoutImage;
+
+            pythonService.setGenTableFromEyezResult(tables);
+
+            const {status, error} = await experimentService.addTest(params);
+            expect(status).toEqual(-1);
+            expect(error).toEqual('picture does not exist');
+
+        });
+
+        it('fail - word_ocr does not exist', async () => {
+            const expNameWithoutWord_ocr = 'exp2';
+            const imageNameWithoutWord_ocr = 'im2';
+       
+            const word_ocr_path = `images/${imageNameWithoutWord_ocr}/word_ocr`;
+            const base_sent_table_path = `images/${imageNameWithoutWord_ocr}/base_sent_table`;
+
+            await collectionsService.experiments().add(expNameWithoutWord_ocr, {'imageName':imageNameWithoutWord_ocr});
+            await collectionsService.images().add(imageNameWithoutWord_ocr, {
+                base_sent_table_path: base_sent_table_path,
+                name: imageNameWithoutWord_ocr,
+                word_ocr_path: word_ocr_path
+             });
+
+            await storageService.uploadBuffer(base_sent_table_path,new Buffer("sent_table"),fileTypes.Csv);
+      
+            const word_table = new Buffer('word_table');
+            const sent_table = new Buffer('sent_table');
+            const tables = {word_table: word_table, sentences_table: sent_table};
+
+            params.experimentName =  expNameWithoutWord_ocr;
+
+            pythonService.setGenTableFromEyezResult(tables);
+            
+            const {status, error} = await experimentService.addTest(params);
+            expect(status).toEqual(-1);
+            expect(error).toEqual('word_ocr does not exist');
+
+        });
+
+
+        it('fail - base_sentences_table does not exist', async () => {
+            const expNameWithoutWord_ocr = 'exp2';
+            const imageNameWithoutWord_ocr = 'im2';
+       
+            const word_ocr_path = `images/${imageNameWithoutWord_ocr}/word_ocr`;
+            const base_sent_table_path = `images/${imageNameWithoutWord_ocr}/base_sent_table`;
+     
+
+            await collectionsService.experiments().add(expNameWithoutWord_ocr, {'imageName':imageNameWithoutWord_ocr});
+            await collectionsService.images().add(imageNameWithoutWord_ocr, {
+                base_sent_table_path: base_sent_table_path,
+                name: imageNameWithoutWord_ocr,
+                word_ocr_path: word_ocr_path
+
+             });
+
+            await storageService.uploadBuffer(word_ocr_path,new Buffer("word_table"),fileTypes.Csv);
+      
+            const word_table = new Buffer('word_table');
+            const sent_table = new Buffer('sent_table');
+            const tables = {word_table: word_table, sentences_table: sent_table};
+     
+            params.experimentName = expNameWithoutWord_ocr;
+
+            pythonService.setGenTableFromEyezResult(tables);
+            
+            const {status, error} = await experimentService.addTest(params);
+            expect(status).toEqual(-1);
+            expect(error).toEqual('base_sentences_table does not exist');
+
+        });
+
+        it('fail - test id already exist', async () => {
+
+            const word_table = new Buffer('word_table');
+            const sent_table = new Buffer('sent_table');
+            const tables = {word_table: word_table, sentences_table: sent_table};
+            pythonService.setGenTableFromEyezResult(tables);
+
+            const expUploadPaths = 
+                {
+                sent_table_path:`experiments/${params.experimentName}/tests/${params.testId}/testSentTables`,
+                word_table_path:`experiments/${params.experimentName}/tests/${params.testId}/testWordTables`
+                }
+
+            await collectionsService.experiments().getTests(params.experimentName).add(params.testId,{
+                testId:params.testId,
+                formId: params.formId,
+                sent_table_path: expUploadPaths.sent_table_path ,
+                word_table_path: expUploadPaths.sent_table_path,
+            });
+
+            const {status, error} = await experimentService.addTest(params);
+            expect(status).toEqual(-1);
+            expect(error).toEqual('testId already exist exist');
+     
+        });
+      
+  
     });
 });

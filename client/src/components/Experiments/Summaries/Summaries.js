@@ -39,10 +39,23 @@ export function Summaries({
   const [eyesSelected,setEyesSelected] = useState([]); 
   const [mergedSelected,setMergedSelected] = useState([]); 
 
+  const formatData = (summaries) => {
+    summaries.merged = summaries.merged.map(merged => ({
+      ...merged,
+      data: {
+        ...merged.data,
+        numOfOrigins: merged.data.mergedInput.length 
+      }
+    }));
+    return summaries;
+  }
 
   const fetchSummaries = async () => {
     const res = await api.getSummaries(experimentName); 
-    setSummaries(res.data);
+    setSummaries(formatData(res.data));
+    setAutoSelected([]);
+    setEyesSelected([]);
+    setMergedSelected([]);
   }
 
   useEffect(() => {
@@ -65,9 +78,10 @@ export function Summaries({
           id="panel1a-header"
         >
           <Typography className={classes.heading}>Automatic Summaries</Typography>
-        </ExpansionPanelSummary>
+        </ExpansionPanelSummary >
         <ExpansionPanelDetails>
           <TableSummaries 
+            selected={autoSelected}
             onChangeSelected={setAutoSelected}
             headers={autoHeaders}
             rows={summaries.auto}/>
@@ -83,6 +97,7 @@ export function Summaries({
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <TableSummaries 
+            selected={eyesSelected}
             onChangeSelected={setEyesSelected}
             headers={eyesHeaders}
             rows={summaries.eyes}/>
@@ -98,6 +113,7 @@ export function Summaries({
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <TableSummaries 
+            selected={mergedSelected}
             onChangeSelected={setMergedSelected}
             headers={mergedHeaders}
             rows={summaries.merged}/>

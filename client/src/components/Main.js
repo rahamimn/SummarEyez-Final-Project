@@ -40,7 +40,7 @@ function Main() {
           <div style={{
             width: '100%',
             height: '100vh',
-            backgroundColor:'#dddddd'
+            backgroundImage:"url(/background.jpg)"
             }}>
               <WelcomeDialog permit={permit}/>
             </div>
