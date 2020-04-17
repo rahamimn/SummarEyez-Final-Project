@@ -67,6 +67,7 @@ export const LayersViewer = ({summaries, title, summariesMetadata, experimentNam
                     display:'flex',
                     flexDirection:'column',
                     padding:'30px',
+                    width: '190px',
                     backgroundColor:'#dddddd'
                     }}>
                     <Typography variant="h5" style={{marginBottom:'20px'}}>

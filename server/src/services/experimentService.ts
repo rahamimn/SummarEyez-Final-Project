@@ -8,7 +8,7 @@ import {promises as fs} from 'fs';
 import * as csvToJson from 'csvtojson';
 import { v4 as uuidv4 } from 'uuid';
 
-var isUtf8 = require('is-utf8');
+// var isUtf8 = require('is-utf8');
 
 const response = (status,{data=null, error=null}={}) => ({status, data, error});
 
@@ -409,8 +409,8 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
                 return param + ' should not be equal to: ..';
             if(val.includes('/'))
                 return param + ' should not contain: /';
-            if(!isUtf8(val))
-                return param + ' : ' + val +' contain not utf-8 char';    
+            // if(!isUtf8(val))
+            //     return param + ' : ' + val +' contain not utf-8 char';    
         }
         return ans;
     }

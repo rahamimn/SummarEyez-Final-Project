@@ -75,6 +75,20 @@ const api = {
             mergeInputs: mergeInput
         });
         return res.data;
+    },
+
+    uploadFixations: async (experimentName, name, buffer) => {
+        const formData = new FormData();
+        formData.append('fixations', buffer);
+        const data = JSON.stringify({
+            testId: name,
+        })
+        const res = await axios.post(`/api/experiments/${experimentName}/tests?data=${data}`, formData,{ 
+            headers:{
+                "Content-Type": "multipart/form-data"
+            },
+        });
+        return res.data;
     }
 }
 
