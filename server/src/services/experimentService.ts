@@ -319,6 +319,7 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
         return response(0);
     }
 
+
     addQuestion = async (experimentName,question, answers, correctAnswer)=>{
         const experiment = await this.collectionsService.experiments().get(experimentName);
         if(!experiment){
@@ -338,8 +339,11 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
         return response(0);
     }
 
-    merge_algorithms = async(experimentName, mergedName, sammaries_details ) =>{
+    mergeSummaries = async(experimentName, mergedName, sammaries_details ) =>{
 
+        if(sammaries_details.length ==0){
+            return response(-1,{error: "no summaries input provided"});
+        }
         var percents = sammaries_details.map(sammary => sammary.percentage)
         var names = sammaries_details.map(sammary => sammary.name)
         var types = sammaries_details.map(sammary => sammary.type);
@@ -375,7 +379,7 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
     }
 
 
-    public async sent_table_initializer(names: string[],types: string [], experiment: any) {
+    private async sent_table_initializer(names: string[],types: string [], experiment: any) {
         const sent_tables = []
         for(var i=0; i<names.length; i++){
             var name = names[i]

@@ -120,7 +120,7 @@ app.post('/api/experiments/:experimentName/tests', upload.single('fixations'), (
 app.post('/api/experiments/:experimentName/summary/merge', bodyParser.json(), (req, res) => errorHandling(res, async () => {
     const experimentName = req.params.experimentName;
     const {name, mergeInputs}  = req.body;
-    const summaries = await experimentService.merge_algorithms(experimentName, name, mergeInputs);
+    const summaries = await experimentService.mergeSummaries(experimentName, name, mergeInputs);
     
     res.send(summaries);
 }));
