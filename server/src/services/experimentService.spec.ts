@@ -445,25 +445,25 @@ describe('ExperimentService Tests',() =>{
         });
 
         it('success- question is added', async () => {  
-            const addQuestionResponse = await experimentService.addquestion(expName, "how are u doing?", [{answer: "ok"},{answer: "good enought"},{answer: "very good"},{answer: "not ok" }], 3)                      
+            const addQuestionResponse = await experimentService.addQuestion(expName, "how are u doing?", [{answer: "ok"},{answer: "good enought"},{answer: "very good"},{answer: "not ok" }], 3)                      
             expect(addQuestionResponse.status).toBe(0)
             expect(addQuestionResponse.data).toBe("the question was addes succesfully!")
         });
 
         it('fail- no expirament', async () => {   
-            const addQuestionResponse = await experimentService.addquestion("fake_name", "how are u doing?", [{answer: "ok"},{answer: "good enought"},{answer: "very good"},{answer: "not ok" }], 3)                      
-            expect(addQuestionResponse.status).toBe(-1)
-            expect(addQuestionResponse.error).toBe("The name of the experiment does not exist in the system.")         
+            const addQuestionNoExperiment = await experimentService.addQuestion("fake_name", "how are u doing?", [{answer: "ok"},{answer: "good enought"},{answer: "very good"},{answer: "not ok" }], 3)                      
+            expect(addQuestionNoExperiment.status).toBe(-1)
+            expect(addQuestionNoExperiment.error).toBe("The name of the experiment does not exist in the system.")         
         });
 
         it('fail- wrong answer number (above 4 or 0 or less)', async () => { 
-            const addQuestionResponse = await experimentService.addquestion(expName, "how are u doing?", [{answer: "ok"},{answer: "good enought"},{answer: "very good"},{answer: "not ok" }], 5)                      
-            expect(addQuestionResponse.status).toBe(-1);
-            expect(addQuestionResponse.error).toBe("the value of the correct answer is not valid");
+            const addQuestionBigNumber = await experimentService.addQuestion(expName, "how are u doing?", [{answer: "ok"},{answer: "good enought"},{answer: "very good"},{answer: "not ok" }], 5)                      
+            expect(addQuestionBigNumber.status).toBe(-1);
+            expect(addQuestionBigNumber.error).toBe("the value of the correct answer is not valid");
 
-            const addQuestionNegativeResponse = await experimentService.addquestion(expName, "how are u doing?", [{answer: "ok"},{answer: "good enought"},{answer: "very good"},{answer: "not ok" }], -2)                      
-            expect(addQuestionNegativeResponse.status).toBe(-1);
-            expect(addQuestionNegativeResponse.error).toBe("the value of the correct answer is not valid");
+            const addQuestionNegativeNumber = await experimentService.addQuestion(expName, "how are u doing?", [{answer: "ok"},{answer: "good enought"},{answer: "very good"},{answer: "not ok" }], -2)                      
+            expect(addQuestionNegativeNumber.status).toBe(-1);
+            expect(addQuestionNegativeNumber.error).toBe("the value of the correct answer is not valid");
         });
     });
 

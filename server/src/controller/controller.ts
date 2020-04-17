@@ -125,10 +125,10 @@ app.post('/api/experiments/:experimentName/summary/merge', bodyParser.json(), (r
     res.send(summaries);
 }));
 
-app.post('/api/images/:experimentName/questions', bodyParser.json(), (req, res) => errorHandling(res, async () => {
+app.post('/api/experiments/:experimentName/questions', bodyParser.json(), (req, res) => errorHandling(res, async () => {
     const experimentName = req.params.experimentName;
     const {question, answers, correctAnswer}  = req.body;
-    const questionAdded = await experimentService.addquestion(experimentName,question, answers, correctAnswer);
+    const questionAdded = await experimentService.addQuestion(experimentName,question, answers, correctAnswer);
     
     res.send(questionAdded);
 }));
