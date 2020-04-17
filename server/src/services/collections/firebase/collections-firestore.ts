@@ -1,7 +1,6 @@
 import { AutomaticAlgorithms } from "./dal/automatic-algorithms";
 import { Images } from "./dal/images";
 import { Experiments } from "./dal/experiments";
-
 const admin = require('firebase-admin');
 const serviceAccount = require('../../../../serviceAcountKey.json');
 

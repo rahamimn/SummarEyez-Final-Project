@@ -6,6 +6,9 @@ const forEP = require('foreach-promise');
 //@ts-ignore
 import {promises as fs} from 'fs';
 import * as csvToJson from 'csvtojson';
+import { v4 as uuidv4 } from 'uuid';
+
+// var isUtf8 = require('is-utf8');
 
 const response = (status,{data=null, error=null}={}) => ({status, data, error});
 
@@ -63,6 +66,12 @@ export class ExperimentService{
  
 addTest = async (params) => {
     const experiment= await this.collectionsService.experiments().get(params.experimentName)
+    const paramsList = {'testId': params.testId};
+    const ans= this.validateIds(paramsList);
+
+    if(ans != ''){
+        return response(-1,{error: ans} );
+    }
     if(!experiment){
         return response(-1,{error: 'experiment name does not exist'} );
     }
@@ -114,6 +123,10 @@ addTest = async (params) => {
         const image = await this.collectionsService.images().get(name);
         if(image){
             return response(-1,{error:"image name already exists"});
+        }
+        const ans= this.validateIds({'name': name});
+        if(ans != ''){
+            return response(-1,{error: ans} );
         }
 
         const files = await this.pythonService.processImage(buffer)
@@ -271,6 +284,10 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
     }
 
     addAutomaticAlgorithms = async (name: string, buffer) => {
+        const ans= this.validateIds({'name': name});
+        if(ans != ''){
+            return response(-1,{error: ans} );
+        }
         const formattedName = name.endsWith('.py') ? name :  (name+'.py');
         const path = `automatic-algos/${formattedName}`
         await this.storageService.uploadBuffer(path, buffer, fileTypes.Text);
@@ -288,12 +305,37 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
     };
 
     addExperiment = async (experimentName, imageName)=>{
+        const paramsList= {'experimentName': experimentName, 'imageName': imageName};
+        const ans= this.validateIds(paramsList);
+        if(ans != ''){
+            return response(-1,{error: ans} );
+        }
         if(await this.collectionsService.experiments().get(experimentName)){
             return response(-1,{ error: "The name of the experiment already exist in the system." });
         }
         await this.collectionsService.experiments().add(experimentName,{
             name: experimentName, imageName
         });
+        return response(0);
+    }
+
+
+    addQuestion = async (experimentName,question, answers, correctAnswer)=>{
+        const experiment = await this.collectionsService.experiments().get(experimentName);
+        if(!experiment){
+            return response(-1,{error: "The name of the experiment does not exist in the system."});
+        }
+        
+        if(correctAnswer >4 || correctAnswer <0){
+            return response(-1,{error: "the value of the correct answer is not valid"});
+        }
+        const experimentImageName = experiment.imageName;
+        await this.collectionsService.images().questionsOf(experimentImageName).add(uuidv4(), {
+            question: question,
+            answers,
+            correctAnswer: correctAnswer,
+            creation_date: Date.now()
+        }); 
         return response(0);
     }
 
@@ -334,7 +376,7 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
         return response(0,{
             data: await csvToJson({delimiter:'auto'}).fromString(merged_table.toString())
         });
-    } 
+    }
 
 
     private async sent_table_initializer(names: string[],types: string [], experiment: any) {
@@ -358,5 +400,22 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
             status: 0,
             data:sent_tables
         };
+    }
+    private validateIds(paramsList){
+        let ans = '';
+        for(var param in paramsList){
+            var val = paramsList[param];
+            if(val =='')
+                return param + ' is empty string';
+            if(val =='.')
+                return param + ' should not be equal to: .';
+            if(val =='..')
+                return param + ' should not be equal to: ..';
+            if(val.includes('/'))
+                return param + ' should not contain: /';
+            // if(!isUtf8(val))
+            //     return param + ' : ' + val +' contain not utf-8 char';    
+        }
+        return ans;
     }
 }

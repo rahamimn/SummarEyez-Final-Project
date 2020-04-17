@@ -94,13 +94,13 @@ app.post('/api/algorithms',upload.single('algorithmBuffer'), (req, res) => error
 
 app.post('/api/runAutoAlgs', bodyParser.json(), (req, res) => errorHandling(res, async () => {
     const {algNames, experimentName} = req.body;
-    console.log(algNames, experimentName);
     const {status} = await experimentService.runAutomaticAlgs(algNames, experimentName);
     res.send({status: status})
 }));
 
 app.post('/api/experiments/:experimentName/tests', upload.single('fixations'), (req, res) => errorHandling(res, async () => {   
     const jsonData = JSON.parse(req.query.data);
+    console.log(jsonData);
     const params={
         testId: jsonData.testId,
         formId : jsonData.formId || 'Manually',
@@ -123,6 +123,14 @@ app.post('/api/experiments/:experimentName/summary/merge', bodyParser.json(), (r
     const summaries = await experimentService.mergeSummaries(experimentName, name, mergeInputs);
     
     res.send(summaries);
+}));
+
+app.post('/api/experiments/:experimentName/questions', bodyParser.json(), (req, res) => errorHandling(res, async () => {
+    const experimentName = req.params.experimentName;
+    const {question, answers, correctAnswer}  = req.body;
+    const questionAdded = await experimentService.addQuestion(experimentName,question, answers, correctAnswer);
+    
+    res.send(questionAdded);
 }));
 
 if(localMode){

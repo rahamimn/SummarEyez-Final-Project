@@ -8,6 +8,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import api from '../../../apiService';
 import {useParams} from 'react-router-dom'
 import MergeDialog from './MergeSummaries/MergeDialog'
+import { stringify, parse } from 'qs'
 
 const useToolbarStyles = makeStyles(theme => ({
     root: {
@@ -41,9 +42,15 @@ const useToolbarStyles = makeStyles(theme => ({
     
     const justDisabled = allSelected.length === disabled.length
         && allSelected.length > 0 ;
+        
+    const stringifySummaries = () => stringify({
+      summaries: allSelected.map(sum => {
+        const {name, type} = sum.data;
+        return { name, type };
+      })
+    });
 
     const oneNotDisable = allSelected.length === 1 && disabled.length === 0 && allSelected[0];
-
     return (
       <div>
       <Toolbar
@@ -79,7 +86,10 @@ const useToolbarStyles = makeStyles(theme => ({
 
         {allSelected.length > 1 && disabled.length === 0 && [
             <Button key="3" color="inherit" onClick={ ()=> setIsMergeOpen(true)  }>Merge</Button>,
-            <Button key="4" color="inherit">Layers</Button>
+            <Button key="4" color="inherit" onClick={ () => {
+              window.open(`/article-layers/${experimentName}?${stringifySummaries()}`,'_blank')
+            }}
+            >Layers</Button>
         ]}
       </Toolbar>
       {isMergeOpen && 

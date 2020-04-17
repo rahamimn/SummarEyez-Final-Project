@@ -3,7 +3,7 @@ import {
     useParams,
   } from "react-router-dom";
 import { ArticleViewer } from './ArticleViewer';
-import api from '../../apiService';
+import api from '../../../apiService';
 import Card from '@material-ui/core/Card';
 import Container from '@material-ui/core/Container';
 

@@ -12,7 +12,7 @@ export const ArticleViewer = ({summary, title}) => {
     let paragraphNum = -1;
     let [colorInput, setColorInput] = useState('');
     let [color, setColor] = useState(90);
-    let [isGradinet, setIsGradient] = useState(false);
+    let [isGradinet, setIsGradient] = useState(true);
     let [minWeight, setMinWeight] = useState(0);
     let [topSentencesCount, setTopSentencesCount ] = useState(summary.length);
 
@@ -24,7 +24,7 @@ export const ArticleViewer = ({summary, title}) => {
     const topSentences = sortedSentences.slice(0,topSentencesCount);
     const backgroundColor = (sent) =>  (sent.normalized_weight > minWeight && topSentences.includes(sent)) ? 
         (isGradinet? `hsl(${color}, 100%, ${100 - sent.normalized_weight*50}%)` :
-        `hsl(${color}, 100%, ${100 - 50}%)` ) :
+        `hsl(${color}, 100%, 50%)` ) :
             null;
 
     for(let i = 0 ; i < summary.length; i++){
@@ -61,7 +61,8 @@ export const ArticleViewer = ({summary, title}) => {
                     display:'flex',
                     flexDirection:'column',
                     padding:'30px',
-                    backgroundColor:'#dddddd'
+                    backgroundColor:'#dddddd',
+                    width: '190px',
                     }}>
                     <Typography variant="h5" style={{marginBottom:'20px'}}>
                         Filters

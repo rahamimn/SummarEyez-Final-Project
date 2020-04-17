@@ -7,7 +7,7 @@ import {
   Route,
 } from "react-router-dom";
 import { TopNav } from '../TopNav/TopNav';
-import { ArticleViewer } from '../ArticleViewer/ArticleViewer';
+import { ArticleViewer } from '../Viewers/ArticleViewer/ArticleViewer';
 import api from '../../apiService';
 
 const useStyles = makeStyles(theme => ({
