@@ -6,6 +6,8 @@ const forEP = require('foreach-promise');
 //@ts-ignore
 import {promises as fs} from 'fs';
 import * as csvToJson from 'csvtojson';
+import { v4 as uuidv4 } from 'uuid';
+
 // var isUtf8 = require('is-utf8');
 
 const response = (status,{data=null, error=null}={}) => ({status, data, error});
@@ -317,6 +319,25 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
         return response(0);
     }
 
+    addQuestion = async (experimentName,question, answers, correctAnswer)=>{
+        const experiment = await this.collectionsService.experiments().get(experimentName);
+        if(!experiment){
+            return response(-1,{error: "The name of the experiment does not exist in the system."});
+        }
+        
+        if(correctAnswer >4 || correctAnswer <0){
+            return response(-1,{error: "the value of the correct answer is not valid"});
+        }
+        const experimentImageName = experiment.imageName;
+        await this.collectionsService.images().questionsOf(experimentImageName).add(uuidv4(), {
+            question: question,
+            answers,
+            correctAnswer: correctAnswer,
+            creation_date: Date.now()
+        }); 
+        return response(0);
+    }
+
     merge_algorithms = async(experimentName, mergedName, sammaries_details ) =>{
 
         var percents = sammaries_details.map(sammary => sammary.percentage)
@@ -351,7 +372,7 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
         return response(0,{
             data: await csvToJson({delimiter:'auto'}).fromString(merged_table.toString())
         });
-    } 
+    }
 
 
     public async sent_table_initializer(names: string[],types: string [], experiment: any) {

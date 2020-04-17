@@ -18,5 +18,5 @@ export class Experiments extends BaseCollection {
 
     mergedWordOf(experimentId: string){
         return new SentTable(this.collection.doc(experimentId).collection('merged-word'))
-    }
+    }   
 }
