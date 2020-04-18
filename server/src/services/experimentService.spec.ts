@@ -463,23 +463,26 @@ describe('ExperimentService Tests',() =>{
                 creation_date: "20/03/1993"
             }); 
         });
-        it.only('fail- no expirament', async () => {   
+        it('fail- no expirament', async () => {   
             const addQuestionNoExperiment = await experimentService.getAllQuestions("fake_name")                       
             expect(addQuestionNoExperiment.status).toBe(-1)
             expect(addQuestionNoExperiment.error).toBe("the experiment name does not exist")         
         });
 
-        it.only('success - get all questions', async () => {   
+        it('success - get all questions with one question', async () => {   
             const addQuestion = await experimentService.getAllQuestions(expName);                    
             expect(addQuestion.status).toBe(0);
             expect(addQuestion.data.length).toBe(1);
+        });
+
+        it('success - get all questions with no questions', async () => {   
             const imageNameNoQuestions = "image";
             const expNoQuestions = "exp";
             await collectionsService.experiments().add(expNoQuestions, {imageNameNoQuestions});
             await collectionsService.images().add(imageNameNoQuestions, {});
             const addQuestionNoQuestions = await experimentService.getAllQuestions(expNoQuestions)                      
             expect(addQuestionNoQuestions.status).toBe(0)
-            expect(addQuestionNoQuestions.data.length).toBe(0)
+            expect(addQuestionNoQuestions.data.length).toBe(0)        
         });
     });
 
