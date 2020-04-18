@@ -18,6 +18,7 @@ import {
   Route,
   useHistory,
   useParams,
+  Redirect
 } from "react-router-dom";
 import { NewExperiment } from './NewExperiment/NewExperiment';
 import TopNav from '../TopNav/TopNav';
@@ -163,6 +164,9 @@ function MainExperiments({permit}) {
               <UploadFixations
                 onSuccess={() => history.push(`/experiments/${experimentName}/summaries`)}
                 experimentName={experimentName}/>
+            </Route>
+            <Route path={experimetRoutePage('')}>
+              <Redirect to={experimetPage('summaries')}/>
             </Route>
             {/* here we add all sub pages : (may be inners goes in sub component)
               *   forms:
