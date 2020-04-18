@@ -81,7 +81,7 @@ const useToolbarStyles = makeStyles(theme => ({
                 key="1"
                 onClick={() => window.open(`/article/${experimentName}/${oneNotDisable.data.type}/${oneNotDisable.data.name}`,'_blank')}
                 color="inherit">View</Button>,
-            <Button key="2" color="inherit">Info</Button>
+            (false && <Button key="2" color="inherit">Info</Button>)
         ]}
 
         {allSelected.length > 1 && disabled.length === 0 && [

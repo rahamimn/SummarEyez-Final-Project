@@ -6,15 +6,6 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Grid from '@material-ui/core/Grid';
 import Input from '@material-ui/core/Input';
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    width: 300 + theme.spacing(3) * 2,
-  },
-  margin: {
-    height: theme.spacing(3),
-  },
-}));
-
 function ValueLabelComponent(props) {
   const { children, open, value } = props;
 
@@ -65,7 +56,6 @@ const PrettoSlider = withStyles({
 export default function CustomizedSlider({
   setPercentage,
 }) {
-  const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
 
@@ -89,15 +79,17 @@ export default function CustomizedSlider({
   };
 
   return (
-    <div className={classes.root}>
-      <PrettoSlider valueLabelDisplay="on" aria-label="pretto slider" defaultValue={50} 
-        value={typeof value === 'number' ? value : 0}
-        onChange={handleSliderChange}
-        aria-labelledby="input-slider"
-      />
-      <div className={classes.margin} />
+    <div>
+      <div style={{ float:'right', width:'400px'}}>
+        <PrettoSlider valueLabelDisplay="on" aria-label="pretto slider" defaultValue={50} 
+            value={typeof value === 'number' ? value : 0}
+            onChange={handleSliderChange}
+            aria-labelledby="input-slider"
+          />
+      
+     
+      <div/>
           <Input
-            className={classes.input}
             value={value}
             margin="dense"
             onChange={handleInputChange}
@@ -110,6 +102,7 @@ export default function CustomizedSlider({
               'aria-labelledby': 'input-slider',
             }}
           />
+          </div>
     </div>
   );
 }

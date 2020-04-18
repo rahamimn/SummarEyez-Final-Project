@@ -28,7 +28,8 @@ export default function SimpleTable({
           <TableRow>
             <TableCell>Name</TableCell>
             <TableCell >Type</TableCell>
-            <TableCell align="center">Weight</TableCell>
+            <TableCell align="right"></TableCell>
+            <TableCell align="right">Weight</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -39,6 +40,8 @@ export default function SimpleTable({
               </TableCell>
               <TableCell component="th" scope="row">
                 {row.type}
+              </TableCell>
+              <TableCell component="th" scope="row" align="right">
               </TableCell>
               <TableCell align="right">
                         <Slider

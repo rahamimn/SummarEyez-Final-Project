@@ -128,6 +128,7 @@ export default function WelcomeDialog({
                 Go To Experiment
             </Button>
             <Button
+                    disabled={true}
                     variant="contained"
                     color="primary"
                     size="large"

@@ -1,17 +1,19 @@
 import React,{useState, useEffect} from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField'
+import IconButton from '@material-ui/core/IconButton';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import MuiDialogTitle from '@material-ui/core/DialogTitle';
+
 import api from '../../../../apiService';
 import TableMerge from './TableMerge';
 import {useParams} from 'react-router-dom'
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Typography from '@material-ui/core/Typography'
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-
+import CloseIcon from '@material-ui/icons/Close';
 
 
 export default function MergeDialog({
@@ -65,7 +67,7 @@ export default function MergeDialog({
         fullWidth={true}
         maxWidth = {'md'}
         > 
-        <DialogTitle id="form-dialog-title">Summary-merge wizzard</DialogTitle>
+        <DialogTitle id="form-dialog-title" onClose={onClose}>Merge Summaries</DialogTitle>
         <DialogContent>
           <DialogContentText>
           <TableMerge mergeInput={mergeInput} setPercentageOf={setPercentageOf}/>
@@ -78,7 +80,11 @@ export default function MergeDialog({
           </MuiThemeProvider>
           </div>
 
-          <div>
+          <div style={{
+            width:'100%',
+            display: 'flex',
+            alignItems:"center",
+            justifyContent:'space-between'}}>
           <TextField 
                 // error={this.state.isNameExists}
                 // helperText={this.state.isNameExists && "Name already exsits, please choose different name" }
@@ -88,7 +94,7 @@ export default function MergeDialog({
                 id="standard-basic"
                 label="Type new name..."
                 />
-          </div>
+
 
           <Button
             color="primary"
@@ -102,7 +108,7 @@ export default function MergeDialog({
                 onClose(mergeName);
               }
               }>Create</Button>
-
+          </div>
 
           {isLoading &&
             <div style={{ width: '100%', textAlign:'center', marginTop:'20px'}}>
@@ -115,5 +121,23 @@ export default function MergeDialog({
     </div>
   );
 }
+const DialogTitle = (props) => {
+  const { children, classes, onClose, ...other } = props;
+  return (
+    <MuiDialogTitle disableTypography  {...other} style={{
+      width:'100%',
+      display: 'flex',
+      alignItems:"center",
+      justifyContent:'space-between'}}>
+      <Typography variant="h6">{children}</Typography>
+      {onClose ? (
+        <IconButton aria-label="close" onClick={() => onClose()}>
+          <CloseIcon />
+        </IconButton>
+      ) : null}
+    </MuiDialogTitle>
+  );
+}
+
 
   const theme = createMuiTheme({ palette: { primary: { main: "#004f29" } } } );
