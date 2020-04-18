@@ -181,6 +181,15 @@ addTest = async (params) => {
         return response(0, {data: experiments});
     }
 
+    getAllQuestions= async(experimentName: any) => {
+        const experiment = await this.collectionsService.experiments().get(experimentName);
+        if(!experiment){
+            return response(-1, {error: "the experiment name does not exist"})
+        }
+        const questionsOfImage = await this.collectionsService.images().questionsOf(experiment.imageName).getAll();
+        return response(0,{data: questionsOfImage})
+    }
+
     //precondition: experiment metadata exists.
     private getSentTableFile = async (experiment, type, name) => {
         let path;

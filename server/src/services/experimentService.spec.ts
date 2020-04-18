@@ -391,8 +391,6 @@ describe('ExperimentService Tests',() =>{
         const storage_path = `experiments/${expName}/merged-sent/newMerged`
 
         beforeEach( async () => {
-            await collectionsService.automaticAlgos().add(autoName1,{});
-            await collectionsService.automaticAlgos().add(autoName2,{});
             await collectionsService.experiments().add(expName, {imageName});
             await collectionsService.images().add(imageName, {});
             await collectionsService.images().sentTablesOf(imageName).add(autoName1, {path: algPath});
@@ -452,6 +450,42 @@ describe('ExperimentService Tests',() =>{
         });
     });
 
+    describe('get all questions' , () => {
+        const expName = 'expName';
+        const imageName = 'imageName';
+        beforeEach( async () => {
+            await collectionsService.experiments().add(expName, {imageName});
+            await collectionsService.images().add(imageName, {});
+            await collectionsService.images().questionsOf(imageName).add("1234", {
+                question: "hello",
+                answers: ["11","22", "33", "44"],
+                correctAnswer: "2",
+                creation_date: "20/03/1993"
+            }); 
+        });
+        it('fail- no expirament', async () => {   
+            const addQuestionNoExperiment = await experimentService.getAllQuestions("fake_name")                       
+            expect(addQuestionNoExperiment.status).toBe(-1)
+            expect(addQuestionNoExperiment.error).toBe("the experiment name does not exist")         
+        });
+
+        it('success - get all questions with one question', async () => {   
+            const addQuestion = await experimentService.getAllQuestions(expName);                    
+            expect(addQuestion.status).toBe(0);
+            expect(addQuestion.data.length).toBe(1);
+        });
+
+        it('success - get all questions with no questions', async () => {   
+            const imageNameNoQuestions = "image";
+            const expNoQuestions = "exp";
+            await collectionsService.experiments().add(expNoQuestions, {imageNameNoQuestions});
+            await collectionsService.images().add(imageNameNoQuestions, {});
+            const addQuestionNoQuestions = await experimentService.getAllQuestions(expNoQuestions)                      
+            expect(addQuestionNoQuestions.status).toBe(0)
+            expect(addQuestionNoQuestions.data.length).toBe(0)        
+        });
+    });
+
     describe('add new questions' , () => {
         const expName = 'expName';
         const imageName = 'imageName';
@@ -463,7 +497,6 @@ describe('ExperimentService Tests',() =>{
         it('success- question is added', async () => {  
             const addQuestionResponse = await experimentService.addQuestion(expName, "how are u doing?", [{answer: "ok"},{answer: "good enought"},{answer: "very good"},{answer: "not ok" }], 3)                      
             expect(addQuestionResponse.status).toBe(0)
-            expect(addQuestionResponse.data).toBe("the question was addes succesfully!")
         });
 
         it('fail- no expirament', async () => {   
