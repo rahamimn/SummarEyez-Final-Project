@@ -1,6 +1,7 @@
 import { SentTable } from './sentTables';
 import { Tests } from "./tests";
 import { BaseCollection } from "./baseCollection";
+import { Forms } from "./forms";
 
 export class Experiments extends BaseCollection {
     collection;
@@ -18,5 +19,9 @@ export class Experiments extends BaseCollection {
 
     mergedWordOf(experimentId: string){
         return new SentTable(this.collection.doc(experimentId).collection('merged-word'))
+    }
+
+    FormsOf(experimentId: string){
+        return new Forms(this.collection.doc(experimentId).collection('forms'))
     }   
 }
