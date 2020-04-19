@@ -700,4 +700,74 @@ describe('ExperimentService Tests',() =>{
       
   
     });
+
+    
+    describe('get Filtered Test' , () => {
+        const expName = 'exp1';
+        const imageName = 'im1';
+       
+        const word_ocr_path = `images/${imageName}/word_ocr`;
+        const base_sent_table_path = `images/${imageName}/base_sent_table`;
+        
+        const params1={
+            testId: 'testId1',
+            formId : '5',
+            answers : '5',
+            score : '5',
+            sentanceWeights : '5',
+            experimentName: expName,
+            fixations: 'buffer' 
+        };    
+        const params2={
+            testId: 'testId2',
+            formId : '5',
+            answers : '5',
+            score : '2',
+            sentanceWeights : '5',
+            experimentName: expName,
+            fixations: 'buffer' 
+        }; 
+
+      
+        beforeEach( async () => {
+            await collectionsService.experiments().add(expName, {imageName});
+            await collectionsService.images().add(imageName, {
+                base_sent_table_path: base_sent_table_path,
+                name: imageName,
+                word_ocr_path: word_ocr_path
+
+            });
+            await storageService.uploadBuffer(base_sent_table_path,new Buffer("sent_table"),fileTypes.Csv);
+            await storageService.uploadBuffer(word_ocr_path,new Buffer("word_table"),fileTypes.Csv);
+            const word_table = new Buffer('word_table');
+            const sent_table = new Buffer('sent_table');
+            const tables = {word_table: word_table, sentences_table: sent_table};
+            pythonService.setGenTableFromEyezResult(tables);
+            await experimentService.addTest(params1);
+            await experimentService.addTest(params2);
+        });
+
+        it('success- minScore less than 2 tests', async () => {
+           const res = await  experimentService.getFilteredTest(expName,5,1)
+           expect(res.data.length).toEqual(2);
+        });
+
+        it('success- minScore less than 1 tests', async () => {
+            const res = await  experimentService.getFilteredTest(expName, 5,4);
+            expect(res.data.length).toEqual(1);
+         });
+
+         it('success- minScore less than 0 tests', async () => {
+            const res = await  experimentService.getFilteredTest(expName, 5,6);
+            expect(res.data.length).toEqual(0);
+         });
+
+         it('fail- experiment מame not exist', async () => {
+            const {status, error} = await  experimentService.getFilteredTest('notExist', 5,6);
+            expect(status).toEqual(-1);
+            expect(error).toEqual('experiment name does not exist');
+         });
+
+    });
+
 });

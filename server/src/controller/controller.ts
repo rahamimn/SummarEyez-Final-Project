@@ -139,6 +139,18 @@ app.post('/api/experiments/:experimentName/questions', bodyParser.json(), (req, 
     res.send(questionAdded);
 }));
 
+app.get('/api/experiments/:experimentName/tests?formId=formId&minScore=number',(req, res) => 
+ errorHandling(res, async () => {
+     console.log('etay')
+    const experimentName = req.params.experimentName;
+    const formId= req.query.formId;
+    const minScore= req.query.minScore;
+    
+    const tests = await experimentService.getFilteredTest(experimentName, formId, minScore);
+    res.send(tests)
+}));
+
+
 if(localMode){
     dataCreation(experimentService).then(() => {
         app.listen(port, () => console.log(`Server runs on RAM storage is running on port ${port}!`))
