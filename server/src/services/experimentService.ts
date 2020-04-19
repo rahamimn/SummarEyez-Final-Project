@@ -132,7 +132,6 @@ addForm = async (params) =>{
         withFixations : params.withFixations ,
         creation_date: Date.now(),
     });
-
     return response(0);
 }
 
@@ -148,7 +147,6 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
              res.push(tests[index])
         }
     }
-
     return response(0, {data: res});
     }
 
