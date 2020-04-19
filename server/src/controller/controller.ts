@@ -160,7 +160,8 @@ app.post('/api/experiments/:experimentName/forms', bodyParser.json(), (req, res)
         isFillAnswers: isFillAnswers,
         withFixations: withFixations
     }
-    const {status, error} = await experimentService.addForm(params);
+    const ans = await experimentService.addForm(params);
+    res.send(ans)
 }));
 
 if(localMode){
