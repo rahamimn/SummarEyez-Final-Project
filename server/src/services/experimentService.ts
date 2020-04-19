@@ -119,6 +119,23 @@ addTest = async (params) => {
 }
 
 
+addForm = async (params) =>{
+    const expriment = await this.collectionsService.experiments().get(params.experimentName)
+    if(!expriment){
+        return response(-1,{error: 'experiment name does not exist'} );
+    }
+    await this.collectionsService.experiments().FormsOf(params.experimentName).add(params.name,{
+        name: params.name,
+        questionsIds: params.questionsIds || [],
+        isRankSentences : params.isRankSentences,
+        isFillAnswers : params.isFillAnswers ,
+        withFixations : params.withFixations ,
+        creation_date: Date.now(),
+    });
+
+    return response(0);
+}
+
 getFilteredTest = async (experimentName, formId, minScore) =>{
     const experiment= await this.collectionsService.experiments().get(experimentName)
     if(!experiment){

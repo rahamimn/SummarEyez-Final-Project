@@ -151,6 +151,20 @@ app.get('/api/experiments/:experimentName/tests?formId=formId&minScore=number',(
 }));
 
 
+app.post('/api/experiments/:experimentName/forms', bodyParser.json(), (req, res) => errorHandling(res, async () => {
+    const experimentName = req.params.experimentName;
+    const {name, questionsIds, isRankSentences, isFillAnswers, withFixations}  = req.body;
+    const params={
+        experimentName: experimentName,
+        name: name,
+        questionsIds: questionsIds,
+        isRankSentences: isRankSentences,
+        isFillAnswers: isFillAnswers,
+        withFixations: withFixations
+    }
+    const {status, error} = await experimentService.addForm(params);
+}));
+
 if(localMode){
     dataCreation(experimentService).then(() => {
         app.listen(port, () => console.log(`Server runs on RAM storage is running on port ${port}!`))
