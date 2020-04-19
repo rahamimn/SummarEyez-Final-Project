@@ -827,7 +827,7 @@ describe('ExperimentService Tests',() =>{
            expect(res.status).toEqual(0);
         });
 
-        it('fail- experiment מame not exist', async () => {
+        it('fail- experiment name not exist', async () => {
             const {status, error} = await experimentService.addForm(FormsParamsNotExist);
             expect(status).toEqual(-1);
             expect(error).toEqual('experiment name does not exist');
