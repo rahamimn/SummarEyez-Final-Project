@@ -762,6 +762,16 @@ describe('ExperimentService Tests',() =>{
             expect(res.data.length).toEqual(0);
          });
 
+         it('success- minScore less than 1 tests, formId is undefined', async () => {
+            const res = await  experimentService.getFilteredTest(expName, undefined,2);
+            expect(res.data.length).toEqual(1);
+         });
+
+         it('success- minScore undefined, return 2 tests that belong to formId 2', async () => {
+            const res = await  experimentService.getFilteredTest(expName, 5,undefined);
+            expect(res.data.length).toEqual(2);
+         });
+
          it('fail- experiment מame not exist', async () => {
             const {status, error} = await  experimentService.getFilteredTest('notExist', 5,6);
             expect(status).toEqual(-1);
