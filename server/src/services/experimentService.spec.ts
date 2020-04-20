@@ -730,21 +730,9 @@ describe('ExperimentService Tests',() =>{
 
       
         beforeEach( async () => {
-            await collectionsService.experiments().add(expName, {imageName});
-            await collectionsService.images().add(imageName, {
-                base_sent_table_path: base_sent_table_path,
-                name: imageName,
-                word_ocr_path: word_ocr_path
-
-            });
-            await storageService.uploadBuffer(base_sent_table_path,new Buffer("sent_table"),fileTypes.Csv);
-            await storageService.uploadBuffer(word_ocr_path,new Buffer("word_table"),fileTypes.Csv);
-            const word_table = new Buffer('word_table');
-            const sent_table = new Buffer('sent_table');
-            const tables = {word_table: word_table, sentences_table: sent_table};
-            pythonService.setGenTableFromEyezResult(tables);
-            await experimentService.addTest(params1);
-            await experimentService.addTest(params2);
+            await collectionsService.experiments().add(expName, {});
+            await collectionsService.experiments().getTests(expName).add(params1.testId,params1);
+            await collectionsService.experiments().getTests(expName).add(params2.testId,params2);
         });
 
         it('success- minScore less than 2 tests', async () => {
@@ -816,25 +804,15 @@ describe('ExperimentService Tests',() =>{
         }
                    
         beforeEach( async () => {
-            await collectionsService.experiments().add(expName, {imageName});
-            await collectionsService.images().add(imageName, {
-                base_sent_table_path: base_sent_table_path,
-                name: imageName,
-                word_ocr_path: word_ocr_path
-
-            });
-            await storageService.uploadBuffer(base_sent_table_path,new Buffer("sent_table"),fileTypes.Csv);
-            await storageService.uploadBuffer(word_ocr_path,new Buffer("word_table"),fileTypes.Csv);
-            const word_table = new Buffer('word_table');
-            const sent_table = new Buffer('sent_table');
-            const tables = {word_table: word_table, sentences_table: sent_table};
-            pythonService.setGenTableFromEyezResult(tables);
-            await experimentService.addTest(params1);
+            await collectionsService.experiments().add(expName, {});
         });
 
         it('success- add one form', async () => {
            const res = await experimentService.addForm(FormsParams);
            expect(res.status).toEqual(0);
+           const form =  await collectionsService.experiments().formsOf(FormsParams.experimentName).get(FormsParams.name)
+           expect(form).toBeDefined;
+           expect(form.name).toBe(FormsParams.name);
         });
 
         it('fail- experiment name not exist', async () => {
