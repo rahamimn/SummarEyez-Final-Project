@@ -700,4 +700,145 @@ describe('ExperimentService Tests',() =>{
       
   
     });
+
+    
+    describe('get Filtered Test' , () => {
+        const expName = 'exp1';
+        const imageName = 'im1';
+       
+        const word_ocr_path = `images/${imageName}/word_ocr`;
+        const base_sent_table_path = `images/${imageName}/base_sent_table`;
+        
+        const params1={
+            testId: 'testId1',
+            formId : '5',
+            answers : '5',
+            score : '5',
+            sentanceWeights : '5',
+            experimentName: expName,
+            fixations: 'buffer' 
+        };    
+        const params2={
+            testId: 'testId2',
+            formId : '5',
+            answers : '5',
+            score : '2',
+            sentanceWeights : '5',
+            experimentName: expName,
+            fixations: 'buffer' 
+        }; 
+
+      
+        beforeEach( async () => {
+            await collectionsService.experiments().add(expName, {});
+            await collectionsService.experiments().getTests(expName).add(params1.testId,params1);
+            await collectionsService.experiments().getTests(expName).add(params2.testId,params2);
+        });
+
+        it('success- minScore less than 2 tests', async () => {
+           const res = await  experimentService.getFilteredTest(expName,5,1)
+           expect(res.data.length).toEqual(2);
+        });
+
+        it('success- minScore less than 1 tests', async () => {
+            const res = await  experimentService.getFilteredTest(expName, 5,4);
+            expect(res.data.length).toEqual(1);
+         });
+
+         it('success- minScore less than 0 tests', async () => {
+            const res = await  experimentService.getFilteredTest(expName, 5,6);
+            expect(res.data.length).toEqual(0);
+         });
+
+         it('success- minScore less than 1 tests, formId is undefined', async () => {
+            const res = await  experimentService.getFilteredTest(expName, undefined,2);
+            expect(res.data.length).toEqual(1);
+         });
+
+         it('success- minScore undefined, return 2 tests that belong to formId 2', async () => {
+            const res = await  experimentService.getFilteredTest(expName, 5,undefined);
+            expect(res.data.length).toEqual(2);
+         });
+
+         it('fail- experiment מame not exist', async () => {
+            const {status, error} = await  experimentService.getFilteredTest('notExist', 5,6);
+            expect(status).toEqual(-1);
+            expect(error).toEqual('experiment name does not exist');
+         });
+
+    });
+
+
+    describe('add form Test' , () => {
+        const expName = 'exp1';
+        const imageName = 'im1';
+       
+        const word_ocr_path = `images/${imageName}/word_ocr`;
+        const base_sent_table_path = `images/${imageName}/base_sent_table`;
+        
+        const params1={
+            testId: 'testId1',
+            formId : '5',
+            answers : '5',
+            score : '5',
+            sentanceWeights : '5',
+            experimentName: expName,
+            fixations: 'buffer' 
+        };    
+
+        const FormsParams={
+            experimentName: expName,
+            name: 'form1',
+            questionsIds: [1,2,3],
+            isRankSentences: 'false',
+            isFillAnswers: 'true',
+            withFixations: 'true'
+        }
+        const FormsParamsNotExist={
+            experimentName: 'notExist',
+            name: 'form1',
+            questionsIds: [1,2,3],
+            isRankSentences: 'false',
+            isFillAnswers: 'true',
+            withFixations: 'true'
+        }
+                   
+        beforeEach( async () => {
+            await collectionsService.experiments().add(expName, {});
+        });
+
+        it('success- add one form', async () => {
+           const res = await experimentService.addForm(FormsParams);
+           expect(res.status).toEqual(0);
+           const form =  await collectionsService.experiments().formsOf(FormsParams.experimentName).get(FormsParams.name)
+           expect(form).toBeDefined;
+           expect(form.name).toBe(FormsParams.name);
+        });
+
+        it('fail- experiment name not exist', async () => {
+            const {status, error} = await experimentService.addForm(FormsParamsNotExist);
+            expect(status).toEqual(-1);
+            expect(error).toEqual('experiment name does not exist');
+         });
+
+         it('fail- form name already exist', async () => {
+            await collectionsService.experiments().formsOf(FormsParams.experimentName).add(FormsParams.name,{
+                name: FormsParams.name,
+                questionsIds: FormsParams.questionsIds || [],
+                isRankSentences : FormsParams.isRankSentences,
+                isFillAnswers : FormsParams.isFillAnswers ,
+                withFixations : FormsParams.withFixations ,
+                creation_date: Date.now(),
+            });
+
+            const {status, error} = await experimentService.addForm(FormsParams);
+            expect(status).toEqual(-1);
+            expect(error).toEqual('form name already exist');
+         });
+
+        
+    });
+   
+
+
 });

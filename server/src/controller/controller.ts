@@ -139,6 +139,31 @@ app.post('/api/experiments/:experimentName/questions', bodyParser.json(), (req, 
     res.send(questionAdded);
 }));
 
+app.get('/api/experiments/:experimentName/tests',(req, res) => 
+ errorHandling(res, async () => {
+    const experimentName = req.params.experimentName;
+    const formId= req.query.formId;
+    const minScore= req.query.minScore;
+    const tests = await experimentService.getFilteredTest(experimentName, formId, minScore);
+    res.send(tests)
+}));
+
+
+app.post('/api/experiments/:experimentName/forms', bodyParser.json(), (req, res) => errorHandling(res, async () => {
+    const experimentName = req.params.experimentName;
+    const {name, questionsIds, isRankSentences, isFillAnswers, withFixations}  = req.body;
+    const params={
+        experimentName: experimentName,
+        name: name,
+        questionsIds: questionsIds,
+        isRankSentences: isRankSentences,
+        isFillAnswers: isFillAnswers,
+        withFixations: withFixations
+    }
+    const ans = await experimentService.addForm(params);
+    res.send(ans)
+}));
+
 if(localMode){
     dataCreation(experimentService).then(() => {
         app.listen(port, () => console.log(`Server runs on RAM storage is running on port ${port}!`))

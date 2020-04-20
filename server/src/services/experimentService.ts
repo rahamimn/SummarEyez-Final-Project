@@ -119,6 +119,39 @@ addTest = async (params) => {
 }
 
 
+addForm = async (params) =>{
+    const expriment = await this.collectionsService.experiments().get(params.experimentName)
+    if(!expriment){
+        return response(-1,{error: 'experiment name does not exist'} );
+    }
+    const form = await this.collectionsService.experiments().formsOf(params.experimentName).get(params.name);
+    if(form){
+        return response(-1,{error: 'form name already exist'} );
+    }
+    await this.collectionsService.experiments().formsOf(params.experimentName).add(params.name,{
+        name: params.name,
+        questionsIds: params.questionsIds || [],
+        isRankSentences : params.isRankSentences,
+        isFillAnswers : params.isFillAnswers ,
+        withFixations : params.withFixations ,
+        creation_date: Date.now(),
+    });
+    return response(0);
+}
+
+getFilteredTest = async (experimentName, formId, minScore) =>{
+    const experiment= await this.collectionsService.experiments().get(experimentName)
+    if(!experiment){
+        return response(-1,{error: 'experiment name does not exist'} );
+    }
+
+    var tests =  await this.collectionsService.experiments().getTests(experimentName).getAll();
+    tests = tests.filter (test => (!formId || test.data.formId == formId) &&
+            (!minScore || test.data.score > minScore))
+
+    return response(0, {data: tests});
+    }
+
     addImage = async (name, buffer) => {
         const image = await this.collectionsService.images().get(name);
         if(image){

@@ -2,6 +2,7 @@ import { TestsMock } from "./tests.mock";
 import { BaseCollectionMock } from "./baseCollection.mock";
 import { Experiments } from "../../firebase/dal/experiments";
 import { SentTableMock } from './sentTables.mock';
+import { FormsMock } from './forms.mock';
 
 export class ExperimentsMock extends BaseCollectionMock implements Experiments {
     collection;
@@ -20,4 +21,8 @@ export class ExperimentsMock extends BaseCollectionMock implements Experiments {
     mergedWordOf(experimentId: string){
         return this.getSubCollectionOf(experimentId, 'merged-word', SentTableMock)
     }
+    formsOf(experimentId: string){
+        return this.getSubCollectionOf(experimentId, 'forms', FormsMock)
+        
+    } 
 }
