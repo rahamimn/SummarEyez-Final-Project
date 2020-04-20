@@ -21,7 +21,7 @@ export class ExperimentsMock extends BaseCollectionMock implements Experiments {
     mergedWordOf(experimentId: string){
         return this.getSubCollectionOf(experimentId, 'merged-word', SentTableMock)
     }
-    FormsOf(experimentId: string){
+    formsOf(experimentId: string){
         return this.getSubCollectionOf(experimentId, 'forms', FormsMock)
         
     } 

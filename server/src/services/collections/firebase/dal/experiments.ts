@@ -21,7 +21,7 @@ export class Experiments extends BaseCollection {
         return new SentTable(this.collection.doc(experimentId).collection('merged-word'))
     }
 
-    FormsOf(experimentId: string){
+    formsOf(experimentId: string){
         return new Forms(this.collection.doc(experimentId).collection('forms'))
     }   
 }
