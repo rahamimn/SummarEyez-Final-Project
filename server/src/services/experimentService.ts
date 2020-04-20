@@ -148,7 +148,7 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
     if(minScore && formId ){
         tests = tests.filter (test => test.data.formId == formId && test.data.score > minScore) 
     }
-    else if(!minScore&& formId ){
+    else if(!minScore && formId ){
         tests= tests.filter (test => test.data.formId == formId)
     }
     else if(minScore && !formId){
