@@ -145,13 +145,13 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
         return response(-1,{error: 'experiment name does not exist'} );
     }
     var tests =  await this.collectionsService.experiments().getTests(experimentName).getAll();
-    if(minScore != undefined && formId != undefined){
+    if(minScore && formId ){
         tests = tests.filter (test => test.data.formId == formId && test.data.score > minScore) 
     }
-    else if(minScore == undefined && formId != undefined){
+    else if(!minScore&& formId ){
         tests= tests.filter (test => test.data.formId == formId)
     }
-    else if(minScore != undefined && formId == undefined){
+    else if(minScore && !formId){
         tests= tests.filter (test => test.data.score > minScore)
     }
     return response(0, {data: tests});
