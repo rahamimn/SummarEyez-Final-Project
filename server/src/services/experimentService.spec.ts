@@ -833,6 +833,21 @@ describe('ExperimentService Tests',() =>{
             expect(error).toEqual('experiment name does not exist');
          });
 
+         it('fail- form name already exist', async () => {
+            await collectionsService.experiments().formsOf(FormsParams.experimentName).add(FormsParams.name,{
+                name: FormsParams.name,
+                questionsIds: FormsParams.questionsIds || [],
+                isRankSentences : FormsParams.isRankSentences,
+                isFillAnswers : FormsParams.isFillAnswers ,
+                withFixations : FormsParams.withFixations ,
+                creation_date: Date.now(),
+            });
+
+            const {status, error} = await experimentService.addForm(FormsParams);
+            expect(status).toEqual(-1);
+            expect(error).toEqual('form name already exist');
+         });
+
         
     });
    
