@@ -124,7 +124,11 @@ addForm = async (params) =>{
     if(!expriment){
         return response(-1,{error: 'experiment name does not exist'} );
     }
-    await this.collectionsService.experiments().FormsOf(params.experimentName).add(params.name,{
+    const form = await this.collectionsService.experiments().formsOf(params.experimentName).get(params.name);
+    if(form){
+        return response(-1,{error: 'form name already exist'} );
+    }
+    await this.collectionsService.experiments().formsOf(params.experimentName).add(params.name,{
         name: params.name,
         questionsIds: params.questionsIds || [],
         isRankSentences : params.isRankSentences,
