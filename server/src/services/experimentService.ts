@@ -144,14 +144,17 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
     if(!experiment){
         return response(-1,{error: 'experiment name does not exist'} );
     }
-    const tests =  await this.collectionsService.experiments().getTests(experimentName).getAll();
-    var res = [];
-    for (let index = 0; index < tests.length; index++) {
-        if (tests[index].data.formId==formId && tests[index].data.score> minScore){
-             res.push(tests[index])
-        }
+    var tests =  await this.collectionsService.experiments().getTests(experimentName).getAll();
+    if(minScore != undefined && formId != undefined){
+        tests = tests.filter (test => test.data.formId == formId && test.data.score > minScore) 
     }
-    return response(0, {data: res});
+    else if(minScore == undefined && formId != undefined){
+        tests= tests.filter (test => test.data.formId == formId)
+    }
+    else if(minScore != undefined && formId == undefined){
+        tests= tests.filter (test => test.data.score > minScore)
+    }
+    return response(0, {data: tests});
     }
 
     addImage = async (name, buffer) => {
