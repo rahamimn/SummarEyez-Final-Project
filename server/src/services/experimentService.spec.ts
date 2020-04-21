@@ -12,7 +12,7 @@ import { fileTypes } from './storage/storageTypes';
 import * as csvToJson from 'csvtojson';
 
 import * as mockFS from 'mock-fs';
-import { Questions } from './collections/firebase/dal/questions';
+import { ERROR_STATUS, ERRORS } from '../utils/Errors';
 
 describe('ExperimentService Tests',() =>{
     let experimentService: ExperimentService;
@@ -62,8 +62,8 @@ describe('ExperimentService Tests',() =>{
                 path: `automatic-algos/${new_alg_name}`
             }))
             const {status, error} = await experimentService.addAutomaticAlgorithms(new_alg_name, buffr)
-            expect(status).toBe(-1)
-            expect(error).toBe("the name of the file is not unique")
+            expect(status).toBe(ERROR_STATUS.NAME_NOT_VALID)
+            expect(error).toBe(ERRORS.AlG_EXISTS)
         });
     })
     
@@ -176,8 +176,8 @@ describe('ExperimentService Tests',() =>{
 
             await collectionsService.experiments().add(expName, {});
             const {status, error} = await experimentService.addExperiment(expName, imageName);
-            expect(status).toBe(-1);
-            expect(error).toBe("The name of the experiment already exist in the system.");
+            expect(status).toBe(ERROR_STATUS.NAME_NOT_VALID);
+            expect(error).toBe(ERRORS.EXP_EXISTS);
         });
     });
     describe('get summary' , () => {
@@ -243,29 +243,29 @@ describe('ExperimentService Tests',() =>{
         it('fail - experiment not exists', async () => {
             const notExistsExpName = 'NotExistsExp1';
             const {status, error} = await experimentService.getSummary(notExistsExpName, 'auto','');
-            expect(status).toEqual(-1);
-            expect(error).toEqual('experiment name does not exist');
+            expect(status).toEqual(ERROR_STATUS.OBJECT_NOT_EXISTS);
+            expect(error).toEqual(ERRORS.EXP_NOT_EXISTS);
         });
 
         it('fail - auto not exists', async () => {
             const notExistsAutoSummaryName = 'NotExistsAuto';
             const {status, error} = await experimentService.getSummary(expName, 'auto',notExistsAutoSummaryName);
-            expect(status).toEqual(-2);
-            expect(error).toEqual('summary does not exist');
+            expect(status).toEqual(ERROR_STATUS.OBJECT_NOT_EXISTS);
+            expect(error).toEqual(ERRORS.SUMMARY_NOT_EXISTS);
         });
 
         it('fail - eyes not exists', async () => {
             const notExistsEyesSummaryName = 'NotExistsAuto';
             const {status, error} = await experimentService.getSummary(expName, 'eyes',notExistsEyesSummaryName);
-            expect(status).toEqual(-2);
-            expect(error).toEqual('summary does not exist');
+            expect(status).toEqual(ERROR_STATUS.OBJECT_NOT_EXISTS);
+            expect(error).toEqual(ERRORS.SUMMARY_NOT_EXISTS);
         });
 
         it('fail - merged not exists', async () => {
             const notExistsMergedSummaryName = 'NotExistsMerged';
             const {status, error} = await experimentService.getSummary(expName, 'merged',notExistsMergedSummaryName);
-            expect(status).toEqual(-2);
-            expect(error).toEqual('summary does not exist');
+            expect(status).toEqual(ERROR_STATUS.OBJECT_NOT_EXISTS);
+            expect(error).toEqual(ERRORS.SUMMARY_NOT_EXISTS);
         });
     });
 
@@ -332,8 +332,8 @@ describe('ExperimentService Tests',() =>{
 
         it('fail - name does not exists', async () => {
             const {status, error} = await experimentService.runAutomaticAlgs(['auto1'],'notExistsExpName');
-            expect(status).toEqual(-1);
-            expect(error).toEqual('experiment name does not exist');
+            expect(status).toEqual(ERROR_STATUS.OBJECT_NOT_EXISTS);
+            expect(error).toEqual(ERRORS.EXP_NOT_EXISTS);
         });
     });
 
@@ -374,8 +374,8 @@ describe('ExperimentService Tests',() =>{
         it('fail - experiment does not exists', async () => {
             const {status, error} = await experimentService.getSummaries('notExistsExpName');
 
-            expect(status).toEqual(-1);
-            expect(error).toEqual('experiment name does not exist');
+            expect(status).toEqual(ERROR_STATUS.OBJECT_NOT_EXISTS);
+            expect(error).toEqual(ERRORS.EXP_NOT_EXISTS);
         });
     });
 
@@ -425,9 +425,9 @@ describe('ExperimentService Tests',() =>{
         });
 
         it('no input for merge summary provided', async () => {
-            const merged_response = await experimentService.mergeSummaries(expName, newMergedName, []);
-            expect(merged_response.status).toBe(-1)
-            expect(merged_response.error).toBe('no summaries input provided')
+            const {status, error} = await experimentService.mergeSummaries(expName, newMergedName, []);
+            expect(status).toBe(ERROR_STATUS.GENERAL_ERROR)
+            expect(error).toBe('no summaries input provided')
         });
 
 
@@ -438,15 +438,15 @@ describe('ExperimentService Tests',() =>{
 
         it('fail - experiment does not exists', async () => {
             const {status, error} = await experimentService.mergeSummaries("not exist", "new name", [{name: 'Alg1.py', type: 'auto', percentage: '1.0'}]);
-            expect(status).toEqual(-1);
-            expect(error).toEqual('The name of the experiment does not exist in the system.');
+            expect(status).toEqual(ERROR_STATUS.OBJECT_NOT_EXISTS);
+            expect(error).toEqual(ERRORS.EXP_NOT_EXISTS);
         });
         
 
         it('fail - auto does not exists', async () => {
             const {status, error} = await experimentService.mergeSummaries("expName", "new_name", [{name: 'Alg1.py', type: 'auto', percentage: '1.0'}]);
-            expect(status).toEqual(-1);
-            expect(error).toEqual('the sammaries name is not found');
+            expect(status).toEqual(ERROR_STATUS.OBJECT_NOT_EXISTS);
+            expect(error).toEqual(ERRORS.SUMMARY_NOT_EXISTS);
         });
     });
 
@@ -464,9 +464,9 @@ describe('ExperimentService Tests',() =>{
             }); 
         });
         it('fail- no expirament', async () => {   
-            const addQuestionNoExperiment = await experimentService.getAllQuestions("fake_name")                       
-            expect(addQuestionNoExperiment.status).toBe(-1)
-            expect(addQuestionNoExperiment.error).toBe("the experiment name does not exist")         
+            const {status, error} = await experimentService.getAllQuestions("fake_name")                       
+            expect(status).toEqual(ERROR_STATUS.OBJECT_NOT_EXISTS);
+            expect(error).toEqual(ERRORS.EXP_NOT_EXISTS);     
         });
 
         it('success - get all questions with one question', async () => {   
@@ -499,10 +499,10 @@ describe('ExperimentService Tests',() =>{
             expect(addQuestionResponse.status).toBe(0)
         });
 
-        it('fail- no expirament', async () => {   
-            const addQuestionNoExperiment = await experimentService.addQuestion("fake_name", "how are u doing?", [{answer: "ok"},{answer: "good enought"},{answer: "very good"},{answer: "not ok" }], 3)                      
-            expect(addQuestionNoExperiment.status).toBe(-1)
-            expect(addQuestionNoExperiment.error).toBe("The name of the experiment does not exist in the system.")         
+        it('fail- no experiment', async () => {   
+            const {status, error} = await experimentService.addQuestion("fake_name", "how are u doing?", [{answer: "ok"},{answer: "good enought"},{answer: "very good"},{answer: "not ok" }], 3);
+            expect(status).toEqual(ERROR_STATUS.OBJECT_NOT_EXISTS);
+            expect(error).toEqual(ERRORS.EXP_NOT_EXISTS);                     
         });
 
         it('fail- wrong answer number (above 4 or 0 or less)', async () => { 
@@ -554,7 +554,7 @@ describe('ExperimentService Tests',() =>{
 
             pythonService.setGenTableFromEyezResult(tables);
 
-            const {status, error} = await experimentService.addTest(params);
+            const {status} = await experimentService.addTest(params);
             expect(status).toEqual(0);
 
             const expUploadPaths = 
@@ -588,8 +588,8 @@ describe('ExperimentService Tests',() =>{
             pythonService.setGenTableFromEyezResult(tables);
 
             const {status, error} = await experimentService.addTest(params);
-            expect(status).toEqual(-1);
-            expect(error).toEqual('experiment name does not exist');
+            expect(status).toEqual(ERROR_STATUS.OBJECT_NOT_EXISTS);
+            expect(error).toEqual(ERRORS.EXP_NOT_EXISTS);
         });
 
         it('fail - picture not exist', async () => {
@@ -604,8 +604,8 @@ describe('ExperimentService Tests',() =>{
             pythonService.setGenTableFromEyezResult(tables);
 
             const {status, error} = await experimentService.addTest(params);
-            expect(status).toEqual(-1);
-            expect(error).toEqual('picture does not exist');
+            expect(status).toEqual(ERROR_STATUS.OBJECT_NOT_EXISTS);
+            expect(error).toEqual(ERRORS.IM_NOT_EXISTS);
 
         });
 
@@ -634,7 +634,7 @@ describe('ExperimentService Tests',() =>{
             pythonService.setGenTableFromEyezResult(tables);
             
             const {status, error} = await experimentService.addTest(params);
-            expect(status).toEqual(-1);
+            expect(status).toEqual(ERROR_STATUS.OBJECT_NOT_EXISTS);
             expect(error).toEqual('word_ocr does not exist');
 
         });
@@ -667,7 +667,7 @@ describe('ExperimentService Tests',() =>{
             pythonService.setGenTableFromEyezResult(tables);
             
             const {status, error} = await experimentService.addTest(params);
-            expect(status).toEqual(-1);
+            expect(status).toEqual(ERROR_STATUS.OBJECT_NOT_EXISTS);
             expect(error).toEqual('base_sentences_table does not exist');
 
         });
@@ -693,12 +693,10 @@ describe('ExperimentService Tests',() =>{
             });
 
             const {status, error} = await experimentService.addTest(params);
-            expect(status).toEqual(-1);
-            expect(error).toEqual('testId already exist exist');
+            expect(status).toEqual(ERROR_STATUS.NAME_NOT_VALID);
+            expect(error).toEqual(ERRORS.TEST_EXISTS);
      
         });
-      
-  
     });
 
     
@@ -760,10 +758,10 @@ describe('ExperimentService Tests',() =>{
             expect(res.data.length).toEqual(2);
          });
 
-         it('fail- experiment מame not exist', async () => {
+         it('fail- experiment name not exist', async () => {
             const {status, error} = await  experimentService.getFilteredTest('notExist', 5,6);
-            expect(status).toEqual(-1);
-            expect(error).toEqual('experiment name does not exist');
+            expect(status).toEqual(ERROR_STATUS.OBJECT_NOT_EXISTS);
+            expect(error).toEqual(ERRORS.EXP_NOT_EXISTS);
          });
 
     });
@@ -817,8 +815,8 @@ describe('ExperimentService Tests',() =>{
 
         it('fail- experiment name not exist', async () => {
             const {status, error} = await experimentService.addForm(FormsParamsNotExist);
-            expect(status).toEqual(-1);
-            expect(error).toEqual('experiment name does not exist');
+            expect(status).toEqual(ERROR_STATUS.OBJECT_NOT_EXISTS);
+            expect(error).toEqual(ERRORS.EXP_NOT_EXISTS);
          });
 
          it('fail- form name already exist', async () => {
@@ -832,8 +830,8 @@ describe('ExperimentService Tests',() =>{
             });
 
             const {status, error} = await experimentService.addForm(FormsParams);
-            expect(status).toEqual(-1);
-            expect(error).toEqual('form name already exist');
+            expect(status).toEqual(ERROR_STATUS.NAME_NOT_VALID);
+            expect(error).toEqual(ERRORS.FORM_EXISTS);
          });
     });
 
@@ -870,9 +868,9 @@ describe('ExperimentService Tests',() =>{
 
         it('fail- experiment name not exist', async () => {
             const {status, error} = await experimentService.getAllForms(expNameNotExist)
-            expect(status).toEqual(-1);
-            expect(error).toEqual('experiment name does not exist');
-            });
+            expect(status).toEqual(ERROR_STATUS.OBJECT_NOT_EXISTS);
+            expect(error).toEqual(ERRORS.EXP_NOT_EXISTS);
+        });
     });
 
 });

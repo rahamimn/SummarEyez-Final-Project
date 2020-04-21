@@ -2,7 +2,12 @@ import {PythonShell} from 'python-shell';
 import { PythonScriptInterface } from '../pythonScriptsTypes';
 const fs = require('fs');
 //doesn't tested at all
-
+export class PythonError extends Error {
+    constructor(message = "", ...args) {
+      super(message);
+      this.message = message;
+    }
+  }
 export class PythonScripts implements PythonScriptInterface {
     constructor(){
 
@@ -14,10 +19,11 @@ export class PythonScripts implements PythonScriptInterface {
         pyshell.send(buffer);
     }
 
-    private readFiles = (pyshell: PythonShell, handleFiles: (files: Buffer[]) => any) => {
+    private readFiles = async (pyshell: PythonShell): Promise<Buffer[]> => {
         let inputFiles: Buffer[] = [];
         let remainingBytes = 0;
 
+        //@ts-ignore
         return new Promise((resolve,reject) => {
             pyshell.stdout.on('data', function (buffer: Buffer) {
                 
@@ -46,7 +52,7 @@ export class PythonScripts implements PythonScriptInterface {
             
             pyshell.end((err,code,signal) => {
                 if(code === 0 ){
-                    resolve(handleFiles(inputFiles))
+                    resolve(inputFiles)
                 }
                 else{
                     reject()
@@ -54,97 +60,108 @@ export class PythonScripts implements PythonScriptInterface {
             });
         });
     }
-    processImage(imageBuffer: Buffer){
-        let options = {
-            mode: 'binary',
-            pythonOptions: ['-u'],
-            stderrParser: 'text'
-        };
-
-        // @ts-ignorets
-        let pyshell = new PythonShell('./python_script/imagePreprocess.py', options);
-        
-        this.sendBuffer(imageBuffer,pyshell)
-        return this.readFiles(
-            pyshell,
-            files => ({
-                text: files[0],
-                word_ocr: files[1],
-                base_sent_table: files[2],
-            })
-        );
-    }
-    genTableFromEyez(fixations, word_ocr, base_sentences_table){
-        let options = {
-            mode: 'binary',
-            pythonOptions: ['-u'], 
-            stderrParser: 'text'
+    async processImage(imageBuffer: Buffer){
+        try{
+            let options = {
+                mode: 'binary',
+                pythonOptions: ['-u'],
+                stderrParser: 'text'
             };
-
-        //@ts-ignore
-        let pyshell = new PythonShell('./python_script/genTablesFromEyez.py', options);
-        this.sendBuffer(fixations, pyshell)
-        this.sendBuffer(word_ocr, pyshell)
-        this.sendBuffer(base_sentences_table, pyshell)
-       
-        return this.readFiles(
-            pyshell,
-            files => ({
-                word_table: files[0],
-                sentences_table: files[1],
-            })
-        );
-    }
-
-
-    runAutomaticAlgs(algsNames: string[], text, base_sent_table){
-        let options = {
-            mode: 'binary',
-            pythonOptions: ['-u'],
-            args: algsNames,
-            stderrParser: 'text'
-            };
-
-        //@ts-ignore
-        let pyshell = new PythonShell('./python_script/runAutomaticAlgo.py', options);
-
-        this.sendBuffer(base_sent_table, pyshell)
-        this.sendBuffer(text, pyshell)
-
-        return this.readFiles(
-            pyshell,
-            files => ({
-                tables: algsNames.map((name,i) => ({name, sent_table: files[i]}))
-            })
-        );
-    }
-
-
-
-    mergeTables(SummariesPercent: string[], sent_tables:Buffer [], base_sent_table: Buffer){
-        let options = {
-            mode: 'binary',
-            pythonOptions: ['-u'],
-            args: [String(SummariesPercent.length), ...SummariesPercent],
-            stderrParser: 'text'
-            };
-        
-
-        //@ts-ignore
-        let pyshell = new PythonShell('./python_script/mergeTables.py', options);
-        
-        this.sendBuffer(base_sent_table, pyshell)
-        for(var i=0; i < sent_tables.length ; i++){
-            this.sendBuffer(sent_tables[i], pyshell)
+    
+            // @ts-ignorets
+            let pyshell = new PythonShell('./python_script/imagePreprocess.py', options);
+            
+            this.sendBuffer(imageBuffer,pyshell)
+            const [text, word_ocr, base_sent_table] = await this.readFiles(pyshell);
+            if(!text || !word_ocr || !base_sent_table)
+                throw new Error('files empty')
+            return {text, word_ocr, base_sent_table};
         }
+        catch(e){
+            throw new PythonError(e)
+        }   
+    }
+    async genTableFromEyez(fixations, word_ocr, base_sentences_table){
+        try{
+            let options = {
+                mode: 'binary',
+                pythonOptions: ['-u'], 
+                stderrParser: 'text'
+                };
+
+            //@ts-ignore
+            let pyshell = new PythonShell('./python_script/genTablesFromEyez.py', options);
+            this.sendBuffer(fixations, pyshell)
+            this.sendBuffer(word_ocr, pyshell)
+            this.sendBuffer(base_sentences_table, pyshell)
+        
+            const [word_table, sentences_table] = await this.readFiles(pyshell);
+            if(!word_table || !sentences_table)
+                throw new Error('files empty')
+
+            return {word_table, sentences_table};
+        }
+        catch(e){
+            throw new PythonError(e.message)
+        }   
+    }
 
 
-        return this.readFiles(
-            pyshell,
-            files => ({
-                merged_table: files[0],
-            })
-        );
+    async runAutomaticAlgs(algsNames: string[], text, base_sent_table){
+        try{
+            let options = {
+                mode: 'binary',
+                pythonOptions: ['-u'],
+                args: algsNames,
+                stderrParser: 'text'
+                };
+
+            //@ts-ignore
+            let pyshell = new PythonShell('./python_script/runAutomaticAlgo.py', options);
+
+            this.sendBuffer(base_sent_table, pyshell)
+            this.sendBuffer(text, pyshell)
+
+
+            const files = await this.readFiles(pyshell);
+            if(files.length !== algsNames.length)
+                throw new Error('files empty')
+            return {tables: algsNames.map((name,i) => ({name, sent_table: files[i]}))};
+        }
+        catch(e){
+            throw new PythonError(e)
+        }  
+    }
+
+
+
+    async mergeTables(SummariesPercent: string[], sent_tables:Buffer [], base_sent_table: Buffer){
+        try{
+            let options = {
+                mode: 'binary',
+                pythonOptions: ['-u'],
+                args: [String(SummariesPercent.length), ...SummariesPercent],
+                stderrParser: 'text'
+                };
+            
+
+            //@ts-ignore
+            let pyshell = new PythonShell('./python_script/mergeTables.py', options);
+            
+            this.sendBuffer(base_sent_table, pyshell)
+            for(var i=0; i < sent_tables.length ; i++){
+                this.sendBuffer(sent_tables[i], pyshell)
+            }
+
+            const [merged_table] = await this.readFiles(pyshell);
+            if(!merged_table)
+                throw new Error('files empty')
+
+            return {merged_table};
+        }
+        catch(e){
+            throw new PythonError(e)
+        } 
         
     }
 

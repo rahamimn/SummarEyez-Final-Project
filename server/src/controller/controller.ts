@@ -1,8 +1,9 @@
 import { ExperimentService } from "../services/experimentService";
-import { PythonScripts } from "../services/pythonScripts/python/python-scripts";
+import { PythonScripts, PythonError } from "../services/pythonScripts/python/python-scripts";
 import { Storages } from "../services/storage/storage";
 import { Collections } from "../services/collections/collections";
 import { dataCreation } from "../utils/dataCreationForE2e";
+import { ERROR_STATUS } from "../utils/Errors";
 
 const cors = require('cors');
 const express = require('express');
@@ -30,9 +31,15 @@ const errorHandling = async (res, cb) => {
     try{
         await cb();
 
-    }catch(err){
-        console.log(err);
-        res.send({status: -1, err});
+    }catch(error){
+        console.log(error);
+        
+        if(error instanceof PythonError){
+            res.send({status: ERROR_STATUS.PYTHON_ERROR, error})
+        }
+        else{
+            res.send({status: ERROR_STATUS.GENERAL_ERROR, error});
+        }
     }
 }
 
