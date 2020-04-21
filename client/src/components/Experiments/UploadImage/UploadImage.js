@@ -1,12 +1,15 @@
 import React, {Component} from 'react'
 import {DropzoneArea} from 'material-ui-dropzone'
 import TextField from '@material-ui/core/TextField'
+import Snackbar from '@material-ui/core/Snackbar'
+import Alert from '@material-ui/lab/Alert'
 import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Card from '@material-ui/core/Card'
 import Divider from '@material-ui/core/Divider'
 import Typography from '@material-ui/core/Typography'
 import api from '../../../apiService';
+import { ERROR_STATUS } from '../../ERRORS';
 
 export class UploadImage extends Component{
   constructor(props){
@@ -15,15 +18,24 @@ export class UploadImage extends Component{
       files: [],
       imageName: '',
       uploading: false,
+      apiAlertShows: false,
+      nameError: false,
     };
   }
 
     handleAddImage = async () => {
         this.setState({uploading: true});
-        await api.uploadImage(this.state.imageName, this.state.files[0]);
+        const {status} = await api.uploadImage(this.state.imageName, this.state.files[0]);
         //error handling
-
-        this.props.onImageUploaded && this.props.onImageUploaded(this.state.imageName);
+        if(status === ERROR_STATUS.NAME_NOT_VALID){
+          this.setState({uploading:false, files: [], nameError: true })
+        }
+        else if(status < 0){
+          this.setState({apiAlertShows: true, uploading:false, files: []})
+        }
+        else{
+          this.props.onImageUploaded && this.props.onImageUploaded(this.state.imageName);
+        }
     }
 
   handleChangeFile = (files) => {
@@ -33,9 +45,11 @@ export class UploadImage extends Component{
   }
   handleChangeName = (event) => {
     this.setState({
-      imageName: event.target.value
+      imageName: event.target.value,
+      nameError: false 
     });
   }
+  handleCloseAlert = () => this.setState({apiAlertShows: false});
 
   render(){
     return (
@@ -52,6 +66,8 @@ export class UploadImage extends Component{
           :
           <div>
             <TextField 
+                error={this.state.nameError}
+                helperText={this.state.nameError && "name not valid"}
                 value={this.state.imageName}
                 style={{width: '200px', marginBottom: '20px'}}
                 onChange={this.handleChangeName}
@@ -71,6 +87,14 @@ export class UploadImage extends Component{
             </Button>
           </div>}
         </div> 
+        <Snackbar 
+          anchorOrigin={{ vertical:'top', horizontal:'center' }}
+          open={this.state.apiAlertShows}
+          onClose={this.handleCloseAlert}>
+          <Alert elevation={6} variant="filled" onClose={this.handleCloseAlert} severity="error">
+            Error has occured in system
+          </Alert>
+        </Snackbar>
       </Card>
     )  
   }

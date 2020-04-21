@@ -44,8 +44,9 @@ const errorHandling = async (res, cb) => {
 }
 
 app.post('/api/images',upload.single('imageBuffer'), (req, res) => errorHandling(res, async () => {
-    await experimentService.addImage(req.body.imageName, req.file.buffer);
-    res.send({status: 0})
+    const response = await experimentService.addImage(req.body.imageName, req.file.buffer);
+    console.log(response,123);
+    res.send(response)
 }));
 
 app.get('/api/images', (req, res) => errorHandling(res, async () => {

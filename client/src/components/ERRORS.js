@@ -1,0 +1,8 @@
+export const ERROR_STATUS = {
+    GENERAL_ERROR: -1,
+    PYTHON_ERROR: -2,
+    COLLECTION_ERROR: -3,
+    STORAGE_ERROR: -4,
+    NAME_NOT_VALID: -5,
+    OBJECT_NOT_EXISTS: -6,
+}

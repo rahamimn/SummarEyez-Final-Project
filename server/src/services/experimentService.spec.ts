@@ -121,8 +121,8 @@ describe('ExperimentService Tests',() =>{
             await collectionsService.images().add(existName, {});
             const {status, error} = await experimentService.addImage(existName,new Buffer(""));
 
-            expect(status).toEqual(-1);
-            expect(error).toEqual('image name already exists');
+            expect(status).toEqual(ERROR_STATUS.NAME_NOT_VALID);
+            expect(error).toEqual(ERRORS.IM_EXISTS);
         });
     });
 
