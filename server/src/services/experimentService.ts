@@ -168,9 +168,7 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
 
     addImage = async (name, buffer) => {
         const image = await this.collectionsService.images().get(name);
-        console.log('er3r1')
         if(image){
-            console.log('er3r',response(ERROR_STATUS.NAME_NOT_VALID, {error:ERRORS.IM_EXISTS}))
             return response(ERROR_STATUS.NAME_NOT_VALID, {error:ERRORS.IM_EXISTS});
         }
         const ans= this.validateIds({'name': name});
