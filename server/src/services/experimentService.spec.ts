@@ -858,8 +858,8 @@ describe('ExperimentService Tests',() =>{
         }
         beforeEach( async () => {
             await collectionsService.experiments().add(expName, {});
-            await experimentService.addForm(FormsParams1);
-            await experimentService.addForm(FormsParams2);
+            await collectionsService.experiments().formsOf(expName).add(FormsParams1.name, FormsParams1);
+            await collectionsService.experiments().formsOf(expName).add(FormsParams2.name, FormsParams2);
         });
 
         it('success- getAll return 2 forms', async () => {
