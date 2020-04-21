@@ -835,10 +835,44 @@ describe('ExperimentService Tests',() =>{
             expect(status).toEqual(-1);
             expect(error).toEqual('form name already exist');
          });
-
-        
     });
-   
 
+    describe('get all tests' , () => {
+        const expName = 'exp1';
+        const expNameNotExist = 'notExist';
+        const FormsParams1={
+            experimentName: expName,
+            name: 'form1',
+            questionsIds: [1,2,3],
+            isRankSentences: 'false',
+            isFillAnswers: 'true',
+            withFixations: 'true'
+        }
+        const FormsParams2={
+            experimentName: expName,
+            name: 'form2',
+            questionsIds: [1,2,3],
+            isRankSentences: 'false',
+            isFillAnswers: 'true',
+            withFixations: 'true'
+        }
+        beforeEach( async () => {
+            await collectionsService.experiments().add(expName, {});
+            await collectionsService.experiments().formsOf(expName).add(FormsParams1.name, FormsParams1);
+            await collectionsService.experiments().formsOf(expName).add(FormsParams2.name, FormsParams2);
+        });
+
+        it('success- getAll return 2 forms', async () => {
+            const res = await experimentService.getAllForms(expName)
+            expect(res.status).toEqual(0);
+            expect(res.data.length).toEqual(2);     
+        });
+
+        it('fail- experiment name not exist', async () => {
+            const {status, error} = await experimentService.getAllForms(expNameNotExist)
+            expect(status).toEqual(-1);
+            expect(error).toEqual('experiment name does not exist');
+            });
+    });
 
 });

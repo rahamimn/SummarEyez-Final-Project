@@ -139,6 +139,15 @@ addForm = async (params) =>{
     return response(0);
 }
 
+getAllForms = async (experimentName) =>{
+    const expriment = await this.collectionsService.experiments().get(experimentName)
+    if(!expriment){
+        return response(-1,{error: 'experiment name does not exist'} );
+    }
+    const forms = await this.collectionsService.experiments().formsOf(experimentName).getAll();
+    return response(0, {data: forms});
+}
+
 getFilteredTest = async (experimentName, formId, minScore) =>{
     const experiment= await this.collectionsService.experiments().get(experimentName)
     if(!experiment){
