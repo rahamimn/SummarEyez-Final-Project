@@ -7,6 +7,7 @@ const forEP = require('foreach-promise');
 import {promises as fs} from 'fs';
 import * as csvToJson from 'csvtojson';
 import { v4 as uuidv4 } from 'uuid';
+import { ERROR_STATUS, ERRORS } from '../utils/Errors';
 
 // var isUtf8 = require('is-utf8');
 
@@ -67,26 +68,26 @@ export class ExperimentService{
 addTest = async (params) => {
     const experiment= await this.collectionsService.experiments().get(params.experimentName)
     const paramsList = {'testId': params.testId};
-    const ans= this.validateIds(paramsList);
+    const error = this.validateIds(paramsList);
 
-    if(ans != ''){
-        return response(-1,{error: ans} );
+    if(error != ''){
+        return response(ERROR_STATUS.NAME_NOT_VALID,{error} );
     }
     if(!experiment){
-        return response(-1,{error: 'experiment name does not exist'} );
+        return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
     }
     ///
     const picture= await this.collectionsService.images().get(experiment.imageName)
     if(!picture){
-        return response(-1,{error: 'picture does not exist'} );
+        return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.IM_NOT_EXISTS} );
     }
     const word_ocr = await this.storageService.downloadToBuffer(picture.word_ocr_path);
     if(!word_ocr){
-        return response(-1,{error: 'word_ocr does not exist'} );
+        return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: 'word_ocr does not exist'} );
     }
     const base_sentences_table = await this.storageService.downloadToBuffer(picture.base_sent_table_path);
     if(!base_sentences_table){
-        return response(-1,{error: 'base_sentences_table does not exist'} );
+        return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: 'base_sentences_table does not exist'} );
     }
    
     const test = await this.collectionsService
@@ -95,12 +96,16 @@ addTest = async (params) => {
         .get(params.testId);
 
     if(test){
-        return response(-1,{error: 'testId already exist exist'} );
+        return response(ERROR_STATUS.NAME_NOT_VALID, {error: ERRORS.TEST_EXISTS});
     }
-    
+
+
     const tables = await this.pythonService.genTableFromEyez(params.fixations, word_ocr, base_sentences_table);
-    const expUploadPaths = {sent_table:`experiments/${params.experimentName}/tests/${params.testId}/testSentTables`,
-                            word_table:`experiments/${params.experimentName}/tests/${params.testId}/testWordTables`}
+
+    const expUploadPaths = {
+        sent_table:`experiments/${params.experimentName}/tests/${params.testId}/testSentTables`,
+        word_table:`experiments/${params.experimentName}/tests/${params.testId}/testWordTables`
+    }
     
     await this.storageService.uploadBuffer(expUploadPaths.word_table, tables.word_table, fileTypes.Text);
     await this.storageService.uploadBuffer(expUploadPaths.sent_table, tables.sentences_table, fileTypes.Text);
@@ -123,11 +128,11 @@ addTest = async (params) => {
 addForm = async (params) =>{
     const expriment = await this.collectionsService.experiments().get(params.experimentName)
     if(!expriment){
-        return response(-1,{error: 'experiment name does not exist'} );
+        return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
     }
     const form = await this.collectionsService.experiments().formsOf(params.experimentName).get(params.name);
     if(form){
-        return response(-1,{error: 'form name already exist'} );
+        return response(ERROR_STATUS.NAME_NOT_VALID,{error: ERRORS.FORM_EXISTS} );
     }
     await this.collectionsService.experiments().formsOf(params.experimentName).add(params.name,{
         name: params.name,
@@ -143,7 +148,7 @@ addForm = async (params) =>{
 getAllForms = async (experimentName) =>{
     const expriment = await this.collectionsService.experiments().get(experimentName)
     if(!expriment){
-        return response(-1,{error: 'experiment name does not exist'} );
+        return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
     }
     const forms = await this.collectionsService.experiments().formsOf(experimentName).getAll();
     return response(0, {data: forms});
@@ -176,7 +181,7 @@ getForm = async (experimentName, formId) =>{
 getFilteredTest = async (experimentName, formId, minScore) =>{
     const experiment= await this.collectionsService.experiments().get(experimentName)
     if(!experiment){
-        return response(-1,{error: 'experiment name does not exist'} );
+        return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
     }
 
     var tests =  await this.collectionsService.experiments().getTests(experimentName).getAll();
@@ -251,7 +256,7 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
     getAllQuestions= async(experimentName: any) => {
         const experiment = await this.collectionsService.experiments().get(experimentName);
         if(!experiment){
-            return response(-1, {error: "the experiment name does not exist"})
+            return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
         }
         const questionsOfImage = await this.collectionsService.images().questionsOf(experiment.imageName).getAll();
         return response(0,{data: questionsOfImage})
@@ -291,12 +296,12 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
     getSummary = async (experimentName, type, name) => {
         const experiment = await this.collectionsService.experiments().get(experimentName);
         if(!experiment){
-            return response(-1, {error:'experiment name does not exist'})
+            return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
         }
 
         const csvFile = await this.getSentTableFile(experiment, type, name);
         if(!csvFile){
-            return response(-2, {error:'summary does not exist'})
+            return response(ERROR_STATUS.OBJECT_NOT_EXISTS, {error:ERRORS.SUMMARY_NOT_EXISTS})
         }
 
         return response(0, {
@@ -311,7 +316,7 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
         // const eyesExample = {id: 'eye1',data:{name:'eye1', creation_date:Date.now()}}
         const experiment = await this.collectionsService.experiments().get(experimentName);
         if(!experiment){
-            return response(-1, {error:'experiment name does not exist'});
+            return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
         }
 
         const autoSentTables = await this.collectionsService.images().sentTablesOf(experiment.imageName).getAll();
@@ -347,7 +352,7 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
 runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
         const experiment = await this.collectionsService.experiments().get(experimentName);
         if(!experiment){
-            return response(-1, {error: 'experiment name does not exist'});
+            return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
         };
             
         const imageName =  experiment.imageName;
@@ -360,15 +365,15 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
     }
 
     addAutomaticAlgorithms = async (name: string, buffer) => {
-        const ans= this.validateIds({'name': name});
-        if(ans != ''){
-            return response(-1,{error: ans} );
+        const error = this.validateIds({'name': name});
+        if(error != ''){
+            return response(ERROR_STATUS.NAME_NOT_VALID, {error} );
         }
         const formattedName = name.endsWith('.py') ? name :  (name+'.py');
         const path = `automatic-algos/${formattedName}`
         await this.storageService.uploadBuffer(path, buffer, fileTypes.Text);
         if (await this.collectionsService.automaticAlgos().get(formattedName) != undefined){
-            return response(-1,{ error: "the name of the file is not unique" });
+            return response(ERROR_STATUS.NAME_NOT_VALID,{ error: ERRORS.AlG_EXISTS });
         }
         else{
             await this.collectionsService.automaticAlgos().add(formattedName,{
@@ -382,12 +387,12 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
 
     addExperiment = async (experimentName, imageName)=>{
         const paramsList= {'experimentName': experimentName, 'imageName': imageName};
-        const ans= this.validateIds(paramsList);
-        if(ans != ''){
-            return response(-1,{error: ans} );
+        const error = this.validateIds(paramsList);
+        if(error != ''){
+            return response(ERROR_STATUS.NAME_NOT_VALID,{error} );
         }
         if(await this.collectionsService.experiments().get(experimentName)){
-            return response(-1,{ error: "The name of the experiment already exist in the system." });
+            return response(ERROR_STATUS.NAME_NOT_VALID,{ error: ERRORS.EXP_EXISTS});
         }
         await this.collectionsService.experiments().add(experimentName,{
             name: experimentName, imageName
@@ -399,11 +404,11 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
     addQuestion = async (experimentName,question, answers, correctAnswer)=>{
         const experiment = await this.collectionsService.experiments().get(experimentName);
         if(!experiment){
-            return response(-1,{error: "The name of the experiment does not exist in the system."});
+            return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
         }
         
         if(correctAnswer >4 || correctAnswer <0){
-            return response(-1,{error: "the value of the correct answer is not valid"});
+            return response(ERROR_STATUS.GENERAL_ERROR,{error: "the value of the correct answer is not valid"});
         }
         const experimentImageName = experiment.imageName;
         await this.collectionsService.images().questionsOf(experimentImageName).add(uuidv4(), {
@@ -418,7 +423,7 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
     mergeSummaries = async(experimentName, mergedName, sammaries_details ) =>{
 
         if(sammaries_details.length ==0){
-            return response(-1,{error: "no summaries input provided"});
+            return response(ERROR_STATUS.GENERAL_ERROR,{error: "no summaries input provided"});
         }
         var percents = sammaries_details.map(sammary => sammary.percentage)
         var names = sammaries_details.map(sammary => sammary.name)
@@ -426,7 +431,7 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
 
         const expriment = await this.collectionsService.experiments().get(experimentName)
         if(!expriment){
-            return response(-1,{error: "The name of the experiment does not exist in the system."});
+            return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
         }   
 
         const image = await this.collectionsService.images().get(expriment.imageName)
@@ -434,7 +439,7 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
 
         const {status, data: sent_tables}  = await this.sent_table_initializer(names,types, expriment);
         if(status !== 0){
-            return response(-1,{error: "the sammaries name is not found"});
+            return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.SUMMARY_NOT_EXISTS});
         }
 
         var {merged_table} = await this.pythonService.mergeTables(percents, sent_tables ,base_sent_table )  
@@ -463,7 +468,6 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
             if (!new_sent_table) {
                 return {
                     status: -1,
-                    error: "the sammary name is not found"
                 };
             }
             //the sammary name is found
