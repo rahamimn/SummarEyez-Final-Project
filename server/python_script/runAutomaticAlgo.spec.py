@@ -22,3 +22,7 @@ sent_tables = runAutomaticAlgo.main(base_sent_table, text,['Alg1.py','Alg2.py'])
 
 print(sent_tables[0])
 print(sent_tables[1])
+
+sent_tables2 = runAutomaticAlgo.main(base_sent_table, text,['shouldFail.py']);
+
+print(sent_tables2[0])

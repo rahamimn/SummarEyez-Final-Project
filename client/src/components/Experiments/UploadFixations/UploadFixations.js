@@ -65,7 +65,7 @@ export class UploadFixations extends Component{
               <DropzoneArea
                 filesLimit={1}
                   onChange={this.handleChangeFile}
-                  acceptedFiles={["text/csv"]}
+                  acceptedFiles={[".csv","text/csv"]}
                   dropzoneText={"Upload fixation file here"}
                 />
 

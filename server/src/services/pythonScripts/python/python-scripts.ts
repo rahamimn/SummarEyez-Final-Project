@@ -124,9 +124,10 @@ export class PythonScripts implements PythonScriptInterface {
 
 
             const files = await this.readFiles(pyshell);
-            if(files.length !== algsNames.length)
-                throw new Error('files empty')
-            return {tables: algsNames.map((name,i) => ({name, sent_table: files[i]}))};
+            const tables = algsNames.map((name,i) => ({name, sent_table: files[i]}));
+            const filteredTables = tables.filter(row => row.sent_table.toString()!=='noOk');
+
+            return {tables: filteredTables};
         }
         catch(e){
             throw new PythonError(e)
