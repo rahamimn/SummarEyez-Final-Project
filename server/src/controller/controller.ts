@@ -171,6 +171,14 @@ app.get('/api/experiments/:experimentName/forms',(req, res) =>
     res.send(forms)
 }));
 
+app.get(' /api/experiments/:experimentName/forms/:formId',(req, res) => 
+ errorHandling(res, async () => {
+    const experimentName = req.params.experimentName;
+    const formId = req.params.formId;
+    const forms = await experimentService.getForm(experimentName, formId);
+    res.send(forms)
+}));
+
 if(localMode){
     dataCreation(experimentService).then(() => {
         app.listen(port, () => console.log(`Server runs on RAM storage is running on port ${port}!`))

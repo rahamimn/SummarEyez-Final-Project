@@ -75,6 +75,7 @@ addTest = async (params) => {
     if(!experiment){
         return response(-1,{error: 'experiment name does not exist'} );
     }
+    ///
     const picture= await this.collectionsService.images().get(experiment.imageName)
     if(!picture){
         return response(-1,{error: 'picture does not exist'} );
@@ -146,6 +147,30 @@ getAllForms = async (experimentName) =>{
     }
     const forms = await this.collectionsService.experiments().formsOf(experimentName).getAll();
     return response(0, {data: forms});
+}
+
+getForm = async (experimentName, formId) =>{
+    const expriment = await this.collectionsService.experiments().get(experimentName)
+    if(!expriment){
+        return response(-1,{error: 'experiment name does not exist'} );
+    }
+    const form = await this.collectionsService.experiments().formsOf(experimentName).get(formId);
+    if(!form){
+        return response(-1,{error: 'form id does not exist'} );
+    }
+    const picture= await this.collectionsService.images().get(expriment.imageName)
+    if(!picture){
+        return response(-1,{error: 'picture does not exist'} );
+    }
+    const base_sentences_table = await this.storageService.downloadToBuffer(picture.base_sent_table_path);
+    if(!base_sentences_table){
+        return response(-1,{error: 'base_sentences_table does not exist'} );
+    }
+
+    var res = {formMetaData: form,
+               base_sentences_table: base_sentences_table}
+
+    return response(0, {data: form});
 }
 
 getFilteredTest = async (experimentName, formId, minScore) =>{
