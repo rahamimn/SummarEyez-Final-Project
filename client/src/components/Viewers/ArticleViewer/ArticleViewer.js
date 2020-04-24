@@ -5,7 +5,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import Typography from '@material-ui/core/Typography';
 import CheckIcon from '@material-ui/icons/Check';
 import ToggleButton from '@material-ui/lab/ToggleButton';
-
+import {BaseViewer} from '../BaseViewer/BaseViewer';
 
 export const ArticleViewer = ({summary, title}) => {
     let paragraphs = [];
@@ -127,13 +127,22 @@ export const ArticleViewer = ({summary, title}) => {
                         </ToggleButton> 
                     </div>
                 </div>
-                <div style={{ 
+                <BaseViewer
+                    summary={summary}
+                    title={title}
+                    filters={{
+                        color,
+                        isGradinet,
+                        minWeight,
+                        topSentencesCount
+                    }}/>
+                {/* <div style={{ 
                     width:'800px',
                     padding:'50px',
                     fontFamily: '"Times New Roman", Times, serif', fontWeight:'400'}}>
                     <strong><div style={{fontSize:"30px"}}>{title}</div></strong>
                     {sentHtml}
-                </div>
+                </div> */}
         </div>       
 }
 
