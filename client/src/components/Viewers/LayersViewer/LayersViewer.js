@@ -1,24 +1,48 @@
-import React, {useState} from 'react';
+import React, {useState, useCallback} from 'react';
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography';
+import { Popper, Card } from '@material-ui/core';
+import { borderRadius } from '@material-ui/system';
+
+
+const SmallCircle  = ({color}) => <span style={{
+    display:'inline-block',
+    width:'10px',
+    height:'10px',
+    borderRadius:'50%',
+    backgroundColor:`hsl(${color}, 100%, 75%)`,
+    marginRight:'5px',
+}}></span>
 
 
 export const LayersViewer = ({summaries, title, summariesMetadata, experimentName }) => {
 
-    const summaryDetail = (metaData, index) => <div key={index} style={{marginBottom: "40px"}}>
+    const summaryDetail = useCallback((metaData, index) => <div key={index} style={{marginBottom: "40px"}}>
         <div style={{display:"flex", alignItems: "center"}}>
             <div style={{ marginRight:"10px",height:"30px", width:"50px", backgroundColor:`hsl(${colors[index].value}, 100%, 75%)`}}></div>
             <Typography>{metaData.name}({metaData.type})</Typography>
         </div>
 
         <Button size="small"  onClick={() => window.open(`/article/${experimentName}/${metaData.type}/${metaData.name}`,'_blank')}>Go to Summary</Button>
-    </div>
+    </div>);
+
+    const SentPopper = useCallback(({weights, isOpen, anchorEl}) => (
+        <Popper open={isOpen} anchorEl={anchorEl}>
+            <Card elevation={5} style={{padding:'5px 10px'}}>
+                {weights.map((weight,i)=> 
+                    <div><SmallCircle color={colors[i].value}/>({summariesMetadata[i].name}) {weight}</div>
+                )}
+            </Card>
+        </Popper>
+    ));
 
     let paragraphs = [];
     let paragraphNum = -1;
 
     let [minWeight, setMinWeight] = useState(0);
+    const [selectedSent,setSelectedSent] = useState(null); 
+    const [anchorEl,setAnchorEl] = useState(null);
 
     const backgroundColor = (sentIndex, sent) =>  {
         const color = summaries.reduce((prevColor,summary,index) => {
@@ -35,12 +59,29 @@ export const LayersViewer = ({summaries, title, summariesMetadata, experimentNam
 
     for(let i = 0 ; i < summaries[0].length; i++){
         const isSamePar = summaries[0][i].par_num === paragraphNum;
+        
         const Sent = (
-            <span 
-                key={'sent'+i}
-                style={{backgroundColor: backgroundColor(i, summaries[0][i])}}>
-                    {isSamePar && <span>&nbsp;</span>}
-                    {summaries[0][i].text}
+            <span>
+                <span 
+                    onClick={(event) => {
+                        if(selectedSent === i){
+                            setAnchorEl(null)
+                            setSelectedSent(null)
+                        }
+                        else{
+                            setAnchorEl(event.currentTarget);
+                            setSelectedSent(i)
+                        }
+                    }}
+                    key={'sent'+i}
+                    style={{backgroundColor: backgroundColor(i, summaries[0][i])}}>
+                        {isSamePar && <span>&nbsp;</span>}
+                        {summaries[0][i].text}
+                </span>
+                <SentPopper 
+                    weights={summaries.map(summary => summary[i].normalized_weight)} 
+                    anchorEl={anchorEl} 
+                    isOpen={selectedSent === i}  />
             </span>
         );
         
@@ -125,5 +166,6 @@ const colors = [{
     id:'adir confused3',
     value: 15,
 }];
+
 
 

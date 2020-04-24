@@ -1,5 +1,5 @@
   
-import React, {useState} from 'react';
+import React, {useState, useMemo} from 'react';
 import { QuizViewer } from '../../Viewers/quizViewer/quizViewer';
 import { Quiz } from './quiz/quiz';
 import { Card, Container, Button } from '@material-ui/core';
@@ -25,26 +25,31 @@ export function Form({
     experimentName,
     onFinish,
 }) {
-    const [stage,setStage] = useState(0);
-    const {type, name, filters} = form.summary;
-    
-    const renderByStage = [
-        <Summary
-            type={type}
-            name={name}
-            filters={filters}
+    const [step,setStep] = useState(0);
+    const renderByStage = useMemo(() => [
+        form.summary && <Summary
+            type={form.summary.type}
+            name={form.summary.name}
+            filters={form.summary.filters}
             experimentName={experimentName}
-            onNext={() => setStage(stage+1)}
+            onNext={nextStep}
         />,
-        <Quiz 
+        form.questions && <Quiz 
             questions={form.questions}
-            onFinish={answers => onFinish(answers)}/>  
+            onFinish={nextStep}/>  
+    ].filter(x => x));
 
-    ];
+    const nextStep = () => {
+        if(step+1 === renderByStage.length)
+            onFinish();
+        else
+            setStep(step+1)
+    }
+
   return (
     <Container>
         <Card style={{ padding:'30px', display:'flex', flexDirection:'column', alignItems:'center'}}>
-        {renderByStage[stage]}
+        {renderByStage[step]}
         </Card>
     </Container>
     
