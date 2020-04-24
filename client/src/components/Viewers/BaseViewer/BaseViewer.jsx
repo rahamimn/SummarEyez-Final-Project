@@ -8,6 +8,7 @@ import ToggleButton from '@material-ui/lab/ToggleButton';
 
 
 export const BaseViewer = ({
+    SentPopper,
     summary,
     title,
     filters}) => {
@@ -19,6 +20,9 @@ export const BaseViewer = ({
     let paragraphs = [];
     let paragraphNum = -1;
 
+    const [selectedSent,setSelectedSent] = useState(null); 
+    const [anchorEl,setAnchorEl] = useState(null);
+
     const sortedSentences = [...summary].sort((a,b) => b.normalized_weight - a.normalized_weight);
     const topSentences = sortedSentences.slice(0,topSentencesCount);
     const backgroundColor = (sent) =>  (sent.normalized_weight > minWeight && topSentences.includes(sent)) ? 
@@ -29,11 +33,26 @@ export const BaseViewer = ({
     for(let i = 0 ; i < summary.length; i++){
         const isSamePar = summary[i].par_num === paragraphNum;
         const Sent = (
-            <span 
-                key={'sent'+i}
-                style={{backgroundColor: backgroundColor(summary[i])}}>
-                    {isSamePar && <span>&nbsp;</span>}
-                    {summary[i].text}
+           <span>
+                <span 
+                    aria-describedby={'sent-'+i}
+                    onClick={(event) => {
+                        if(selectedSent === i){
+                            setAnchorEl(null)
+                            setSelectedSent(null)
+                        }
+                        else{
+                            setAnchorEl(event.currentTarget);
+                            setSelectedSent(i)
+                        }
+                        
+                    }}
+                    key={'sent'+i}
+                    style={{backgroundColor: backgroundColor(summary[i])}}>
+                        {isSamePar && <span>&nbsp;</span>}
+                        {summary[i].text}
+                </span>
+                {SentPopper &&  <SentPopper id={'sent-'+i} weight={summary[i].normalized_weight} anchorEl={anchorEl} isOpen={selectedSent === i}/>}
             </span>
         );
         

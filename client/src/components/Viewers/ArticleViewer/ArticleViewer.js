@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import CheckIcon from '@material-ui/icons/Check';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import {BaseViewer} from '../BaseViewer/BaseViewer';
+import { Card, Popper } from '@material-ui/core';
 
 export const ArticleViewer = ({summary, title}) => {
     let paragraphs = [];
@@ -128,6 +129,7 @@ export const ArticleViewer = ({summary, title}) => {
                     </div>
                 </div>
                 <BaseViewer
+                    SentPopper = {SentPopper}
                     summary={summary}
                     title={title}
                     filters={{
@@ -136,13 +138,6 @@ export const ArticleViewer = ({summary, title}) => {
                         minWeight,
                         topSentencesCount
                     }}/>
-                {/* <div style={{ 
-                    width:'800px',
-                    padding:'50px',
-                    fontFamily: '"Times New Roman", Times, serif', fontWeight:'400'}}>
-                    <strong><div style={{fontSize:"30px"}}>{title}</div></strong>
-                    {sentHtml}
-                </div> */}
         </div>       
 }
 
@@ -171,3 +166,11 @@ const colors = [{
     id:'adir confused3',
     value: 15,
 }];
+
+
+const SentPopper = ({weight, isOpen, id, anchorEl}) => <Popper id={id} open={isOpen} anchorEl={anchorEl}>
+    <Card elevation={5} style={{padding:'5px 10px'}}>
+        weight is {weight}
+    </Card>
+</Popper>
+
