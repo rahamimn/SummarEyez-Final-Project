@@ -178,7 +178,7 @@ app.get('/api/experiments/:experimentName/forms',(req, res) =>
     res.send(forms)
 }));
 
-app.get(' /api/experiments/:experimentName/forms/:formId',(req, res) => 
+app.get('/api/experiments/:experimentName/forms/:formId',(req, res) => 
  errorHandling(res, async () => {
     const experimentName = req.params.experimentName;
     const formId = req.params.formId;
