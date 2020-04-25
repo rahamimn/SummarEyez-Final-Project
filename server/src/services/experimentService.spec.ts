@@ -873,4 +873,98 @@ describe('ExperimentService Tests',() =>{
         });
     });
 
+
+    describe('get form test' , () => {
+        const expName = 'exp1';
+        const expNameNotExist = 'notExist';
+        const imgName = 'img1';
+        const sent_table= new Buffer("sent_table");
+        const formNameNotExist = 'notExist'
+        const imgNameNotExist ='NotExist'
+
+        const FormsParams1={
+            experimentName: expName,
+            name: 'form1',
+            questionsIds: [1,2,3],
+            isRankSentences: true,
+            isFillAnswers: true,
+            withFixations: true
+        }
+        const FormsParams2={
+            experimentName: expName,
+            name: 'form2',
+            questionsIds: [1,2,3],
+            isRankSentences: false,
+            isFillAnswers: true,
+            withFixations: true
+        }
+
+        beforeEach( async () => {
+            const base_sent_table_path = `images/${imgName}/base_sent_table`;
+            await storageService.uploadBuffer(base_sent_table_path, sent_table,fileTypes.Csv);
+            await collectionsService.experiments().add(expName, {'imageName':imgName});
+            await collectionsService.images().add(imgName, {
+                base_sent_table_path: base_sent_table_path,
+                name: imgName,
+                word_ocr_path: 'word_ocr_path'
+             });
+
+            await collectionsService.images().questionsOf(imgName).add(1, {
+                question: "Is etay the king?",
+                answers:["yes","yes","yes","yes"],
+                correctAnswer: "3",
+                creation_date: Date.now()
+            }); 
+            await collectionsService.images().questionsOf(imgName).add(2, {
+                question: "Is etay not the king?",
+                answers:["no","no","no","no"],
+                correctAnswer: "2",
+                creation_date: Date.now()
+            });
+
+            await collectionsService.images().questionsOf(imgName).add(3, {
+                question: "Is adir not the king?",
+                answers:["yes","yes","yes","yes"],
+                correctAnswer: "1",
+                creation_date: Date.now()
+            });  
+            await collectionsService.experiments().formsOf(expName).add(FormsParams1.name, FormsParams1);
+            await collectionsService.experiments().formsOf(expName).add(FormsParams2.name, FormsParams2);
+            
+        });
+
+        it('success- getForm return 2 questions', async () => {
+            const res = await experimentService.getForm(expName, FormsParams1.name)
+            expect(res.status).toEqual(0);
+            expect(res.data.questions.length).toEqual(3);     
+        });
+
+        it('success- getForm isRankSentences = true, FormsParams1', async () => {
+            const res = await experimentService.getForm(expName, FormsParams1.name)
+            expect(res.status).toEqual(0);
+            const json = await csvToJson({delimiter:'auto'}).fromString(sent_table.toString())
+            expect(res.data.base_sentences_table).toEqual(json);     
+        });
+
+        it('success- getForm isRankSentences = false, FormsParams2', async () => {
+            const res = await experimentService.getForm(expName, FormsParams2.name)
+            expect(res.status).toEqual(0);
+            expect(res.data.base_sentences_table).toEqual(undefined);     
+        });
+
+        it('fail- experiment name not exist', async () => {
+            const {status, error} = await experimentService.getForm(expNameNotExist, FormsParams1.name)
+            expect(status).toEqual(ERROR_STATUS.OBJECT_NOT_EXISTS);
+            expect(error).toEqual(ERRORS.EXP_NOT_EXISTS);
+        });
+
+        it('fail- form name not exist', async () => {
+            const {status, error} = await experimentService.getForm(expName, formNameNotExist)
+            expect(status).toEqual(ERROR_STATUS.OBJECT_NOT_EXISTS);
+            expect(error).toEqual(ERRORS.FORM_NOT_EXISTS);
+        });
+
+    });
+
+
 });
