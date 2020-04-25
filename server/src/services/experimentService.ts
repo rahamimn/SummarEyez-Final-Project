@@ -137,6 +137,7 @@ addForm = async (params) =>{
     await this.collectionsService.experiments().formsOf(params.experimentName).add(params.name,{
         name: params.name,
         questionsIds: params.questionsIds || [],
+        summary: params.summary,
         isRankSentences : params.isRankSentences,
         isFillAnswers : params.isFillAnswers ,
         withFixations : params.withFixations ,
