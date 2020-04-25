@@ -1,5 +1,5 @@
 import React,{useState,useEffect, useCallback} from 'react';
-import { Typography, Grid, Card, TextField, Button, Divider, Select, MenuItem, Checkbox, ListItemText, Input } from '@material-ui/core';
+import { Typography, Grid, Card, TextField, Button, Divider, Select, MenuItem, Checkbox, ListItemText, Input, Radio } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { BaseViewer } from '../../Viewers/BaseViewer/BaseViewer';
 import { QuizViewer } from '../../Viewers/quizViewer/quizViewer';
@@ -19,7 +19,7 @@ export function FormsManager({}){
     const [questions,setQuestions] = useState([]);
     const [formText,setFormText] = useState('');
     const [newForm,setNewForm] = useState(false);
-
+   
 
 
     const fetchForms = useCallback(async() => {
@@ -85,6 +85,7 @@ export function FormsManager({}){
               </Card>
               { (selectedForm || newForm) && 
                 <FormEdit 
+
                   showQuestion={(question) => {
                     console.log(question);
                     setQuestion(question)
@@ -92,12 +93,15 @@ export function FormsManager({}){
                   }
                   questions={questions}
                   form={selectedForm}
+                  // addQuestionIsShown={addQuestion}
+                  // showAddQuestion={() => setAddQuestion(true)}
                   />
               }
+            
             </Grid>
             <Grid item xs={12} sm={6}>
               {selectedForm && selectedForm.summary && 
-               <Card>
+               <Card >
                   <QuizViewer 
                     experimentName={experimentName}
                     type={selectedForm.summary.type}
@@ -106,9 +110,10 @@ export function FormsManager({}){
                   />
                </Card>
               }
-               {question && 
+              { question && 
                   <Question question={question} />
               }
+              
             </Grid>
           </Grid>  
         </div> 
@@ -123,6 +128,7 @@ function FormEdit({
   form}){
     const {experimentName} = useParams();
     const [formNameExists,setFormNameExists] = useState(false);
+    const [addQuestion,setAddQuestion] = useState(false);
     // const [formName,setFormName] = useState('');
     const [formDTO,setFormDTO] = useState(form || {name:'', questionIds:[]});
 
@@ -153,13 +159,11 @@ function FormEdit({
           id="select-questions"
           multiple
           value={formDTO.questionIds}
-          onChange={(event) => {
-            console.log(event.target.value);
-            setFormDTO({...formDTO, questionIds:event.target.value })
-          }}
+          onChange={(event) =>
+             setFormDTO({...formDTO, questionIds:event.target.value })
+          }
           input={<Input style={{display:'block'}}/>}
           renderValue={(selected) => {
-            console.log(selected, formDTO);
             return questions
             .filter(q => selected.indexOf(q.id) > -1)
             .map( q =>q.data.question)
@@ -180,6 +184,20 @@ function FormEdit({
             </MenuItem>
           ))}
         </Select>
+        {!addQuestion &&
+          <Button 
+            style={{display: 'block'}}
+            color="primary"
+            onClick={() => {
+              setAddQuestion(true)
+            }}
+            >
+                Add Question
+        </Button>}
+
+        { addQuestion && 
+              <AddQuestion onAdd={() => {}} />
+        }
 
         <Button
           style={{display: 'block' ,marginTop: '10px', float:'right'}}
@@ -188,6 +206,66 @@ function FormEdit({
             
           }}>
           {form? 'Save' : 'Create'}
+        </Button>
+    </Card>
+  )
+}
+
+function AddQuestion({
+  onAdd,
+}){
+    const [question,setQuestion] = useState({
+      question:'',
+      answers:['','','',''],
+      correctAnswer:''
+    });
+
+    return (
+      <Card variant="outlined" style={{marginTop: '10px', marginBottom: '40px', padding: '20px'}}>
+        <Typography variant="h5">
+          Add Question
+        </Typography>
+        <Divider/>
+
+        <TextField 
+          value={question.question}
+          style={{width: '100%',marginTop:'10px', marginBottom: '20px'}}
+          onChange={(e) =>setQuestion({...question, question:e.target.value})}
+          id="form-name"
+          label="Question"/>
+        
+        {
+          question.answers.map((ans,i) => (
+            <div style={{display:'flex'}}>
+               <Radio
+                  checked={question.correctAnswer === `${i}`}
+                  onChange={() => setQuestion({...question, correctAnswer:`${i}`})}
+                  value={i}
+                  inputProps={{ 'aria-label': 'A' }}
+                />
+              <TextField 
+                value={ans}
+                style={{ width: '100%' ,marginTop:'10px', marginBottom: '20px'}}
+                onChange={(e) =>{
+                  const answers = question.answers;
+                  answers[i] = e.target.value;
+                  setQuestion({...question, answers});
+                }}if
+                id={`ans-${i}`}
+                key={`ans-${i}`}
+              label={`Ans #${i}`}/>
+            </div>
+          ))
+         
+        }
+        
+        <Button
+          style={{display: 'block' ,marginTop: '10px', float:'right'}}
+          variant="contained"
+          onClick={() => {
+            
+          }}>
+            Add
         </Button>
     </Card>
   )
