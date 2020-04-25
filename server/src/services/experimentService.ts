@@ -268,7 +268,7 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
         return await this.storageService.downloadToBuffer(path);
     }
 
-    getSummary = async (experimentName, type, name) => {
+    getSummary = async (experimentName, type, name, asText = false) => {
         const experiment = await this.collectionsService.experiments().get(experimentName);
         if(!experiment){
             return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
@@ -279,6 +279,9 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
             return response(ERROR_STATUS.OBJECT_NOT_EXISTS, {error:ERRORS.SUMMARY_NOT_EXISTS})
         }
 
+        if(asText){
+            return response(0,{data: csvFile.toString('utf16le')});
+        }
         return response(0, {
             data: {
                 title: experiment.imageName,

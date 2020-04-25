@@ -7,6 +7,11 @@ const api = {
         return res.data;
     },
 
+    exportSummaryCsv: async (experimentName,type,name) => {
+        const res = await axios.get(`/api/experiments/${experimentName}/summary?csv=true&type=${type}&name=${name}`, { responseType: 'blob' });
+        return res.data;
+    },
+
     getImages: async () => {
         const res = await axios.get('/api/images');
         return res.data;

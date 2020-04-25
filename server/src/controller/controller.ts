@@ -64,20 +64,30 @@ app.get('/api/experiments/:experimentName/questions', (req, res) => errorHandlin
     res.send(response);
 }));
 
-// not fully implemented 
 app.get('/api/experiments/:exerimentName/summaries', (req, res) => errorHandling(res, async () => {
     const summaries = await experimentService.getSummaries(req.params.exerimentName);
     res.send(summaries);
 }));
 
-// not fully implemented 
 app.get('/api/experiments/:exerimentName/summary', (req, res) => errorHandling(res, async () => {
-    const summary = await experimentService.getSummary(
+    const asText = req.query.csv;
+    const response = await experimentService.getSummary(
         req.params.exerimentName,
         req.query.type,
-        req.query.name
+        req.query.name,
+        asText
     );
-    res.send(summary);
+    if(asText && response.status === 0){
+        res.writeHead(200, {
+            'Content-Disposition':  'attachment; filename=file1',
+            'Content-Type': 'text/csv',
+          })
+          res.end(response.data)
+    }
+    else{
+        res.send(response);
+    }
+
 }));
 
 // not fully implemented 

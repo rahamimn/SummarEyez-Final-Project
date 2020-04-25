@@ -1,24 +1,8 @@
   
-import React, {useState, useMemo} from 'react';
+import React, {useState, useMemo, useCallback} from 'react';
 import { QuizViewer } from '../../Viewers/quizViewer/quizViewer';
 import { Quiz } from './quiz/quiz';
 import { Card, Container, Button } from '@material-ui/core';
-
-
-const Summary = ({experimentName, type, name, filters, onNext }) => {
-    return (
-    <div>
-        <QuizViewer
-            experimentName={experimentName}
-            type={type}
-            name={name}
-            filters={filters}
-        />
-        <div style={{float:'right'}}>
-            <Button onClick={onNext}> Next</Button>
-        </div>
-    </div>
-)}
 
 export function Form({
     form,
@@ -26,25 +10,40 @@ export function Form({
     onFinish,
 }) {
     const [step,setStep] = useState(0);
-    const renderByStage = useMemo(() => [
-        form.summary && <Summary
-            type={form.summary.type}
-            name={form.summary.name}
-            filters={form.summary.filters}
-            experimentName={experimentName}
-            onNext={nextStep}
-        />,
-        form.questions && <Quiz 
-            questions={form.questions}
-            onFinish={nextStep}/>  
-    ].filter(x => x));
+    const [answers,setState] = useState();
 
-    const nextStep = () => {
+    const nextStep = useCallback(() => {
         if(step+1 === renderByStage.length)
-            onFinish();
+            onFinish({answers});
         else
             setStep(step+1)
-    }
+    });
+
+    const Summary = useCallback(() => {
+        return (
+        <div>
+            <QuizViewer
+                experimentName={experimentName}
+                type={form.summary.type}
+                name={form.summary.name}
+                filters={form.summary.filters}
+            />
+            <div style={{float:'right'}}>
+                <Button onClick={nextStep}> Next</Button>
+            </div>
+        </div>
+    )});
+
+    const renderByStage = useMemo(() => [
+        form.summary && <Summary/>,
+        form.questions && <Quiz 
+            questions={form.questions}
+            onFinish={ answers => {
+                setState(answers)
+                nextStep()
+            }}    />,
+
+    ].filter(x => x));
 
   return (
     <Container>

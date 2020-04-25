@@ -220,6 +220,12 @@ describe('ExperimentService Tests',() =>{
             }));
         }); 
 
+        it('success - asText - auto', async () => {
+            const {status, data} = await experimentService.getSummary(expName, 'auto',autoName, true);
+            expect(status).toEqual(0);
+            expect(data).toEqual(sent_table_file.toString());
+        }); 
+
         it('success - eyes', async () => {
             const {status, data} = await experimentService.getSummary(expName, 'eyes',eyesName);
             const json = await csvToJson({delimiter:'auto'}).fromString(sent_table_file.toString())
