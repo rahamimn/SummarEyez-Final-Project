@@ -76,6 +76,7 @@ addTest = async (params) => {
     if(!experiment){
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
     }
+    ///
     const picture= await this.collectionsService.images().get(experiment.imageName)
     if(!picture){
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.IM_NOT_EXISTS} );
@@ -136,6 +137,7 @@ addForm = async (params) =>{
     await this.collectionsService.experiments().formsOf(params.experimentName).add(params.name,{
         name: params.name,
         questionsIds: params.questionsIds || [],
+        summary: params.summary,
         isRankSentences : params.isRankSentences,
         isFillAnswers : params.isFillAnswers ,
         withFixations : params.withFixations ,
@@ -151,6 +153,46 @@ getAllForms = async (experimentName) =>{
     }
     const forms = await this.collectionsService.experiments().formsOf(experimentName).getAll();
     return response(0, {data: forms});
+}
+
+getForm = async (experimentName, formId) =>{
+    const expriment = await this.collectionsService.experiments().get(experimentName)
+    if(!expriment){
+        return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
+    }
+
+    const form = await this.collectionsService.experiments().formsOf(experimentName).get(formId);
+    if(!form){
+        return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.FORM_NOT_EXISTS} );
+    }
+
+    const img= await this.collectionsService.images().get(expriment.imageName)
+    if(!img){
+        return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.IM_NOT_EXISTS} );
+    }
+
+    var base_sentences_table;
+    if(form.isRankSentences == true){
+        base_sentences_table = await this.storageService.downloadToBuffer(img.base_sent_table_path);
+        if(!base_sentences_table){
+            return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.SENT_TBL_NOT_EXISTS} );
+        }
+        base_sentences_table = await csvToJson({delimiter:'auto'}).fromString(base_sentences_table.toString('utf16le'))
+    }
+    
+    var questions = []
+    var questionsIds = form.questionsIds;
+    
+    for (let index = 0; index < questionsIds.length; index++) { 
+       const question = await this.collectionsService.images().questionsOf(img.name).get((questionsIds[index]))
+       questions = questions.concat(question); 
+    }
+
+    var res = {...form,
+                questions: questions,
+                base_sentences_table: base_sentences_table}
+
+    return response(0, {data: res});
 }
 
 getFilteredTest = async (experimentName, formId, minScore) =>{

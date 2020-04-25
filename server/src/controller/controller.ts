@@ -168,11 +168,12 @@ app.get('/api/experiments/:experimentName/tests',(req, res) =>
 
 app.post('/api/experiments/:experimentName/forms', bodyParser.json(), (req, res) => errorHandling(res, async () => {
     const experimentName = req.params.experimentName;
-    const {name, questionsIds, isRankSentences, isFillAnswers, withFixations}  = req.body;
+    const {name, questionsIds, summary, isRankSentences, isFillAnswers, withFixations}  = req.body;
     const params={
         experimentName: experimentName,
         name: name,
         questionsIds: questionsIds,
+        summary: summary,
         isRankSentences: isRankSentences,
         isFillAnswers: isFillAnswers,
         withFixations: withFixations
@@ -185,6 +186,14 @@ app.get('/api/experiments/:experimentName/forms',(req, res) =>
  errorHandling(res, async () => {
     const experimentName = req.params.experimentName;
     const forms = await experimentService.getAllForms(experimentName);
+    res.send(forms)
+}));
+
+app.get('/api/experiments/:experimentName/forms/:formId',(req, res) => 
+ errorHandling(res, async () => {
+    const experimentName = req.params.experimentName;
+    const formId = req.params.formId;
+    const forms = await experimentService.getForm(experimentName, formId);
     res.send(forms)
 }));
 
