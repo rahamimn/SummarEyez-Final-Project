@@ -177,7 +177,7 @@ getForm = async (experimentName, formId) =>{
         if(!base_sentences_table){
             return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.SENT_TBL_NOT_EXISTS} );
         }
-        base_sentences_table = await csvToJson({delimiter:'auto'}).fromString(base_sentences_table.toString())
+        base_sentences_table = await csvToJson({delimiter:'auto'}).fromString(base_sentences_table.toString('utf16le'))
     }
     
     var questions = []
