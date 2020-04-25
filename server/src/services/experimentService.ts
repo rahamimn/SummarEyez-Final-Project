@@ -188,7 +188,7 @@ getForm = async (experimentName, formId) =>{
        questions = questions.concat(question); 
     }
 
-    var res = {formMetaData: form,
+    var res = {...form,
                 questions: questions,
                 base_sentences_table: base_sentences_table}
 
