@@ -939,6 +939,17 @@ describe('ExperimentService Tests',() =>{
             expect(res.data.questions.length).toEqual(3);     
         });
 
+        it('success- getForm check form data', async () => {
+            const res = await experimentService.getForm(expName, FormsParams1.name)
+            expect(res.status).toEqual(0);
+            expect(res.data.experimentName).toEqual(expName);
+            expect(res.data.name).toEqual(FormsParams1.name);
+            expect(res.data.isRankSentences).toEqual(FormsParams1.isRankSentences);
+            expect(res.data.isFillAnswers).toEqual(FormsParams1.isFillAnswers);
+            expect(res.data.withFixations).toEqual(FormsParams1.withFixations);
+            expect(res.data.summary).toEqual(FormsParams1.summary);    
+        });
+
         it('success- getForm isRankSentences = true, FormsParams1', async () => {
             const res = await experimentService.getForm(expName, FormsParams1.name)
             expect(res.status).toEqual(0);
