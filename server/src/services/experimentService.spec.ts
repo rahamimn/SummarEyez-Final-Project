@@ -788,6 +788,7 @@ describe('ExperimentService Tests',() =>{
             experimentName: expName,
             name: 'form1',
             questionsIds: [1,2,3],
+            summary: {"type":"eyes", "name":"name", "filters":"filter"},
             isRankSentences: 'false',
             isFillAnswers: 'true',
             withFixations: 'true'
@@ -796,6 +797,7 @@ describe('ExperimentService Tests',() =>{
             experimentName: 'notExist',
             name: 'form1',
             questionsIds: [1,2,3],
+            summary: {"type":"eyes", "name":"name", "filters":"filter"},
             isRankSentences: 'false',
             isFillAnswers: 'true',
             withFixations: 'true'
@@ -842,6 +844,7 @@ describe('ExperimentService Tests',() =>{
             experimentName: expName,
             name: 'form1',
             questionsIds: [1,2,3],
+            summary: {"type":"eyes", "name":"name", "filters":"filter"},
             isRankSentences: false,
             isFillAnswers: true,
             withFixations: true
@@ -850,6 +853,7 @@ describe('ExperimentService Tests',() =>{
             experimentName: expName,
             name: 'form2',
             questionsIds: [1,2,3],
+            summary: {"type":"eyes", "name":"name", "filters":"filter"},
             isRankSentences: false,
             isFillAnswers: true,
             withFixations: true
@@ -886,6 +890,7 @@ describe('ExperimentService Tests',() =>{
             experimentName: expName,
             name: 'form1',
             questionsIds: [1,2,3],
+            summary: {"type":"eyes", "name":"name", "filters":"filter"},
             isRankSentences: true,
             isFillAnswers: true,
             withFixations: true
@@ -894,6 +899,7 @@ describe('ExperimentService Tests',() =>{
             experimentName: expName,
             name: 'form2',
             questionsIds: [1,2,3],
+            summary: {"type":"eyes", "name":"name", "filters":"filter"},
             isRankSentences: false,
             isFillAnswers: true,
             withFixations: true
