@@ -158,11 +158,12 @@ app.get('/api/experiments/:experimentName/tests',(req, res) =>
 
 app.post('/api/experiments/:experimentName/forms', bodyParser.json(), (req, res) => errorHandling(res, async () => {
     const experimentName = req.params.experimentName;
-    const {name, questionsIds, isRankSentences, isFillAnswers, withFixations}  = req.body;
+    const {name, questionsIds, summary, isRankSentences, isFillAnswers, withFixations}  = req.body;
     const params={
         experimentName: experimentName,
         name: name,
         questionsIds: questionsIds,
+        summary: [summary.type, summary.name, summary.filters],
         isRankSentences: isRankSentences,
         isFillAnswers: isFillAnswers,
         withFixations: withFixations
