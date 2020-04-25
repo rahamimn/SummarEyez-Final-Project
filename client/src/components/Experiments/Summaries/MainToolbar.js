@@ -126,6 +126,5 @@ const useToolbarStyles = makeStyles(theme => ({
   const handleName = (experimentName,name,date) => {
     const splited = name.split('.');
     const exportedTime = new Date(date).toLocaleDateString('en-US',{month: 'short', day:'numeric'});
-    console.log(exportedTime);
     return `${experimentName}_${splited[0]}_(${exportedTime}).csv`;
   }

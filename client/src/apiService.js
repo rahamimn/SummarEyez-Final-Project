@@ -94,6 +94,16 @@ const api = {
             },
         });
         return res.data;
+    },
+
+    getForms: async (experimentName) => {
+        const res = await axios.get(`/api/experiments/${experimentName}/forms`);
+        return res.data;
+    },
+
+    getQuestions: async (experimentName) => {
+        const res = await axios.get(`/api/experiments/${experimentName}/questions`);
+        return res.data;
     }
 }
 

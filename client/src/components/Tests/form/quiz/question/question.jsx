@@ -42,10 +42,11 @@ export function Question({
               margin:'10px 0',
               padding:'5px 5px',
               display:'flex',
-              alignItems:'center'
+              alignItems:'center',
+              backgroundColor: question.correctAnswer === `${i}` && 'green'
             }}
             elevation={selected === i ? 5 : 1 }
-            onClick={() => setSelected(i)}>
+            onClick={() => onNext && setSelected(i)}>
               <IndexAns 
                 index={i}
                 selected={selected === i}
@@ -54,7 +55,7 @@ export function Question({
           </Paper>
         ))
       }
-      <div style={{float:'right'}}>
+      {onNext && <div style={{float:'right'}}>
         <Button 
           variant="contained"
           onClick={onNextQuestion}
@@ -62,6 +63,7 @@ export function Question({
           Next
         </Button>
       </div>
+      }
       
     </Card>
   );
