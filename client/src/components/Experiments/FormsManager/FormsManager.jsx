@@ -1,5 +1,5 @@
 import React,{useState,useEffect, useCallback} from 'react';
-import { Typography, Grid, Card, TextField, Button, Divider, Select, MenuItem, Checkbox, ListItemText, Input, Radio } from '@material-ui/core';
+import { Typography, Grid, Card, TextField, Button, Divider, Select, MenuItem, Checkbox, ListItemText, Input, Radio, Switch } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { BaseViewer } from '../../Viewers/BaseViewer/BaseViewer';
 import { QuizViewer } from '../../Viewers/quizViewer/quizViewer';
@@ -129,9 +129,13 @@ function FormEdit({
     const {experimentName} = useParams();
     const [formNameExists,setFormNameExists] = useState(false);
     const [addQuestion,setAddQuestion] = useState(false);
-    // const [formName,setFormName] = useState('');
-    const [formDTO,setFormDTO] = useState(form || {name:'', questionIds:[]});
-
+    const [formDTO,setFormDTO] = useState(form || {
+      name:'',
+      questionIds:[],
+      isRankSentences: false,
+      isFillAnswers: false,
+      withFixations: false,
+      });
 
     return (
       <Card style={{marginTop: '10px', padding: '20px'}}>
@@ -148,57 +152,107 @@ function FormEdit({
           onChange={(e) =>setFormDTO({...formDTO, name: e.target.value})}
           id="form-name"
           label="Form Name"/>
-        
-       
-        <Typography variant="h6">
-         Quiz
-        </Typography>
-        <Divider/>
-        <Select
-          labelId="select-questions"
-          id="select-questions"
-          multiple
-          value={formDTO.questionIds}
-          onChange={(event) =>
-             setFormDTO({...formDTO, questionIds:event.target.value })
-          }
-          input={<Input style={{display:'block'}}/>}
-          renderValue={(selected) => {
-            return questions
-            .filter(q => selected.indexOf(q.id) > -1)
-            .map( q =>q.data.question)
-            .join(', ')
-          }}
-          // MenuProps={MenuProps}
-        >
-          {questions.map((question) => (
-            <MenuItem key={question.id} value={question.id}>
-              <Checkbox checked={formDTO.questionIds.indexOf(question.id) > -1} />
-              <ListItemText 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  showQuestion(question.data);
-                }} 
-                primary={question.data.question} 
-              />
-            </MenuItem>
-          ))}
-        </Select>
-        {!addQuestion &&
-          <Button 
-            style={{display: 'block'}}
-            color="primary"
-            onClick={() => {
-              setAddQuestion(true)
+        <div>
+          <Typography variant="h6" style={{display: 'inline-block'}}>
+            Questions
+          </Typography>
+          <Switch
+            checked={formDTO.isFillAnswers}
+            onChange={() => {
+              setAddQuestion(false);
+              setFormDTO({...formDTO, isFillAnswers: !formDTO.isFillAnswers});
             }}
+            name="checkedA"
+            inputProps={{ 'aria-label': 'secondary checkbox' }}
+          />
+        </div>
+          { formDTO.isFillAnswers && 
+            <div style={{marginBottom:'20px'}}>
+            <Select
+              labelId="select-questions"
+              id="select-questions"
+              multiple
+              value={formDTO.questionIds}
+              onChange={(event) =>
+                setFormDTO({...formDTO, questionIds:event.target.value })
+              }
+              input={<Input style={{display:'block'}}/>}
+              renderValue={(selected) => {
+                return questions
+                .filter(q => selected.indexOf(q.id) > -1)
+                .map( q =>q.data.question)
+                .join(', ')
+              }}
+              // MenuProps={MenuProps}
             >
-                Add Question
-        </Button>}
+              {questions.map((question) => (
+                <MenuItem key={question.id} value={question.id}>
+                  <Checkbox checked={formDTO.questionIds.indexOf(question.id) > -1} />
+                  <ListItemText 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      showQuestion(question.data);
+                    }} 
+                    primary={question.data.question} 
+                  />
+                </MenuItem>
+              ))}
+            </Select>
+            {!addQuestion &&
+              <Button 
+                style={{display: 'block'}}
+                color="primary"
+                onClick={() => {
+                  setAddQuestion(true)
+                }}
+                >
+                    Add Question
+            </Button>}
 
-        { addQuestion && 
-              <AddQuestion onAdd={() => {}} />
+            { addQuestion && 
+                  <AddQuestion onAdd={() => {}} />
+            }
+          </div>
         }
 
+         <div>
+          <Typography variant="h6" style={{display: 'inline-block'}}>
+            Read Summary 
+          </Typography>
+          <Switch
+            style={{display:'block'}}
+            checked={formDTO.isRankSentences}
+            onChange={() => setFormDTO({...formDTO, isRankSentences: !formDTO.isRankSentences})}
+            name="checkedA"
+            inputProps={{ 'aria-label': 'secondary checkbox' }}
+          />
+        </div>
+
+        <div>
+          <Typography variant="h6" style={{display: 'inline-block'}}>
+            Upload Fixations
+          </Typography>
+          <Switch
+            style={{display:'block'}}
+            checked={formDTO.withFixations}
+            onChange={() => setFormDTO({...formDTO, withFixations: !formDTO.withFixations})}
+            name="checkedA"
+            inputProps={{ 'aria-label': 'secondary checkbox' }}
+          />
+        </div>
+        <div>
+          <Typography variant="h6" style={{display: 'inline-block'}}>
+            Rank Sentances
+          </Typography>
+          <Switch
+            style={{display:'block'}}
+            checked={formDTO.isRankSentences}
+            onChange={() => setFormDTO({...formDTO, isRankSentences: !formDTO.isRankSentences})}
+            name="checkedA"
+            inputProps={{ 'aria-label': 'secondary checkbox' }}
+          />
+        </div>
+        
         <Button
           style={{display: 'block' ,marginTop: '10px', float:'right'}}
           variant="contained"
@@ -207,6 +261,7 @@ function FormEdit({
           }}>
           {form? 'Save' : 'Create'}
         </Button>
+        
     </Card>
   )
 }
