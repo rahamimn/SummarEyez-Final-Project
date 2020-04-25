@@ -842,17 +842,17 @@ describe('ExperimentService Tests',() =>{
             experimentName: expName,
             name: 'form1',
             questionsIds: [1,2,3],
-            isRankSentences: 'false',
-            isFillAnswers: 'true',
-            withFixations: 'true'
+            isRankSentences: false,
+            isFillAnswers: true,
+            withFixations: true
         }
         const FormsParams2={
             experimentName: expName,
             name: 'form2',
             questionsIds: [1,2,3],
-            isRankSentences: 'false',
-            isFillAnswers: 'true',
-            withFixations: 'true'
+            isRankSentences: false,
+            isFillAnswers: true,
+            withFixations: true
         }
         beforeEach( async () => {
             await collectionsService.experiments().add(expName, {});
