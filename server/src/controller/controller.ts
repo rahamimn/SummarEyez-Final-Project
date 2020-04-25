@@ -163,7 +163,7 @@ app.post('/api/experiments/:experimentName/forms', bodyParser.json(), (req, res)
         experimentName: experimentName,
         name: name,
         questionsIds: questionsIds,
-        summary: [summary.type, summary.name, summary.filters],
+        summary: summary,
         isRankSentences: isRankSentences,
         isFillAnswers: isFillAnswers,
         withFixations: withFixations
