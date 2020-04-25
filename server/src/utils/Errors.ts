@@ -14,6 +14,7 @@ export const ERRORS = {
     FORM_NOT_EXISTS: 'form not exists',
     AlG_NOT_EXISTS: 'algorithm not exists',
     SUMMARY_NOT_EXISTS: 'summary not exists',
+    SENT_TBL_NOT_EXISTS: 'base_sent_table not exist',
 }
     
 export const ERROR_STATUS = {
