@@ -68,7 +68,7 @@ export const BaseViewer = ({
     const sentHtml = paragraphs.map((par,i) => <p key={'par'+i}>{par}</p>);
 
     return <div style={{ 
-        width:'800px',
+        // width:'800px',
         fontSize: '19px',
         padding:'50px',
         fontFamily: '"Times New Roman", Times, serif', fontWeight:'400'}}>

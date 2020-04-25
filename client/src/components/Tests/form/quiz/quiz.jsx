@@ -19,7 +19,6 @@ export function Quiz({
     setAnswers(newAnswers);
 
     if(currentQuestion+1 === questions.length){
-        console.log(currentQuestion, questions.length)
         onFinish(newAnswers)
         setCurrentQuestion(0);
     } else {

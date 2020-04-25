@@ -58,6 +58,7 @@ const questions = [
 const form = {
   questions,
   isFillAnswers: true,
+  isReadSummary: true,
   summary:{type: 'auto', name:'auto1.py', filters:{ 
     color:90,
     isGradinet:true,

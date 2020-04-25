@@ -32,7 +32,7 @@ export function Question({
   return (
     <Card style={{ 
       padding:'20px',
-      width:'500px'}}>
+      minWidth:'500px'}}>
       <Typography style={{marginBottom:'15px'}}>{question.question}</Typography>
       {
         question.answers.map((ans,i) =>(

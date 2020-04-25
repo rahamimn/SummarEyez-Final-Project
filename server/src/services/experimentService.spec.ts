@@ -775,38 +775,20 @@ describe('ExperimentService Tests',() =>{
 
     describe('add form Test' , () => {
         const expName = 'exp1';
-        const imageName = 'im1';
-       
-        const word_ocr_path = `images/${imageName}/word_ocr`;
-        const base_sent_table_path = `images/${imageName}/base_sent_table`;
-        
-        const params1={
-            testId: 'testId1',
-            formId : '5',
-            answers : '5',
-            score : '5',
-            sentanceWeights : '5',
-            experimentName: expName,
-            fixations: 'buffer' 
-        };    
-
-        const FormsParams={
+          
+        const FormsParams = {
             experimentName: expName,
             name: 'form1',
-            questionsIds: [1,2,3],
-            summary: {"type":"eyes", "name":"name", "filters":"filter"},
-            isRankSentences: 'false',
-            isFillAnswers: 'true',
-            withFixations: 'true'
+            questionIds: [1,2,3],
+            summary: {type:"eyes", name:"name", filters:"filter"},
+            isRankSentences: false,
+            isFillAnswers: true,
+            isReadSummary: false,
+            withFixations: true
         }
         const FormsParamsNotExist={
+            ...FormsParams,
             experimentName: 'notExist',
-            name: 'form1',
-            questionsIds: [1,2,3],
-            summary: {"type":"eyes", "name":"name", "filters":"filter"},
-            isRankSentences: 'false',
-            isFillAnswers: 'true',
-            withFixations: 'true'
         }
                    
         beforeEach( async () => {
@@ -830,11 +812,6 @@ describe('ExperimentService Tests',() =>{
          it('fail- form name already exist', async () => {
             await collectionsService.experiments().formsOf(FormsParams.experimentName).add(FormsParams.name,{
                 name: FormsParams.name,
-                questionsIds: FormsParams.questionsIds || [],
-                isRankSentences : FormsParams.isRankSentences,
-                isFillAnswers : FormsParams.isFillAnswers ,
-                withFixations : FormsParams.withFixations ,
-                creation_date: Date.now(),
             });
 
             const {status, error} = await experimentService.addForm(FormsParams);
@@ -849,7 +826,7 @@ describe('ExperimentService Tests',() =>{
         const FormsParams1={
             experimentName: expName,
             name: 'form1',
-            questionsIds: [1,2,3],
+            questionIds: [1,2,3],
             summary: {"type":"eyes", "name":"name", "filters":"filter"},
             isRankSentences: false,
             isFillAnswers: true,
@@ -858,7 +835,7 @@ describe('ExperimentService Tests',() =>{
         const FormsParams2={
             experimentName: expName,
             name: 'form2',
-            questionsIds: [1,2,3],
+            questionIds: [1,2,3],
             summary: {"type":"eyes", "name":"name", "filters":"filter"},
             isRankSentences: false,
             isFillAnswers: true,
@@ -890,25 +867,21 @@ describe('ExperimentService Tests',() =>{
         const imgName = 'img1';
         const sent_table= new Buffer("sent_table");
         const formNameNotExist = 'notExist'
-        const imgNameNotExist ='NotExist'
 
         const FormsParams1={
             experimentName: expName,
             name: 'form1',
-            questionsIds: [1,2,3],
-            summary: {"type":"eyes", "name":"name", "filters":"filter"},
+            questionIds: [1,2,3],
+            summary: {type: 'eyes', name: 'name', filters: 'filter'},
             isRankSentences: true,
             isFillAnswers: true,
-            withFixations: true
+            withFixations: true,
+            isReadSummary: false,
         }
         const FormsParams2={
-            experimentName: expName,
+            ...FormsParams1,
             name: 'form2',
-            questionsIds: [1,2,3],
-            summary: {"type":"eyes", "name":"name", "filters":"filter"},
             isRankSentences: false,
-            isFillAnswers: true,
-            withFixations: true
         }
 
         beforeEach( async () => {
@@ -954,12 +927,7 @@ describe('ExperimentService Tests',() =>{
         it('success- getForm check form data', async () => {
             const res = await experimentService.getForm(expName, FormsParams1.name)
             expect(res.status).toEqual(0);
-            expect(res.data.experimentName).toEqual(expName);
-            expect(res.data.name).toEqual(FormsParams1.name);
-            expect(res.data.isRankSentences).toEqual(FormsParams1.isRankSentences);
-            expect(res.data.isFillAnswers).toEqual(FormsParams1.isFillAnswers);
-            expect(res.data.withFixations).toEqual(FormsParams1.withFixations);
-            expect(res.data.summary).toEqual(FormsParams1.summary);    
+            expect(res.data).toEqual(expect.objectContaining(FormsParams1));   
         });
 
         it('success- getForm isRankSentences = true, FormsParams1', async () => {

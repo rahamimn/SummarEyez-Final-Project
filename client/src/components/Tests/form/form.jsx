@@ -21,7 +21,7 @@ export function Form({
 
     const Summary = useCallback(() => {
         return (
-        <div>
+        <div style={{width: '800px'}}>
             <QuizViewer
                 experimentName={experimentName}
                 type={form.summary.type}
@@ -35,7 +35,7 @@ export function Form({
     )});
 
     const renderByStage = useMemo(() => [
-        form.summary && <Summary/>,
+        form.isReadSummary && <Summary/>,
         form.questions && <Quiz 
             questions={form.questions}
             onFinish={ answers => {
@@ -51,7 +51,6 @@ export function Form({
         {renderByStage[step]}
         </Card>
     </Container>
-    
   );
 }
 

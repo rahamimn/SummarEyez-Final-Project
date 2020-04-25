@@ -128,16 +128,18 @@ export const ArticleViewer = ({summary, title}) => {
                         </ToggleButton> 
                     </div>
                 </div>
-                <BaseViewer
-                    SentPopper = {SentPopper}
-                    summary={summary}
-                    title={title}
-                    filters={{
-                        color,
-                        isGradinet,
-                        minWeight,
-                        topSentencesCount
-                    }}/>
+                <div style={{width:'800px'}}>
+                    <BaseViewer
+                        SentPopper = {SentPopper}
+                        summary={summary}
+                        title={title}
+                        filters={{
+                            color,
+                            isGradinet,
+                            minWeight,
+                            topSentencesCount
+                        }}/>
+                </div>
         </div>       
 }
 

@@ -136,11 +136,12 @@ addForm = async (params) =>{
     }
     await this.collectionsService.experiments().formsOf(params.experimentName).add(params.name,{
         name: params.name,
-        questionsIds: params.questionsIds || [],
-        summary: params.summary,
-        isRankSentences : params.isRankSentences,
-        isFillAnswers : params.isFillAnswers ,
-        withFixations : params.withFixations ,
+        questionIds: params.questionIds || [],
+        summary: params.summary || {},
+        isRankSentences : params.isRankSentences || false,
+        isReadSummary : params.isReadSummary || false,
+        isFillAnswers : params.isFillAnswers || false,
+        withFixations : params.withFixations || false,
         creation_date: Date.now(),
     });
     return response(0);
@@ -181,10 +182,10 @@ getForm = async (experimentName, formId) =>{
     }
     
     var questions = []
-    var questionsIds = form.questionsIds;
+    var questionIds = form.questionIds;
     
-    for (let index = 0; index < questionsIds.length; index++) { 
-       const question = await this.collectionsService.images().questionsOf(img.name).get((questionsIds[index]))
+    for (let index = 0; index < questionIds.length; index++) { 
+       const question = await this.collectionsService.images().questionsOf(img.name).get((questionIds[index]))
        questions = questions.concat(question); 
     }
 
