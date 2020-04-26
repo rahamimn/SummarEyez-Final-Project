@@ -476,9 +476,9 @@ describe('ExperimentService Tests',() =>{
         });
 
         it('success - get all questions with one question', async () => {   
-            const addQuestion = await experimentService.getAllQuestions(expName);                    
-            expect(addQuestion.status).toBe(0);
-            expect(addQuestion.data.length).toBe(1);
+            const {status, data} = await experimentService.getAllQuestions(expName);                    
+            expect(status).toBe(0);
+            expect(data.length).toBe(1);
         });
 
         it('success - get all questions with no questions', async () => {   
@@ -486,9 +486,9 @@ describe('ExperimentService Tests',() =>{
             const expNoQuestions = "exp";
             await collectionsService.experiments().add(expNoQuestions, {imageNameNoQuestions});
             await collectionsService.images().add(imageNameNoQuestions, {});
-            const addQuestionNoQuestions = await experimentService.getAllQuestions(expNoQuestions)                      
-            expect(addQuestionNoQuestions.status).toBe(0)
-            expect(addQuestionNoQuestions.data.length).toBe(0)        
+            const {status,data } = await experimentService.getAllQuestions(expNoQuestions)                      
+            expect(status).toBe(0)
+            expect(data.length).toBe(0)        
         });
     });
 
@@ -501,8 +501,9 @@ describe('ExperimentService Tests',() =>{
         });
 
         it('success- question is added', async () => {  
-            const addQuestionResponse = await experimentService.addQuestion(expName, "how are u doing?", [{answer: "ok"},{answer: "good enought"},{answer: "very good"},{answer: "not ok" }], 3)                      
-            expect(addQuestionResponse.status).toBe(0)
+            const {status, data} = await experimentService.addQuestion(expName, "how are u doing?", [{answer: "ok"},{answer: "good enought"},{answer: "very good"},{answer: "not ok" }], 3)                      
+            expect(status).toBe(0);
+            expect(data.id).not.toBeUndefined();
         });
 
         it('fail- no experiment', async () => {   

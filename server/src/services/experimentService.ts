@@ -432,13 +432,14 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
             return response(ERROR_STATUS.GENERAL_ERROR,{error: "the value of the correct answer is not valid"});
         }
         const experimentImageName = experiment.imageName;
-        await this.collectionsService.images().questionsOf(experimentImageName).add(uuidv4(), {
+        const id = uuidv4();
+        await this.collectionsService.images().questionsOf(experimentImageName).add(id, {
             question: question,
             answers,
             correctAnswer: correctAnswer,
             creation_date: Date.now()
         }); 
-        return response(0);
+        return response(0,{data: {id}});
     }
 
     mergeSummaries = async(experimentName, mergedName, sammaries_details ) =>{

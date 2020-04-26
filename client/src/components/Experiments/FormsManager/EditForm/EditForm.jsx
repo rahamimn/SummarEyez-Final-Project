@@ -32,8 +32,10 @@ export function EditForm({
       const [formDTO,setFormDTO] = useState(form || emptyForm);
   
       const fetchQuestions = useCallback(async() => {
-        const questions = await api.getQuestions(experimentName);
-        setQuestions(questions.data);
+        const {data, status} = await api.getQuestions(experimentName);
+        //Handle status
+        setQuestions(data);
+        return data;
       },[]);
   
       useEffect(() => {
@@ -145,7 +147,15 @@ export function EditForm({
           </Button>}
   
           { addQuestion && 
-                <AddQuestion onAdd={() => {}} />
+                <AddQuestion onAdd={async (id) => {
+                    const questions = await fetchQuestions();
+
+                    setQuestion(questions.filter(q => q.id === id )[0].data)
+
+                    const questionIds = [...formDTO.questionIds, id];
+                    setFormDTO({...formDTO, questionIds});
+                    setAddQuestion(false);
+                }} />
           }
         </div>
       },[formDTO,addQuestion]);
