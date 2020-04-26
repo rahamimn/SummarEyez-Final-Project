@@ -161,12 +161,10 @@ export function EditForm({
       
 
       const filtersComp = useMemo(() => {
-        console.log('fff')
         const {summary} = formDTO;
         const filters = summary && summary.filters;
         const isGradient = filters && filters.isGradient ; 
         const minWeight = filters && filters.minWeight ; 
-        console.log(filters,isGradient,minWeight)
         return (
           <div style={{marginTop:'30px'}}>
            <Typography variant="h6" style={{marignRight: '10px'}}>Filters:</Typography>
@@ -257,7 +255,7 @@ export function EditForm({
           return null;
 
         return isReadSummary && (
-          <Card variant="outlined" style={{margin:'10px 0 20px 0', padding:'30px'}}>
+          <Card variant="outlined" style={{margin:'10px 0 20px 15px', padding:'30px'}}>
             {summaryError && <div>ERROR</div>}
             <Typography variant="h6" style={{marignRight: '10px'}}>Summary:</Typography>
             <div style={{ display: 'flex'}}>
@@ -283,7 +281,6 @@ export function EditForm({
                     setFormDTO({...formDTO, summary:{...summary, type: Selectedtype , name: '' }});
                 }}
                 onInputChange={(e, value) => {
-                    e && console.log(1, value)
                     e && setSummaryNameText('');
                     e && setSummaryTypeText(value);
                 }}
