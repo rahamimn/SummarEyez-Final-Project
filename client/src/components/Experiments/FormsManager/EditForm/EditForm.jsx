@@ -255,9 +255,8 @@ export function EditForm({
           return null;
 
         return isReadSummary && (
-          <Card variant="outlined" style={{margin:'10px 0 20px 15px', padding:'30px'}}>
+          <Card variant="outlined" style={{margin:'10px 0 20px 15px', padding:'15px 30px 30px'}}>
             {summaryError && <div>ERROR</div>}
-            <Typography variant="h6" style={{marignRight: '10px'}}>Summary:</Typography>
             <div style={{ display: 'flex'}}>
               <Autocomplete
                   disabled={form}
