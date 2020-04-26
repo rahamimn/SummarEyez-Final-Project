@@ -20,7 +20,6 @@ export function AddQuestion({
       });
 
       const disabled = useMemo(() => !question.question || question.answers.some(x => !x) || !question.correctAnswer,[question]);
-      console.log(disabled, question.question , question.answers.some(x => !x) , question.correctAnswer);
       return (
         <Card variant="outlined" style={{marginTop: '10px', marginBottom: '40px', padding: '20px'}}>
           <Typography variant="h5">
