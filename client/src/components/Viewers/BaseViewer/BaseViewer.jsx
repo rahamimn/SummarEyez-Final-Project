@@ -13,7 +13,7 @@ export const BaseViewer = ({
     title,
     filters}) => {
     const { color,
-            isGradinet,
+            isGradient,
             minWeight,
             topSentencesCount } = filters;
     
@@ -26,7 +26,7 @@ export const BaseViewer = ({
     const sortedSentences = [...summary].sort((a,b) => b.normalized_weight - a.normalized_weight);
     const topSentences = sortedSentences.slice(0,topSentencesCount);
     const backgroundColor = (sent) =>  (sent.normalized_weight > minWeight && topSentences.includes(sent)) ? 
-        (isGradinet? `hsl(${color}, 100%, ${100 - sent.normalized_weight*50}%)` :
+        (isGradient? `hsl(${color}, 100%, ${100 - sent.normalized_weight*50}%)` :
         `hsl(${color}, 100%, 50%)` ) :
             null;
 

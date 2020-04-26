@@ -1,12 +1,20 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Switch,
   Route,
+  useParams
 } from "react-router-dom";
 import { Form } from './form/form';
+import api from '../../apiService';
 
 function MainTests() {
-
+  // const {experimentName} = useParams();
+  const [form,setForm] = useState(formMock)
+  const fetchForm = useCallback(async() => {
+    const res = await api.getForm('Teachers','etay4');
+    setForm(res.data);
+  })
+  useEffect(() => fetchForm(),[])
   return (
     <div>
       <Form
@@ -55,13 +63,13 @@ const questions = [
 },
 ]
 
-const form = {
+const formMock = {
   questions,
   isFillAnswers: true,
   isReadSummary: true,
   summary:{type: 'auto', name:'auto1.py', filters:{ 
     color:90,
-    isGradinet:true,
+    isGradient:true,
     minWeight:0,
     topSentencesCount:0
   }}

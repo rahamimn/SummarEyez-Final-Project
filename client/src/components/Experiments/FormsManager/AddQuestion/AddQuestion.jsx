@@ -1,16 +1,18 @@
 
 
 import React,{useState, useMemo} from 'react';
-import { Typography, Card, TextField, Button, Divider, Radio } from '@material-ui/core';
+import { Typography, Card, TextField, Button, Divider, Radio, IconButton } from '@material-ui/core';
 import {
   useParams,
 } from "react-router-dom";
 import api from '../../../../apiService';
 import { ERROR_STATUS } from '../../../ERRORS';
+import CloseIcon from '@material-ui/icons/Close';
 
 
 export function AddQuestion({
     onAdd,
+    onClose,
   }){
     const {experimentName} = useParams();
       const [question,setQuestion] = useState({
@@ -22,9 +24,16 @@ export function AddQuestion({
       const disabled = useMemo(() => !question.question || question.answers.some(x => !x) || !question.correctAnswer,[question]);
       return (
         <Card variant="outlined" style={{marginTop: '10px', marginBottom: '40px', padding: '20px'}}>
-          <Typography variant="h5">
+          <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}><Typography variant="h5">
             Add Question
           </Typography>
+          {onClose ? (
+            <IconButton aria-label="close" onClick={() => onClose()}>
+                <CloseIcon />
+            </IconButton>
+            ) : null
+        }
+          </div>
           <Divider/>
   
           <TextField 

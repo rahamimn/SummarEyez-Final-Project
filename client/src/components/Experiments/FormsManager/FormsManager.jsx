@@ -8,16 +8,6 @@ import api from '../../../apiService';
 import { EditForm } from './EditForm/EditForm';
 
 
-const emptyForm = {
-  name:'',
-  questionIds:[],
-  isRankSentences: false,
-  isFillAnswers: false,
-  isReadSummary: false,
-  withFixations: false,
-  summary: {},
-}
-
 export function FormsManager({}){
     const {experimentName} = useParams();
     const [selectedForm,setSelectedForm] = useState(null);

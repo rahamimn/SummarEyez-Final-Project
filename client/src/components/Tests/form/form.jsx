@@ -36,7 +36,7 @@ export function Form({
 
     const renderByStage = useMemo(() => [
         form.isReadSummary && <Summary/>,
-        form.questions && <Quiz 
+        form.isFillAnswers && <Quiz 
             questions={form.questions}
             onFinish={ answers => {
                 setState(answers)

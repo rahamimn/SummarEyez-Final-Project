@@ -101,6 +101,11 @@ const api = {
         return res.data;
     },
 
+    getForm: async (experimentName, formName) => {
+        const res = await axios.get(`/api/experiments/${experimentName}/forms/${formName}`);
+        return res.data;
+    },
+
     addForm: async ({
         experimentName,
         name,
@@ -127,7 +132,7 @@ const api = {
         const res = await axios.get(`/api/experiments/${experimentName}/questions`);
         return res.data;
     },
-    
+
     addQuestion: async (experimentName, question) => {
         const res = await axios.post(`/api/experiments/${experimentName}/questions`,question);
         return res.data;

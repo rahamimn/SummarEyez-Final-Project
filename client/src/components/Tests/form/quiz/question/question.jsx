@@ -43,7 +43,7 @@ export function Question({
               padding:'5px 5px',
               display:'flex',
               alignItems:'center',
-              backgroundColor: question.correctAnswer === `${i}` && 'green'
+              backgroundColor: !onNext && question.correctAnswer === `${i}` && 'green'
             }}
             elevation={selected === i ? 5 : 1 }
             onClick={() => onNext && setSelected(i)}>

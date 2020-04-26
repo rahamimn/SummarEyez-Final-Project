@@ -7,7 +7,7 @@ export const QuizViewer = ({
   experimentName,
   type,
   name,
-  filters
+  filters = {}
 }) => {
     const [summaryDetails,setSummaryDetails] = useState({
       title: '',
@@ -16,20 +16,19 @@ export const QuizViewer = ({
 
     useEffect(() => {
       const fetch = async () => {
-        console.log(experimentName,type,name);
         const res = await api.getSummary(experimentName,type,name);
         setSummaryDetails(res.data);
       }
       fetch();
-    },[]);
+    },[name, type, filters]);
 
     return <BaseViewer 
             summary={summaryDetails.summary} 
             title={summaryDetails.title}
             filters ={{
               color:90,
-              isGradinet:true,
-              minWeight:0,
+              isGradient: filters.isGradient !== undefined ? filters.isGradient : true,
+              minWeight: filters.minWeight || 0,
               topSentencesCount:21
             }}/>
 
