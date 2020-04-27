@@ -523,7 +523,7 @@ describe('ExperimentService Tests',() =>{
         });
     });
 
-    describe('generate tables from eyez' , () => {
+    describe('add test (generate tables from eyez)' , () => {
         const expName = 'exp1';
         const imageName = 'im1';
        
@@ -532,13 +532,35 @@ describe('ExperimentService Tests',() =>{
         
         const params={
             testId: 'testId',
-            formId : '5',
-            answers : '5',
-            score : '5',
+            formId : 'form1',
+            answers : ['2','1','3'],
+            score : '100',
             sentanceWeights : '5',
             experimentName: expName,
             fixations: 'buffer' 
-        };            
+        };   
+        
+        const params33={
+            testId: 'testId33',
+            formId : 'form1',
+            answers : ['1','2','3'],
+            score : '33',
+            sentanceWeights : '5',
+            experimentName: expName,
+            fixations: 'buffer' 
+        };   
+
+
+        const FormsParams = {
+            experimentName: expName,
+            name: 'form1',
+            questionIds: [1,2,3],
+            summary: {type:"eyes", name:"name", filters:"filter"},
+            isRankSentences: false,
+            isFillAnswers: true,
+            isReadSummary: false,
+            withFixations: true
+        }        
         beforeEach( async () => {
             await collectionsService.experiments().add(expName, {imageName});
             await collectionsService.images().add(imageName, {
@@ -551,6 +573,57 @@ describe('ExperimentService Tests',() =>{
             await storageService.uploadBuffer(word_ocr_path,new Buffer("word_table"),fileTypes.Csv);
 
             params.experimentName = expName;
+            await collectionsService.experiments().formsOf(params.experimentName).add(FormsParams.name, FormsParams)
+            await collectionsService.images().questionsOf(imageName).add(1, {
+                question: "Is etay not the king?",
+                answers:["no","no","no","no"],
+                correctAnswer: "2",
+                creation_date: Date.now()
+            });
+            await collectionsService.images().questionsOf(imageName).add(2, {
+                question: "Is etay the king?",
+                answers:["yes","yes","yes","yes"],
+                correctAnswer: "1",
+                creation_date: Date.now()
+            });
+            await collectionsService.images().questionsOf(imageName).add(3, {
+                question: "Is adir the king?",
+                answers:["yes","yes","yes","yes"],
+                correctAnswer: "3",
+                creation_date: Date.now()
+            });
+
+        });
+
+        it('success - calc score = 100', async () => {
+
+            const word_table = new Buffer('word_table');
+            const sent_table = new Buffer('sent_table');
+            const tables = {word_table: word_table, sentences_table: sent_table};
+
+            pythonService.setGenTableFromEyezResult(tables);
+
+            const {status} = await experimentService.addTest(params);
+            expect(status).toEqual(0);
+            const test = await collectionsService.experiments().getTests(params.experimentName).get(params.testId)
+            expect(test.score).toBe('100')
+
+        });
+
+        it('success - calc score = 33', async () => {
+
+            const word_table = new Buffer('word_table');
+            const sent_table = new Buffer('sent_table');
+            const tables = {word_table: word_table, sentences_table: sent_table};
+
+            pythonService.setGenTableFromEyezResult(tables);
+
+            const {status} = await experimentService.addTest(params33);
+            expect(status).toEqual(0);
+            const test = await collectionsService.experiments().getTests(params33.experimentName).get(params33.testId)
+            console.log(test)
+            expect(test.score).toBe('33.33333333333333')
+
         });
 
         it('success - run genTablesFromEyez with testId = testId', async () => {
