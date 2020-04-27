@@ -585,6 +585,23 @@ describe('ExperimentService Tests',() =>{
 
         });
 
+        it('success - check that editable=false in form after adding test', async () => {
+
+            const word_table = new Buffer('word_table');
+            const sent_table = new Buffer('sent_table');
+            const tables = {word_table: word_table, sentences_table: sent_table};
+
+            pythonService.setGenTableFromEyezResult(tables);
+
+            const {status} = await experimentService.addTest(params);
+            expect(status).toEqual(0);
+
+          
+            const form = await collectionsService.experiments().formsOf(params.experimentName).get(params.formId)
+            expect(form.editable).toBe(false)
+
+        });
+
         it('fail - experimentName not exist', async () => {
 
             const word_table = new Buffer('word_table');
