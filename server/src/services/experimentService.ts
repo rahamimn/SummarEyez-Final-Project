@@ -77,19 +77,25 @@ addTest = async (params) => {
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
     }
     ///
-    const picture= await this.collectionsService.images().get(experiment.imageName)
-    if(!picture){
+    const img= await this.collectionsService.images().get(experiment.imageName)
+    if(!img){
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.IM_NOT_EXISTS} );
     }
-    const word_ocr = await this.storageService.downloadToBuffer(picture.word_ocr_path);
+    const word_ocr = await this.storageService.downloadToBuffer(img.word_ocr_path);
     if(!word_ocr){
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: 'word_ocr does not exist'} );
     }
-    const base_sentences_table = await this.storageService.downloadToBuffer(picture.base_sent_table_path);
+    const base_sentences_table = await this.storageService.downloadToBuffer(img.base_sent_table_path);
     if(!base_sentences_table){
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: 'base_sentences_table does not exist'} );
     }
-   
+    // update form editable to false after first test
+    var form = await this.collectionsService.experiments().formsOf(params.experimentName).get(params.formId)
+    
+    form['editable']= false
+
+    await this.collectionsService.experiments().formsOf(params.experimentName).add(form.name,form)
+
     const test = await this.collectionsService
         .experiments()
         .getTests(params.experimentName)
@@ -99,28 +105,38 @@ addTest = async (params) => {
         return response(ERROR_STATUS.NAME_NOT_VALID, {error: ERRORS.TEST_EXISTS});
     }
 
-
     const tables = await this.pythonService.genTableFromEyez(params.fixations, word_ocr, base_sentences_table);
 
     const expUploadPaths = {
         sent_table:`experiments/${params.experimentName}/tests/${params.testId}/testSentTables`,
         word_table:`experiments/${params.experimentName}/tests/${params.testId}/testWordTables`
     }
-    
+    const answers = params.answers
+    const questions = form.questionIds
+    var score = 0;
+    if(questions.length != 0 ){
+        var correctAns = 0
+        for (let index = 0; index < questions.length; index++) { 
+            const question = await this.collectionsService.images().questionsOf(img.name).get((questions[index]))
+            if(question.correctAnswer == answers[index]) {
+                correctAns++;
+            }
+        }
+        score = (correctAns / questions.length) * 100;
+    }
     await this.storageService.uploadBuffer(expUploadPaths.word_table, tables.word_table, fileTypes.Text);
     await this.storageService.uploadBuffer(expUploadPaths.sent_table, tables.sentences_table, fileTypes.Text);
     await this.collectionsService.experiments().getTests(params.experimentName).add(params.testId,{
         name: params.testId,
         formId: params.formId,
         answers : params.answers || [],
-        score : params.score || 0,
+        score : score.toString() || 0,
         sentanceWeights : params.sentanceWeights || [],
         creation_date: Date.now(),
         sent_table_path: expUploadPaths.sent_table,
         word_table_path: expUploadPaths.word_table,
         type:'eyes'
     });
-
     return response(0);    
 }
 
@@ -142,6 +158,7 @@ addForm = async (params) =>{
         isReadSummary : params.isReadSummary || false,
         isFillAnswers : params.isFillAnswers || false,
         withFixations : params.withFixations || false,
+        editable : true,
         creation_date: Date.now(),
     });
     return response(0);
