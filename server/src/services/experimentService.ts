@@ -92,7 +92,7 @@ addTest = async (params) => {
     // update form editable to false after first test
     var form = await this.collectionsService.experiments().formsOf(params.experimentName).get(params.formId)
     
-    form['editable']= false
+    form['editable'] = false
 
     await this.collectionsService.experiments().formsOf(params.experimentName).add(form.name,form)
 
@@ -114,6 +114,8 @@ addTest = async (params) => {
     const answers = params.answers
     const questions = form.questionIds
     var score = 0;
+
+    // check for not devide by zero
     if(questions.length != 0 ){
         var correctAns = 0
         for (let index = 0; index < questions.length; index++) { 
@@ -130,6 +132,7 @@ addTest = async (params) => {
         name: params.testId,
         formId: params.formId,
         answers : params.answers || [],
+        //thats can be int without toString
         score : score.toString() || 0,
         sentanceWeights : params.sentanceWeights || [],
         creation_date: Date.now(),
