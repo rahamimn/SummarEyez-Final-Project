@@ -621,7 +621,7 @@ describe('ExperimentService Tests',() =>{
             const {status} = await experimentService.addTest(params33);
             expect(status).toEqual(0);
             const test = await collectionsService.experiments().getTests(params33.experimentName).get(params33.testId)
-            console.log(test)
+           
             expect(test.score).toBe('33.33333333333333')
 
         });
