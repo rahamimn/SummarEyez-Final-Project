@@ -76,7 +76,7 @@ addTest = async (params) => {
     if(!experiment){
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
     }
-    ///
+  
     const img= await this.collectionsService.images().get(experiment.imageName)
     if(!img){
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.IM_NOT_EXISTS} );
@@ -113,7 +113,7 @@ addTest = async (params) => {
     }
     const answers = params.answers
     const questions = form.questionIds
-    var score = 0;
+    var score = params.score;
 
     // check for not devide by zero
     if(questions.length != 0 ){
