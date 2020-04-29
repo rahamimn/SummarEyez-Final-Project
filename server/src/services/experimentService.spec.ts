@@ -220,6 +220,12 @@ describe('ExperimentService Tests',() =>{
             }));
         }); 
 
+        it('success - asText - auto', async () => {
+            const {status, data} = await experimentService.getSummary(expName, 'auto',autoName, true);
+            expect(status).toEqual(0);
+            expect(data).toEqual(sent_table_file.toString());
+        }); 
+
         it('success - eyes', async () => {
             const {status, data} = await experimentService.getSummary(expName, 'eyes',eyesName);
             const json = await csvToJson({delimiter:'auto'}).fromString(sent_table_file.toString())
@@ -470,9 +476,9 @@ describe('ExperimentService Tests',() =>{
         });
 
         it('success - get all questions with one question', async () => {   
-            const addQuestion = await experimentService.getAllQuestions(expName);                    
-            expect(addQuestion.status).toBe(0);
-            expect(addQuestion.data.length).toBe(1);
+            const {status, data} = await experimentService.getAllQuestions(expName);                    
+            expect(status).toBe(0);
+            expect(data.length).toBe(1);
         });
 
         it('success - get all questions with no questions', async () => {   
@@ -480,9 +486,9 @@ describe('ExperimentService Tests',() =>{
             const expNoQuestions = "exp";
             await collectionsService.experiments().add(expNoQuestions, {imageNameNoQuestions});
             await collectionsService.images().add(imageNameNoQuestions, {});
-            const addQuestionNoQuestions = await experimentService.getAllQuestions(expNoQuestions)                      
-            expect(addQuestionNoQuestions.status).toBe(0)
-            expect(addQuestionNoQuestions.data.length).toBe(0)        
+            const {status,data } = await experimentService.getAllQuestions(expNoQuestions)                      
+            expect(status).toBe(0)
+            expect(data.length).toBe(0)        
         });
     });
 
@@ -495,8 +501,9 @@ describe('ExperimentService Tests',() =>{
         });
 
         it('success- question is added', async () => {  
-            const addQuestionResponse = await experimentService.addQuestion(expName, "how are u doing?", [{answer: "ok"},{answer: "good enought"},{answer: "very good"},{answer: "not ok" }], 3)                      
-            expect(addQuestionResponse.status).toBe(0)
+            const {status, data} = await experimentService.addQuestion(expName, "how are u doing?", [{answer: "ok"},{answer: "good enought"},{answer: "very good"},{answer: "not ok" }], 3)                      
+            expect(status).toBe(0);
+            expect(data.id).not.toBeUndefined();
         });
 
         it('fail- no experiment', async () => {   
@@ -876,36 +883,20 @@ describe('ExperimentService Tests',() =>{
 
     describe('add form Test' , () => {
         const expName = 'exp1';
-        const imageName = 'im1';
-       
-        const word_ocr_path = `images/${imageName}/word_ocr`;
-        const base_sent_table_path = `images/${imageName}/base_sent_table`;
-        
-        const params1={
-            testId: 'testId1',
-            formId : '5',
-            answers : '5',
-            score : '5',
-            sentanceWeights : '5',
-            experimentName: expName,
-            fixations: 'buffer' 
-        };    
-
-        const FormsParams={
+          
+        const FormsParams = {
             experimentName: expName,
             name: 'form1',
-            questionsIds: [1,2,3],
-            isRankSentences: 'false',
-            isFillAnswers: 'true',
-            withFixations: 'true'
+            questionIds: [1,2,3],
+            summary: {type:"eyes", name:"name", filters:"filter"},
+            isRankSentences: false,
+            isFillAnswers: true,
+            isReadSummary: false,
+            withFixations: true
         }
         const FormsParamsNotExist={
+            ...FormsParams,
             experimentName: 'notExist',
-            name: 'form1',
-            questionsIds: [1,2,3],
-            isRankSentences: 'false',
-            isFillAnswers: 'true',
-            withFixations: 'true'
         }
                    
         beforeEach( async () => {
@@ -929,11 +920,6 @@ describe('ExperimentService Tests',() =>{
          it('fail- form name already exist', async () => {
             await collectionsService.experiments().formsOf(FormsParams.experimentName).add(FormsParams.name,{
                 name: FormsParams.name,
-                questionsIds: FormsParams.questionsIds || [],
-                isRankSentences : FormsParams.isRankSentences,
-                isFillAnswers : FormsParams.isFillAnswers ,
-                withFixations : FormsParams.withFixations ,
-                creation_date: Date.now(),
             });
 
             const {status, error} = await experimentService.addForm(FormsParams);
@@ -948,18 +934,20 @@ describe('ExperimentService Tests',() =>{
         const FormsParams1={
             experimentName: expName,
             name: 'form1',
-            questionsIds: [1,2,3],
-            isRankSentences: 'false',
-            isFillAnswers: 'true',
-            withFixations: 'true'
+            questionIds: [1,2,3],
+            summary: {"type":"eyes", "name":"name", "filters":"filter"},
+            isRankSentences: false,
+            isFillAnswers: true,
+            withFixations: true
         }
         const FormsParams2={
             experimentName: expName,
             name: 'form2',
-            questionsIds: [1,2,3],
-            isRankSentences: 'false',
-            isFillAnswers: 'true',
-            withFixations: 'true'
+            questionIds: [1,2,3],
+            summary: {"type":"eyes", "name":"name", "filters":"filter"},
+            isRankSentences: false,
+            isFillAnswers: true,
+            withFixations: true
         }
         beforeEach( async () => {
             await collectionsService.experiments().add(expName, {});
@@ -979,5 +967,103 @@ describe('ExperimentService Tests',() =>{
             expect(error).toEqual(ERRORS.EXP_NOT_EXISTS);
         });
     });
+
+
+    describe('get form test' , () => {
+        const expName = 'exp1';
+        const expNameNotExist = 'notExist';
+        const imgName = 'img1';
+        const sent_table= new Buffer("sent_table");
+        const formNameNotExist = 'notExist'
+
+        const FormsParams1={
+            experimentName: expName,
+            name: 'form1',
+            questionIds: [1,2,3],
+            summary: {type: 'eyes', name: 'name', filters: 'filter'},
+            isRankSentences: true,
+            isFillAnswers: true,
+            withFixations: true,
+            isReadSummary: false,
+        }
+        const FormsParams2={
+            ...FormsParams1,
+            name: 'form2',
+            isRankSentences: false,
+        }
+
+        beforeEach( async () => {
+            const base_sent_table_path = `images/${imgName}/base_sent_table`;
+            await storageService.uploadBuffer(base_sent_table_path, sent_table,fileTypes.Csv);
+            await collectionsService.experiments().add(expName, {'imageName':imgName});
+            await collectionsService.images().add(imgName, {
+                base_sent_table_path: base_sent_table_path,
+                name: imgName,
+                word_ocr_path: 'word_ocr_path'
+             });
+
+            await collectionsService.images().questionsOf(imgName).add(1, {
+                question: "Is etay the king?",
+                answers:["yes","yes","yes","yes"],
+                correctAnswer: "3",
+                creation_date: Date.now()
+            }); 
+            await collectionsService.images().questionsOf(imgName).add(2, {
+                question: "Is etay not the king?",
+                answers:["no","no","no","no"],
+                correctAnswer: "2",
+                creation_date: Date.now()
+            });
+
+            await collectionsService.images().questionsOf(imgName).add(3, {
+                question: "Is adir not the king?",
+                answers:["yes","yes","yes","yes"],
+                correctAnswer: "1",
+                creation_date: Date.now()
+            });  
+            await collectionsService.experiments().formsOf(expName).add(FormsParams1.name, FormsParams1);
+            await collectionsService.experiments().formsOf(expName).add(FormsParams2.name, FormsParams2);
+            
+        });
+
+        it('success- getForm return 3 questions', async () => {
+            const res = await experimentService.getForm(expName, FormsParams1.name)
+            expect(res.status).toEqual(0);
+            expect(res.data.questions.length).toEqual(3);     
+        });
+
+        it('success- getForm check form data', async () => {
+            const res = await experimentService.getForm(expName, FormsParams1.name)
+            expect(res.status).toEqual(0);
+            expect(res.data).toEqual(expect.objectContaining(FormsParams1));   
+        });
+
+        it('success- getForm isRankSentences = true, FormsParams1', async () => {
+            const res = await experimentService.getForm(expName, FormsParams1.name)
+            expect(res.status).toEqual(0);
+            const json = await csvToJson({delimiter:'auto'}).fromString(sent_table.toString())
+            expect(res.data.base_sentences_table).toEqual(json);     
+        });
+
+        it('success- getForm isRankSentences = false, FormsParams2', async () => {
+            const res = await experimentService.getForm(expName, FormsParams2.name)
+            expect(res.status).toEqual(0);
+            expect(res.data.base_sentences_table).toEqual(undefined);     
+        });
+
+        it('fail- experiment name not exist', async () => {
+            const {status, error} = await experimentService.getForm(expNameNotExist, FormsParams1.name)
+            expect(status).toEqual(ERROR_STATUS.OBJECT_NOT_EXISTS);
+            expect(error).toEqual(ERRORS.EXP_NOT_EXISTS);
+        });
+
+        it('fail- form name not exist', async () => {
+            const {status, error} = await experimentService.getForm(expName, formNameNotExist)
+            expect(status).toEqual(ERROR_STATUS.OBJECT_NOT_EXISTS);
+            expect(error).toEqual(ERRORS.FORM_NOT_EXISTS);
+        });
+
+    });
+
 
 });

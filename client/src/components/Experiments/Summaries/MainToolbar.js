@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useState, useCallback} from 'react'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import clsx from 'clsx';
@@ -9,7 +9,7 @@ import api from '../../../apiService';
 import {useParams} from 'react-router-dom'
 import MergeDialog from './MergeSummaries/MergeDialog'
 import { stringify, parse } from 'qs'
-
+import {saveAs} from 'save-as';
 const useToolbarStyles = makeStyles(theme => ({
     root: {
       paddingLeft: theme.spacing(2),
@@ -40,6 +40,12 @@ const useToolbarStyles = makeStyles(theme => ({
     const numSelected = allSelected.length;
     const disabled = selected.auto.filter((selected) => selected.disabled) 
     
+
+    const onExport = useCallback(async (summaryData) => {
+      const {type, name, creation_date} = summaryData;
+      const file = await api.exportSummaryCsv(experimentName, type, name)
+      saveAs(file, handleName(experimentName, name, creation_date));
+    })
     const justDisabled = allSelected.length === disabled.length
         && allSelected.length > 0 ;
         
@@ -81,6 +87,10 @@ const useToolbarStyles = makeStyles(theme => ({
                 key="1"
                 onClick={() => window.open(`/article/${experimentName}/${oneNotDisable.data.type}/${oneNotDisable.data.name}`,'_blank')}
                 color="inherit">View</Button>,
+            <Button 
+                key="2"
+                onClick={() => onExport(oneNotDisable.data)}
+                color="inherit">export</Button>,
             (false && <Button key="2" color="inherit">Info</Button>)
         ]}
 
@@ -112,3 +122,9 @@ const useToolbarStyles = makeStyles(theme => ({
     selected: PropTypes.object.isRequired,
     updateList: PropTypes.func.isRequired
   };
+
+  const handleName = (experimentName,name,date) => {
+    const splited = name.split('.');
+    const exportedTime = new Date(date).toLocaleDateString('en-US',{month: 'short', day:'numeric'});
+    return `${experimentName}_${splited[0]}_(${exportedTime}).csv`;
+  }

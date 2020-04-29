@@ -7,6 +7,11 @@ const api = {
         return res.data;
     },
 
+    exportSummaryCsv: async (experimentName,type,name) => {
+        const res = await axios.get(`/api/experiments/${experimentName}/summary?csv=true&type=${type}&name=${name}`, { responseType: 'blob' });
+        return res.data;
+    },
+
     getImages: async () => {
         const res = await axios.get('/api/images');
         return res.data;
@@ -88,6 +93,48 @@ const api = {
                 "Content-Type": "multipart/form-data"
             },
         });
+        return res.data;
+    },
+
+    getForms: async (experimentName) => {
+        const res = await axios.get(`/api/experiments/${experimentName}/forms`);
+        return res.data;
+    },
+
+    getForm: async (experimentName, formName) => {
+        const res = await axios.get(`/api/experiments/${experimentName}/forms/${formName}`);
+        return res.data;
+    },
+
+    addForm: async ({
+        experimentName,
+        name,
+        isFillAnswers,
+        isRankSentences,
+        isReadSummary,
+        withFixations,
+        questionIds,
+        summary,
+    }) => {
+        const res = await axios.post(`/api/experiments/${experimentName}/forms`,{
+            name,
+            isFillAnswers,
+            isRankSentences,
+            isReadSummary,
+            withFixations,
+            questionIds,
+            summary,
+        });
+        return res.data;
+    },
+
+    getQuestions: async (experimentName) => {
+        const res = await axios.get(`/api/experiments/${experimentName}/questions`);
+        return res.data;
+    },
+
+    addQuestion: async (experimentName, question) => {
+        const res = await axios.post(`/api/experiments/${experimentName}/questions`,question);
         return res.data;
     }
 }
