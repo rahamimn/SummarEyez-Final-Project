@@ -11,6 +11,7 @@ import { AddQuestion } from '../AddQuestion/AddQuestion';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import CheckIcon from '@material-ui/icons/Check';
+import { COLORS_SIZES, COLORS } from '../../../Viewers/colors';
 
 const emptyForm = {
     name:'',
@@ -19,7 +20,9 @@ const emptyForm = {
     isFillAnswers: false,
     isReadSummary: false,
     withFixations: false,
-    summary: { filters:{ isGradient: true}},
+    summary: { filters:{ 
+      isGradient: true,
+      color:{size:'3', palete:'op_1'}}},
 }
 
 const ITEM_HEIGHT = 48;
@@ -32,6 +35,10 @@ const MenuProps = {
     },
   },
 };
+
+const paleteColors = (colors) => <div style={{display:'flex',justifyContent: 'center'}}>
+    {colors.map(color => <div style={{height:'30px', width:'30px', backgroundColor: color}}></div>)}
+</div>
 
 export function EditForm({
     onSave,
@@ -165,87 +172,101 @@ export function EditForm({
         const filters = summary && summary.filters;
         const isGradient = filters && filters.isGradient ; 
         const minWeight = filters && filters.minWeight ; 
+
+        const FilterTag = ({children, style}) => <Paper variant="outlined" style={{
+            marginBottom: '10px',
+            marginRight: '10px',
+            padding:'0 5px',
+            display:'flex',
+            height: '75px',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            ...style
+          }}> {children}
+          </Paper>
         return (
           <div style={{marginTop:'30px'}}>
            <Typography variant="h6" style={{marignRight: '10px'}}>Filters:</Typography>
 
-            <div style={{display: 'flex', alignItems:'center'}}>
-            {/* <Autocomplete
-              style={{ width: '180px', marginRight:10, marginBottom:'15px' }}
-              options={colors}
-              autoHighlight
-              getOptionLabel={option => option.id}
-              renderInput={params => (
-                  <TextField
-                  {...params}
-                  label="Choose a color"
-                  fullWidth
-                  inputProps={{
-                      ...params.inputProps,
-                      autoComplete: 'disabled', // disable autocomplete and autofill
-                  }}
-                  />
-              )}
-              onChange={(e,color) => 
-                  setColor(color.value)
-              }
-              onInputChange={(e, value) => 
-                  setColorInput(value)
-              }
-              inputValue={colorInput}
-            /> */}
-            <Paper variant="outlined" style={{
-              display:'flex',
-              width: '190px',
-              height: '75px',
-              marginRight: '10px',
-              alignItems: 'center',
-              padding: '0 15px'
-            }}>
-              <TextField 
-                disabled={form}
-                style={{width:'180px', marginBottom:'15px'}}
-                inputProps={{min:0,max:1, step:0.1}}
-                type="number"
-                value={minWeight}
-                onChange={(e) => {
-                  filters.minWeight =  e.target.value;
-                  updateField('summary',{...summary, filters })
-                }}
-                id="minimumWeight"
-                label="minimum weight" />
-            </Paper>
-            {/* <TextField 
-              style={{width:'180px', marginBottom:'15px'}}
-              inputProps={{min:0,max:summary.length, step:1}}
-              type="number"
-              value={topSentencesCount}
-              onChange={(e) => setTopSentencesCount(e.target.value)}
-              id="minimumWeight"
-              label="Top Sentences"/> */}
-            <Paper variant="outlined" style={{
-              padding:'0 5px',
-              display:'flex',
-              width:'150px',
-              height: '75px',
-              alignItems: 'center',
-              justifyContent: 'space-between'
-            }}>
-              <Typography color="textSecondary">Gradient</Typography>
-              <ToggleButton
+            <div style={{display: 'flex', alignItems:'center', flexWrap:'wrap'}}>
+
+              <FilterTag>
+                <Typography color="textSecondary" style={{marginRight:'5px'}}>Palete Size: </Typography>
+                <Select
                   disabled={form}
-                  value="check"
-                  selected={isGradient}
-                  onChange={() => {
-                      filters.isGradient =  !isGradient;
-                      updateField('summary',{...summary, filters })
+                  labelId="select-color-sizes"
+                  id="select-#colors"
+
+                  value={filters.color.size}
+                  onChange={(event) => {
+                    filters.color =  {...filters.color, size: event.target.value};
+                    updateField('summary',{...summary, filters })
                   }}
-                  >
-                  <CheckIcon />
-              </ToggleButton> 
-            </Paper> 
+                  input={<Input style={{display:'block', width:'100px', marginRight:'5px'}}/>}
+                  renderValue={(selected) => selected}
+                  MenuProps={MenuProps}
+                >
+                  {COLORS_SIZES.map((size) => (
+                      <MenuItem key={size} value={size}>
+                          <ListItemText primary={size} />
+                      </MenuItem>
+                  ))}
+                </Select>
+                <Typography color="textSecondary" style={{marginRight:'5px'}}>Palete: </Typography>
+                <Select
+                  disabled={form}
+                  labelId="select-color-sizes"
+                  id="select-#colors"
+
+                  value={filters.color.palete}
+                  onChange={(event) => {
+                    filters.color =  {...filters.color, palete: event.target.value};
+                    updateField('summary',{...summary, filters })
+                  }}
+                  input={<Input style={{display:'block', width:'100px'}}/>}
+                  renderValue={(selected) => selected}
+                  MenuProps={MenuProps}
+                >
+                  { Object.keys(COLORS[filters.color.size]).map((palete) => (
+                      <MenuItem key={palete} value={palete}>
+                          <ListItemText primary={palete} />
+                          {paleteColors(COLORS[filters.color.size][palete])}
+                      </MenuItem>
+                  ))}
+                </Select>
+              </FilterTag> 
+
+              <FilterTag style={{width:'150px'}}>
+                <Typography color="textSecondary">Gradient</Typography>
+                <ToggleButton
+                    disabled={form}
+                    value="check"
+                    selected={isGradient}
+                    onChange={() => {
+                        filters.isGradient =  !isGradient;
+                        updateField('summary',{...summary, filters })
+                    }}
+                    >
+                    <CheckIcon />
+                </ToggleButton> 
+              </FilterTag>
+
+              <FilterTag >
+                <TextField 
+                  disabled={form}
+                  style={{width:'180px', marginBottom:'15px'}}
+                  inputProps={{min:0,max:1, step:0.1}}
+                  type="number"
+                  value={minWeight}
+                  onChange={(e) => {
+                    filters.minWeight =  e.target.value;
+                    updateField('summary',{...summary, filters })
+                  }}
+                  id="minimumWeight"
+                  label="minimum weight" />
+              </FilterTag>
+            </div>
           </div>
-        </div>
         );
       },[formDTO, form]); 
 
@@ -388,6 +409,7 @@ export function EditForm({
               {title}
             </Typography>
             <Switch
+              disabled={form}
               style={{display:'block'}}
               checked={formDTO[field]}
               onChange={() => { 

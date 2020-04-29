@@ -6,13 +6,40 @@ import Typography from '@material-ui/core/Typography';
 import CheckIcon from '@material-ui/icons/Check';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import {BaseViewer} from '../BaseViewer/BaseViewer';
-import { Card, Popper } from '@material-ui/core';
+import { Card, Popper, Select, Input, MenuItem, ListItemText } from '@material-ui/core';
+import { COLORS_SIZES, COLORS } from '../colors';
+
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 5.5 + ITEM_PADDING_TOP,
+      width: 330,
+    },
+  },
+};
+
+const FilterRow = ({children, text}) => <div style={{
+        display:'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        margin:'10px 0'
+    }}>
+        <Typography color="textSecondary">{text}</Typography>
+        {children}
+    </div>
+
+const paleteColors = (colors) => <div style={{display:'flex',justifyContent: 'center'}}>
+    {colors.map(color => <div style={{height:'30px', width:'30px', backgroundColor: color}}></div>)}
+</div>
 
 export const ArticleViewer = ({summary, title}) => {
-    let paragraphs = [];
-    let paragraphNum = -1;
-    let [colorInput, setColorInput] = useState('');
-    let [color, setColor] = useState(90);
+    // let [colorInput, setColorInput] = useState('');
+    // let [color, setColor] = useState(90);
+    let [colorSize, setColorSize] = useState('5');
+    let [colorPalete, setColorPalete] = useState('op_1');
     let [isGradient, setIsGradient] = useState(true);
     let [minWeight, setMinWeight] = useState(0);
     let [topSentencesCount, setTopSentencesCount ] = useState(summary.length);
@@ -20,35 +47,6 @@ export const ArticleViewer = ({summary, title}) => {
     useEffect(() => {
         setTopSentencesCount(summary.length)
     },[summary]);
-
-    const sortedSentences = [...summary].sort((a,b) => b.normalized_weight - a.normalized_weight);
-    const topSentences = sortedSentences.slice(0,topSentencesCount);
-    const backgroundColor = (sent) =>  (sent.normalized_weight > minWeight && topSentences.includes(sent)) ? 
-        (isGradient? `hsl(${color}, 100%, ${100 - sent.normalized_weight*50}%)` :
-        `hsl(${color}, 100%, 50%)` ) :
-            null;
-
-    for(let i = 0 ; i < summary.length; i++){
-        const isSamePar = summary[i].par_num === paragraphNum;
-        const Sent = (
-            <span 
-                key={'sent'+i}
-                style={{backgroundColor: backgroundColor(summary[i])}}>
-                    {isSamePar && <span>&nbsp;</span>}
-                    {summary[i].text}
-            </span>
-        );
-        
-        if(!isSamePar){
-            paragraphs.push([Sent]);
-            paragraphNum = summary[i].par_num;
-        }
-        else{
-            paragraphs[paragraphNum-1].push(Sent)
-        }
-    }
-
-    const sentHtml = paragraphs.map((par,i) => <p key={'par'+i}>{par}</p>);
 
     return <div style={{
                 backgroundColor: 'white',
@@ -68,8 +66,59 @@ export const ArticleViewer = ({summary, title}) => {
                     <Typography variant="h5" style={{marginBottom:'20px'}}>
                         Filters
                     </Typography>
+                    <FilterRow text="#Colors">
+                        <Select
+                            labelId="select-color-sizes"
+                            id="select-#colors"
+
+                            value={colorSize}
+                            onChange={(event) => setColorSize(event.target.value)}
+                            input={<Input style={{display:'block', width:'100px'}}/>}
+                            renderValue={(selected) => selected}
+                            MenuProps={MenuProps}
+                        >
+                            {COLORS_SIZES.map((size) => (
+                                <MenuItem key={size} value={size}>
+                                    <ListItemText primary={size} />
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FilterRow>
+                    <FilterRow text="Palete">
+                        <Select
+                            labelId="select-color-sizes"
+                            id="select-#colors"
+
+                            value={colorPalete}
+                            onChange={(event) => setColorPalete(event.target.value)}
+                            input={<Input style={{display:'block', width:'100px'}}/>}
+                            renderValue={(selected) => selected}
+                            MenuProps={MenuProps}
+                        >
+                            { Object.keys(COLORS[colorSize]).map((palete) => (
+                                <MenuItem key={palete} value={palete}>
+                                    <ListItemText primary={palete} />
+                                    {paleteColors(COLORS[colorSize][palete])}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FilterRow>
+                    <FilterRow text="Gradient">
+                        <ToggleButton
+                            value="check"
+                            selected={isGradient}
+                            onChange={() => {
+                                setIsGradient(!isGradient);
+                            }}
+                            >
+                            <CheckIcon />
+                        </ToggleButton>
+                    </FilterRow>
+                    <div style={{marginTop:'10px', marginBottom:'20px'}}>
+                        {paleteColors(COLORS[colorSize][colorPalete])}
+                    </div>
                     
-                    <Autocomplete
+                    {/* <Autocomplete
                         style={{ width: '180px', marginRight:10, marginBottom:'15px' }}
                         options={colors}
                         autoHighlight
@@ -92,7 +141,7 @@ export const ArticleViewer = ({summary, title}) => {
                             setColorInput(value)
                         }
                         inputValue={colorInput}
-                    />
+                    /> */}
                     <TextField 
                         style={{width:'180px', marginBottom:'15px'}}
                         inputProps={{min:0,max:1, step:0.1}}
@@ -110,22 +159,8 @@ export const ArticleViewer = ({summary, title}) => {
                         onChange={(e) => setTopSentencesCount(e.target.value)}
                         id="minimumWeight"
                         label="Top Sentences"/>
-                    <div style={{
-                        display:'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between'
-                    }}>
-                        <Typography color="textSecondary">Gradient</Typography>
-                        <ToggleButton
-                            value="check"
-                            selected={isGradient}
-                            onChange={() => {
-                                setIsGradient(!isGradient);
-                            }}
-                            >
-                            <CheckIcon />
-                        </ToggleButton> 
-                    </div>
+
+                    
                 </div>
                 <div style={{width:'800px'}}>
                     <BaseViewer
@@ -133,7 +168,7 @@ export const ArticleViewer = ({summary, title}) => {
                         summary={summary}
                         title={title}
                         filters={{
-                            color,
+                            color: {size:colorSize, palete: colorPalete},
                             isGradient,
                             minWeight,
                             topSentencesCount

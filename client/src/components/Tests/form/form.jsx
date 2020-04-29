@@ -48,7 +48,7 @@ export function Form({
   return (
     <Container>
         <Card style={{ padding:'30px', display:'flex', flexDirection:'column', alignItems:'center'}}>
-        {renderByStage[step]}
+            {renderByStage[step]}
         </Card>
     </Container>
   );

@@ -5,6 +5,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import Typography from '@material-ui/core/Typography';
 import CheckIcon from '@material-ui/icons/Check';
 import ToggleButton from '@material-ui/lab/ToggleButton';
+import { COLORS } from '../colors';
 
 
 export const BaseViewer = ({
@@ -22,13 +23,29 @@ export const BaseViewer = ({
 
     const [selectedSent,setSelectedSent] = useState(null); 
     const [anchorEl,setAnchorEl] = useState(null);
+    
+    const colorSize = parseInt(color.size);
+    const colorsArray = COLORS[color.size][color.palete];
+
 
     const sortedSentences = [...summary].sort((a,b) => b.normalized_weight - a.normalized_weight);
     const topSentences = sortedSentences.slice(0,topSentencesCount);
-    const backgroundColor = (sent) =>  (sent.normalized_weight > minWeight && topSentences.includes(sent)) ? 
-        (isGradient? `hsl(${color}, 100%, ${100 - sent.normalized_weight*50}%)` :
-        `hsl(${color}, 100%, 50%)` ) :
-            null;
+
+    // const backgroundColorOld = (sent) =>  (sent.normalized_weight > minWeight && topSentences.includes(sent)) ? 
+    //     (isGradient? `hsl(${color}, 100%, ${100 - sent.normalized_weight*50}%)` :
+    //     `hsl(${color}, 100%, 50%)` ) :
+    //         null;
+
+    const backgroundColor = (sent) =>  
+    (sent.normalized_weight >= minWeight && topSentences.includes(sent)) ? 
+        (isGradient ? 
+            (
+                parseInt(sent.normalized_weight) === 1 ?
+                    colorsArray[colorSize-1]:
+                    colorsArray[Math.floor(sent.normalized_weight * colorSize)]
+            ) :
+            colorsArray[Math.floor(colorSize/2)]):
+        null;
 
     for(let i = 0 ; i < summary.length; i++){
         const isSamePar = summary[i].par_num === paragraphNum;
