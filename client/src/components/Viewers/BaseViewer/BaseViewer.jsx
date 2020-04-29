@@ -1,10 +1,4 @@
-import React, {useState, useEffect} from 'react';
-import Button from '@material-ui/core/Button'
-import TextField from '@material-ui/core/TextField'
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import Typography from '@material-ui/core/Typography';
-import CheckIcon from '@material-ui/icons/Check';
-import ToggleButton from '@material-ui/lab/ToggleButton';
+import React, {useState} from 'react';
 import { COLORS } from '../colors';
 
 
@@ -29,7 +23,7 @@ export const BaseViewer = ({
 
 
     const sortedSentences = [...summary].sort((a,b) => b.normalized_weight - a.normalized_weight);
-    const topSentences = sortedSentences.slice(0,topSentencesCount);
+    const topSentences =  topSentencesCount ? sortedSentences.slice(0,topSentencesCount) : sortedSentences;
 
     // const backgroundColorOld = (sent) =>  (sent.normalized_weight > minWeight && topSentences.includes(sent)) ? 
     //     (isGradient? `hsl(${color}, 100%, ${100 - sent.normalized_weight*50}%)` :
@@ -65,11 +59,13 @@ export const BaseViewer = ({
                         
                     }}
                     key={'sent'+i}
-                    style={{backgroundColor: backgroundColor(summary[i])}}>
+                    style={{
+                        backgroundColor: backgroundColor(summary[i]),
+                        textDecoration: i === selectedSent && 'underline'}}>
                         {isSamePar && <span>&nbsp;</span>}
                         {summary[i].text}
                 </span>
-                {SentPopper &&  <SentPopper id={'sent-'+i} weight={summary[i].normalized_weight} anchorEl={anchorEl} isOpen={selectedSent === i}/>}
+                {SentPopper &&  <SentPopper id={'sent-'+i} sentIndex={i} weight={summary[i].normalized_weight} anchorEl={anchorEl} isOpen={selectedSent === i}/>}
             </span>
         );
         
@@ -95,27 +91,27 @@ export const BaseViewer = ({
 }
 
 
-const colors = [{
-    id:'yellow',
-    value: 90,
-},
-{
-    id:'red',
-    value: 35,
-},
-{
-    id:'blue',
-    value: 200,
-},
-{
-    id:'adir confused1',
-    value: 260,
-},
-{
-    id:'adir confused2',
-    value: 150,
-},
-{
-    id:'adir confused3',
-    value: 15,
-}];
+// const colors = [{
+//     id:'yellow',
+//     value: 90,
+// },
+// {
+//     id:'red',
+//     value: 35,
+// },
+// {
+//     id:'blue',
+//     value: 200,
+// },
+// {
+//     id:'adir confused1',
+//     value: 260,
+// },
+// {
+//     id:'adir confused2',
+//     value: 150,
+// },
+// {
+//     id:'adir confused3',
+//     value: 15,
+// }];
