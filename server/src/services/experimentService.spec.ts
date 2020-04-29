@@ -767,6 +767,50 @@ describe('ExperimentService Tests',() =>{
     });
 
 
+    describe('add test plan' , () => {
+        const expName = 'exp1';
+        const testPlanName = 'testplan1';
+        const formName = 'form1';
+        const FormsParams={
+            experimentName: expName,
+            name: formName,
+            questionsIds: [1,2,3],
+            isRankSentences: 'false',
+            isFillAnswers: 'true',
+            withFixations: 'true'
+        }
+                   
+        beforeEach( async () => {
+            await collectionsService.experiments().add(expName, {});
+            await experimentService.addForm(FormsParams);
+        });
+
+        it('success- add one testPlan', async () => {
+           const res = await experimentService.addTestPlan(testPlanName, [{'formExpiramentName': expName, 'formIds':formName }]);
+           expect(res.status).toEqual(0);
+        });
+
+        it('fail- experiment name not exist', async () => {
+            const {status, error} = await experimentService.addTestPlan(testPlanName, [{'formExpiramentName': 'badExpName', 'formIds':formName }]);
+            expect(status).toEqual(ERROR_STATUS.OBJECT_NOT_EXISTS);
+            expect(error).toEqual(ERRORS.EXP_NOT_EXISTS);
+        });
+
+        it('fail- form name does not exist', async () => {
+            const {status, error} = await experimentService.addTestPlan(testPlanName, [{'formExpiramentName': expName, 'formIds':'badFormName' }]);
+            expect(status).toEqual(ERROR_STATUS.OBJECT_NOT_EXISTS);
+            expect(error).toEqual(ERRORS.FORM_NOT_EXISTS);
+        });
+
+        it('fail- testPlan name already exist', async () => {
+            await experimentService.addTestPlan(testPlanName, [{'formExpiramentName': expName, 'formIds':formName }]);
+            const {status, error} = await experimentService.addTestPlan(testPlanName, [{'formExpiramentName': expName, 'formIds':formName }]);
+            expect(status).toEqual(ERROR_STATUS.NAME_NOT_VALID);
+            expect(error).toEqual(ERRORS.TEST_PLAN_NAME_EXISTS);
+        });
+    });
+
+
     describe('add form Test' , () => {
         const expName = 'exp1';
         const imageName = 'im1';

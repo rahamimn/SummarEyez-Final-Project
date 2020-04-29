@@ -146,6 +146,12 @@ app.post('/api/experiments/:experimentName/questions', bodyParser.json(), (req, 
     res.send(questionAdded);
 }));
 
+app.post('/api/testPlan', bodyParser.json(), (req, res) => errorHandling(res, async () => {
+    const {testPlanName, formsDetails}  = req.body;
+    const addTestPlan = await experimentService.addTestPlan(testPlanName, formsDetails);
+    res.send(addTestPlan);
+}));
+
 app.get('/api/experiments/:experimentName/tests',(req, res) => 
  errorHandling(res, async () => {
     const experimentName = req.params.experimentName;
