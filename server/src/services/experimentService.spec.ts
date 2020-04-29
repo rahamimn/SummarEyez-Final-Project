@@ -809,6 +809,69 @@ describe('ExperimentService Tests',() =>{
             expect(error).toEqual(ERRORS.TEST_PLAN_NAME_EXISTS);
         });
     });
+    
+
+    describe('get test plan by id' , () => {
+        const expName = 'exp1';
+        const testPlanName = 'testplan1';
+        const formName = 'form1';
+        const FormsParams={
+            experimentName: expName,
+            name: formName,
+            questionsIds: [1,2,3],
+            isRankSentences: 'false',
+            isFillAnswers: 'true',
+            withFixations: 'true'
+        }
+
+        beforeEach( async () => {
+            await collectionsService.experiments().add(expName, {});
+            await experimentService.addForm(FormsParams);
+            await experimentService.addTestPlan(testPlanName, [{'formExpiramentName': expName, 'formIds':formName }]);
+        });
+
+        it('success- testPlan name exist', async () => {
+            const {status} = await experimentService.getTestPlan(testPlanName);
+            expect(status).toEqual(0);
+        });
+
+        it('fail- testPlan name does not exist', async () => {
+            const {status, error} = await experimentService.getTestPlan("fake test plan name");
+            expect(status).toEqual(ERRORS.TEST_PLAN_NAME_NOT_EXISTS);
+            expect(error).toEqual(ERRORS.TEST_PLAN_NAME_NOT_EXISTS);
+        });
+    });
+
+
+    describe('get all test plans' , () => {
+        const expName = 'exp1';
+        const testPlanName = 'testplan1';
+        const formName = 'form1';
+        const FormsParams={
+            experimentName: expName,
+            name: formName,
+            questionsIds: [1,2,3],
+            isRankSentences: 'false',
+            isFillAnswers: 'true',
+            withFixations: 'true'
+        }
+
+        beforeEach( async () => {
+            await collectionsService.experiments().add(expName, {});
+            await experimentService.addForm(FormsParams);
+        });
+
+        it.only('success- testPlan exist', async () => {
+            await experimentService.addTestPlan(testPlanName, [{'formExpiramentName': expName, 'formIds':formName }]);
+            const {status} = await experimentService.getAllTestPlans();
+            expect(status).toEqual(0);
+        });
+
+        it.only('success- testPlan is empty', async () => {
+            const {status} = await experimentService.getAllTestPlans();
+            expect(status).toEqual(0);
+        });
+    });
 
 
     describe('add form Test' , () => {

@@ -175,6 +175,21 @@ addTestPlan = async (testPlanName: any, formsDetails: any) =>{
     return response(0);
 }
 
+getAllTestPlans = async () =>{
+    const allTestPlans = await this.collectionsService.testPlans().getAll();
+    return response(0, {data: allTestPlans});
+}
+
+getTestPlan= async (testPlanId: any) =>{  
+    const testPlan = await this.collectionsService.testPlans().get(testPlanId);
+    if(!testPlan)
+    {
+        return response(ERRORS.TEST_PLAN_NAME_NOT_EXISTS, {error: ERRORS.TEST_PLAN_NAME_NOT_EXISTS})
+    }
+
+    return response(0, {data: testPlan});
+}
+
 addForm = async (params) =>{
     const expriment = await this.collectionsService.experiments().get(params.experimentName)
     if(!expriment){

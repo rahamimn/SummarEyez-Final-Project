@@ -14,6 +14,7 @@ export const ERRORS = {
     FORM_NOT_EXISTS: 'form not exists',
     AlG_NOT_EXISTS: 'algorithm not exists',
     SUMMARY_NOT_EXISTS: 'summary not exists',
+    TEST_PLAN_NAME_NOT_EXISTS: 'test plan name does not exist',
 }
     
 export const ERROR_STATUS = {
