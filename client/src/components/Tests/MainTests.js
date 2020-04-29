@@ -11,7 +11,7 @@ function MainTests() {
   // const {experimentName} = useParams();
   const [form,setForm] = useState(formMock)
   const fetchForm = useCallback(async() => {
-    const res = await api.getForm('Teachers','etay4');
+    const res = await api.getForm('Teachers','shelly');
     setForm(res.data);
   })
   useEffect(() => fetchForm(),[])
@@ -68,7 +68,7 @@ const formMock = {
   isFillAnswers: true,
   isReadSummary: true,
   summary:{type: 'auto', name:'auto1.py', filters:{ 
-    color:90,
+    color: {size:'3',palete: 'op_1'},
     isGradient:true,
     minWeight:0,
     topSentencesCount:0
