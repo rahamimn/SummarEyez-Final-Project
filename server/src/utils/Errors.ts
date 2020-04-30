@@ -6,7 +6,7 @@ export const ERRORS = {
     IM_EXISTS: 'image already exists',
     FORM_EXISTS: 'form already exists',
     AlG_EXISTS: 'algorithm already exists',
-
+    TEST_PLAN_NAME_EXISTS: 'test plan name already exist',
     //not exists
     TEST_NOT_EXISTS: 'test not exists',
     EXP_NOT_EXISTS: 'experiment not exists',
@@ -14,6 +14,7 @@ export const ERRORS = {
     FORM_NOT_EXISTS: 'form not exists',
     AlG_NOT_EXISTS: 'algorithm not exists',
     SUMMARY_NOT_EXISTS: 'summary not exists',
+    TEST_PLAN_NAME_NOT_EXISTS: 'test plan name does not exist',
     SENT_TBL_NOT_EXISTS: 'base_sent_table not exist',
 }
     

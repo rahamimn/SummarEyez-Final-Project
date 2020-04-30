@@ -124,6 +124,70 @@ addTest = async (params) => {
     return response(0);    
 }
 
+private checkExpiramentExist = async (experimentsNames) => {
+    for(var i=0; i<experimentsNames.length; i++){
+        var nameOfExpirament = experimentsNames[i]
+        const expriment = await this.collectionsService.experiments().get(nameOfExpirament)
+        if (!expriment) {
+            return response(ERROR_STATUS.NAME_NOT_VALID,{error: ERRORS.FORM_NOT_EXISTS})
+        }
+    }
+    return response(0);
+}
+
+private checkformsExist = async (experimentsNames, formsId) => {
+    for(var i=0; i<experimentsNames.length; i++){
+        var nameOfForm = formsId[i]
+        var nameOfExpirament = experimentsNames[i]
+        var currFrom = await this.collectionsService.experiments().formsOf(nameOfExpirament).get(nameOfForm);
+        if (!currFrom) {
+            return response(ERROR_STATUS.NAME_NOT_VALID,{error: ERRORS.FORM_NOT_EXISTS})
+        }
+    }
+    return  response(0);
+}
+
+addTestPlan = async (testPlanName: any, formsDetails: any) =>{
+    var experimentNames  = formsDetails.map(expiramentName => expiramentName.formExpiramentName);
+    var formsId = formsDetails.map(formDetail => formDetail.formIds);
+    const validExpiraments = await this.checkExpiramentExist(experimentNames );
+    if(validExpiraments.status === ERROR_STATUS.NAME_NOT_VALID )
+    {
+        return response(ERROR_STATUS.OBJECT_NOT_EXISTS, {error: ERRORS.EXP_NOT_EXISTS})
+    }
+    const validFroms = await this.checkformsExist(experimentNames , formsId);
+    if(validFroms.status === ERROR_STATUS.NAME_NOT_VALID )
+    {
+        return response(ERROR_STATUS.OBJECT_NOT_EXISTS, {error: ERRORS.FORM_NOT_EXISTS})
+    }
+
+    const testPlanNameExist = await this.collectionsService.testPlans().get(testPlanName);
+
+    if(testPlanNameExist)
+    {
+        return response(ERROR_STATUS.NAME_NOT_VALID, {error: ERRORS.TEST_PLAN_NAME_EXISTS})
+    }
+    await this.collectionsService.testPlans().add(testPlanName, {
+        id: testPlanName,
+        forms: formsDetails
+    })
+    return response(0);
+}
+
+getAllTestPlans = async () =>{
+    const allTestPlans = await this.collectionsService.testPlans().getAll();
+    return response(0, {data: allTestPlans});
+}
+
+getTestPlan= async (testPlanId: any) =>{  
+    const testPlan = await this.collectionsService.testPlans().get(testPlanId);
+    if(!testPlan)
+    {
+        return response(ERRORS.TEST_PLAN_NAME_NOT_EXISTS, {error: ERRORS.TEST_PLAN_NAME_NOT_EXISTS})
+    }
+
+    return response(0, {data: testPlan});
+}
 
 addForm = async (params) =>{
     const expriment = await this.collectionsService.experiments().get(params.experimentName)
