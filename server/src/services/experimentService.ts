@@ -133,7 +133,7 @@ addTest = async (params) => {
         formId: params.formId,
         answers : params.answers || [],
         //thats can be int without toString
-        score : score.toString() || 0,
+        score : score || 0,
         sentanceWeights : params.sentanceWeights || [],
         creation_date: Date.now(),
         sent_table_path: expUploadPaths.sent_table,
