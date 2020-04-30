@@ -147,14 +147,14 @@ private checkformsExist = async (experimentsNames, formsId) => {
 }
 
 addTestPlan = async (testPlanName: any, formsDetails: any) =>{
-    var expiramentNames = formsDetails.map(expiramentName => expiramentName.formExpiramentName);
+    var experimentNames  = formsDetails.map(expiramentName => expiramentName.formExpiramentName);
     var formsId = formsDetails.map(formDetail => formDetail.formIds);
-    const validExpiraments = await this.checkExpiramentExist(expiramentNames);
+    const validExpiraments = await this.checkExpiramentExist(experimentNames );
     if(validExpiraments.status === ERROR_STATUS.NAME_NOT_VALID )
     {
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS, {error: ERRORS.EXP_NOT_EXISTS})
     }
-    const validFroms = await this.checkformsExist(expiramentNames, formsId);
+    const validFroms = await this.checkformsExist(experimentNames , formsId);
     if(validFroms.status === ERROR_STATUS.NAME_NOT_VALID )
     {
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS, {error: ERRORS.FORM_NOT_EXISTS})
@@ -167,10 +167,8 @@ addTestPlan = async (testPlanName: any, formsDetails: any) =>{
         return response(ERROR_STATUS.NAME_NOT_VALID, {error: ERRORS.TEST_PLAN_NAME_EXISTS})
     }
     await this.collectionsService.testPlans().add(testPlanName, {
-        name: testPlanName,
-        forms: formsId,
-        expiraments: expiramentNames,
-        creation_date: Date.now(),
+        id: testPlanName,
+        forms: formsDetails
     })
     return response(0);
 }

@@ -831,8 +831,10 @@ describe('ExperimentService Tests',() =>{
         });
 
         it('success- testPlan name exist', async () => {
-            const {status} = await experimentService.getTestPlan(testPlanName);
+            const {status, data} = await experimentService.getTestPlan(testPlanName);
             expect(status).toEqual(0);
+            expect(data.id).toEqual(testPlanName);
+            expect(data.forms.length).toBe(1);
         });
 
         it('fail- testPlan name does not exist', async () => {
@@ -861,15 +863,18 @@ describe('ExperimentService Tests',() =>{
             await experimentService.addForm(FormsParams);
         });
 
-        it.only('success- testPlan exist', async () => {
+        it('success- testPlan exist', async () => {
             await experimentService.addTestPlan(testPlanName, [{'formExpiramentName': expName, 'formIds':formName }]);
-            const {status} = await experimentService.getAllTestPlans();
+            const {status, data } = await experimentService.getAllTestPlans();
             expect(status).toEqual(0);
+            expect(data.length).toBe(1);
+            expect(data[0].id).toEqual(testPlanName);
         });
 
-        it.only('success- testPlan is empty', async () => {
-            const {status} = await experimentService.getAllTestPlans();
+        it('success- testPlan is empty', async () => {
+            const {status, data} = await experimentService.getAllTestPlans();
             expect(status).toEqual(0);
+            expect(data.length).toBe(0);
         });
     });
 
