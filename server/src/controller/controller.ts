@@ -128,7 +128,7 @@ app.post('/api/experiments/:experimentName/tests', upload.single('fixations'), (
         testId: jsonData.testId,
         formId : jsonData.formId || 'Manually',
         answers : jsonData.answers || [],
-        score : jsonData.score || 0,
+        score : 0,
         sentanceWeights : jsonData.sentanceWeights || [],
         experimentName: req.params.experimentName,
         fixations: req.file.buffer }
