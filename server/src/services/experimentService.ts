@@ -119,8 +119,8 @@ addTest = async (params) => {
     if(questions.length != 0 ){
         var correctAns = 0
         for (let index = 0; index < questions.length; index++) { 
-            const question = await this.collectionsService.images().questionsOf(img.name).get((questions[index]))
-            if(question.correctAnswer == answers[index]) {
+            const question = await this.collectionsService.images().questionsOf(img.name).get((answers[index].id))
+            if(question.correctAnswer == answers[index].ans) {
                 correctAns++;
             }
         }
