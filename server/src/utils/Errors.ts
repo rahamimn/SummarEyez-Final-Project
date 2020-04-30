@@ -15,6 +15,7 @@ export const ERRORS = {
     AlG_NOT_EXISTS: 'algorithm not exists',
     SUMMARY_NOT_EXISTS: 'summary not exists',
     TEST_PLAN_NAME_NOT_EXISTS: 'test plan name does not exist',
+    SENT_TBL_NOT_EXISTS: 'base_sent_table not exist',
 }
     
 export const ERROR_STATUS = {

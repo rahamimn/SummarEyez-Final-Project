@@ -76,6 +76,7 @@ addTest = async (params) => {
     if(!experiment){
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
     }
+    ///
     const picture= await this.collectionsService.images().get(experiment.imageName)
     if(!picture){
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.IM_NOT_EXISTS} );
@@ -199,10 +200,12 @@ addForm = async (params) =>{
     }
     await this.collectionsService.experiments().formsOf(params.experimentName).add(params.name,{
         name: params.name,
-        questionsIds: params.questionsIds || [],
-        isRankSentences : params.isRankSentences,
-        isFillAnswers : params.isFillAnswers ,
-        withFixations : params.withFixations ,
+        questionIds: params.questionIds || [],
+        summary: params.summary || {},
+        isRankSentences : params.isRankSentences || false,
+        isReadSummary : params.isReadSummary || false,
+        isFillAnswers : params.isFillAnswers || false,
+        withFixations : params.withFixations || false,
         creation_date: Date.now(),
     });
     return response(0);
@@ -215,6 +218,46 @@ getAllForms = async (experimentName) =>{
     }
     const forms = await this.collectionsService.experiments().formsOf(experimentName).getAll();
     return response(0, {data: forms});
+}
+
+getForm = async (experimentName, formId) =>{
+    const expriment = await this.collectionsService.experiments().get(experimentName)
+    if(!expriment){
+        return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
+    }
+
+    const form = await this.collectionsService.experiments().formsOf(experimentName).get(formId);
+    if(!form){
+        return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.FORM_NOT_EXISTS} );
+    }
+
+    const img= await this.collectionsService.images().get(expriment.imageName)
+    if(!img){
+        return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.IM_NOT_EXISTS} );
+    }
+
+    var base_sentences_table;
+    if(form.isRankSentences == true){
+        base_sentences_table = await this.storageService.downloadToBuffer(img.base_sent_table_path);
+        if(!base_sentences_table){
+            return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.SENT_TBL_NOT_EXISTS} );
+        }
+        base_sentences_table = await csvToJson({delimiter:'auto'}).fromString(base_sentences_table.toString('utf16le'))
+    }
+    
+    var questions = []
+    var questionIds = form.questionIds;
+    
+    for (let index = 0; index < questionIds.length; index++) { 
+       const question = await this.collectionsService.images().questionsOf(img.name).get((questionIds[index]))
+       questions = questions.concat(question); 
+    }
+
+    var res = {...form,
+                questions: questions,
+                base_sentences_table: base_sentences_table}
+
+    return response(0, {data: res});
 }
 
 getFilteredTest = async (experimentName, formId, minScore) =>{
@@ -332,7 +375,7 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
         return await this.storageService.downloadToBuffer(path);
     }
 
-    getSummary = async (experimentName, type, name) => {
+    getSummary = async (experimentName, type, name, asText = false) => {
         const experiment = await this.collectionsService.experiments().get(experimentName);
         if(!experiment){
             return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
@@ -343,6 +386,9 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
             return response(ERROR_STATUS.OBJECT_NOT_EXISTS, {error:ERRORS.SUMMARY_NOT_EXISTS})
         }
 
+        if(asText){
+            return response(0,{data: csvFile.toString('utf16le')});
+        }
         return response(0, {
             data: {
                 title: experiment.imageName,
@@ -450,13 +496,14 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
             return response(ERROR_STATUS.GENERAL_ERROR,{error: "the value of the correct answer is not valid"});
         }
         const experimentImageName = experiment.imageName;
-        await this.collectionsService.images().questionsOf(experimentImageName).add(uuidv4(), {
+        const id = uuidv4();
+        await this.collectionsService.images().questionsOf(experimentImageName).add(id, {
             question: question,
             answers,
             correctAnswer: correctAnswer,
             creation_date: Date.now()
         }); 
-        return response(0);
+        return response(0,{data: {id}});
     }
 
     mergeSummaries = async(experimentName, mergedName, sammaries_details ) =>{

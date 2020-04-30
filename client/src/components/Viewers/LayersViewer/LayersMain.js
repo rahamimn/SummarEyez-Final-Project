@@ -28,7 +28,6 @@ export const LayersMain = () => {
           summary => api.getSummary(experimentName,summary.type,summary.name)
           )
         );
-        console.log(responses)
 
         setSummariesDetails({
           title: responses[0].data.title,

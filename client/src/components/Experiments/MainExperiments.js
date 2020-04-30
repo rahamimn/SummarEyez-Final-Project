@@ -25,6 +25,7 @@ import TopNav from '../TopNav/TopNav';
 import {Summaries} from './Summaries/Summaries';
 import {UploadAlgorithm} from './UploadAutomaticAlg/UploadAutomaticAlg';
 import {UploadFixations} from './UploadFixations/UploadFixations';
+import { FormsManager } from './FormsManager/FormsManager';
 
 
 const drawerWidth = 240;
@@ -159,6 +160,9 @@ function MainExperiments({permit}) {
             </Route>
             <Route path={experimetRoutePage('algorithm')}>
               <UploadAlgorithm/>
+            </Route>
+            <Route path={experimetRoutePage('forms')}>
+              <FormsManager/>
             </Route>
             <Route path={experimetRoutePage('uploadFixations')}>
               <UploadFixations
