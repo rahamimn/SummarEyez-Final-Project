@@ -533,8 +533,8 @@ describe('ExperimentService Tests',() =>{
         const params={
             testId: 'testId',
             formId : 'form1',
-            answers : ['2','1','3'],
-            score : '100',
+            answers: [{id:1, ans:2, time:3}, {id:2, ans:1, time:3}, {id:3, ans:3, time:3}],
+            score : 100,
             sentanceWeights : '5',
             experimentName: expName,
             fixations: 'buffer' 
@@ -543,8 +543,8 @@ describe('ExperimentService Tests',() =>{
         const params33={
             testId: 'testId33',
             formId : 'form1',
-            answers : ['1','2','3'],
-            score : '33',
+            answers: [{id:1, ans:1, time:3}, {id:2, ans:2, time:3}, {id:3, ans:3, time:3}],
+            score : 33,
             sentanceWeights : '5',
             experimentName: expName,
             fixations: 'buffer' 
@@ -606,7 +606,7 @@ describe('ExperimentService Tests',() =>{
             const {status} = await experimentService.addTest(params);
             expect(status).toEqual(0);
             const test = await collectionsService.experiments().getTests(params.experimentName).get(params.testId)
-            expect(test.score).toBe('100')
+            expect(test.score).toBe(100)
 
         });
 
@@ -622,7 +622,7 @@ describe('ExperimentService Tests',() =>{
             expect(status).toEqual(0);
             const test = await collectionsService.experiments().getTests(params33.experimentName).get(params33.testId)
            
-            expect(test.score).toBe('33.33333333333333')
+            expect(test.score).toBe(33.33333333333333)
 
         });
 
@@ -807,7 +807,7 @@ describe('ExperimentService Tests',() =>{
         const params1={
             testId: 'testId1',
             formId : '5',
-            answers : '5',
+            answers: [{id:1, ans:1, time:3}, {id:2, ans:2, time:3}, {id:3, ans:3, time:3}],
             score : '5',
             sentanceWeights : '5',
             experimentName: expName,
@@ -816,7 +816,7 @@ describe('ExperimentService Tests',() =>{
         const params2={
             testId: 'testId2',
             formId : '5',
-            answers : '5',
+            answers: [{id:1, ans:1, time:3}, {id:2, ans:2, time:3}, {id:3, ans:3, time:3}],
             score : '2',
             sentanceWeights : '5',
             experimentName: expName,
