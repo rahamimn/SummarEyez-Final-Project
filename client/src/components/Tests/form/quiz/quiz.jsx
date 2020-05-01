@@ -1,6 +1,6 @@
   
 import React, {useState} from 'react';
-import { Question } from './question/question';
+import { Question } from './Question/Question';
 
 export function Quiz({
     questions,

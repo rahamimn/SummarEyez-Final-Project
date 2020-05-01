@@ -353,6 +353,7 @@ describe('ExperimentService Tests',() =>{
         const eyes1 = 'eyes1';
         const eyes2 = 'eyes2';
         const metaData = {};
+        const eye1MetaData = {sent_table_path:'some/path'};
 
         beforeEach( async () => {
             await collectionsService.automaticAlgos().add(autoName1,{});
@@ -360,7 +361,7 @@ describe('ExperimentService Tests',() =>{
             await collectionsService.experiments().add(expName, {imageName});
             await collectionsService.images().add(imageName, {});
             await collectionsService.images().sentTablesOf(imageName).add(autoName1, metaData);
-            await collectionsService.experiments().getTests(expName).add(eyes1,metaData)
+            await collectionsService.experiments().getTests(expName).add(eyes1,eye1MetaData)
             await collectionsService.experiments().getTests(expName).add(eyes2,metaData)
             await collectionsService.experiments().mergedSentOf(expName).add(merged1, metaData);
             await collectionsService.experiments().mergedSentOf(expName).add(merged2, metaData);
@@ -373,7 +374,7 @@ describe('ExperimentService Tests',() =>{
             expect(data).toEqual(expect.objectContaining({
                 auto: [{id:autoName1, data: metaData, disabled: false},{id:autoName2, data: metaData, disabled:true}],
                 merged: [{id:merged1, data: metaData},{id:merged2, data: metaData}],
-                eyes: [{id:eyes1, data: metaData},{id:eyes2, data: metaData}]
+                eyes: [{id: eyes1, data: eye1MetaData}]
             }));
         });
 

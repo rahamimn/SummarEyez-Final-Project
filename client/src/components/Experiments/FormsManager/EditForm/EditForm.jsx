@@ -5,7 +5,7 @@ import {
   useParams,
 } from "react-router-dom";
 import api from '../../../../apiService';
-import { Question } from '../../../Tests/form/quiz/question/question';
+import { Question } from '../../../Tests/Form/Quiz/Question/Question';
 import { ERROR_STATUS } from '../../../ERRORS';
 import { AddQuestion } from '../AddQuestion/AddQuestion';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -61,6 +61,7 @@ export function EditForm({
       const [formDTO,setFormDTO] = useState(form || emptyForm);
   
       const updateField = (name, value) => setFormDTO({...formDTO,[name]: value });
+      const disabled = form && !form.editable;
 
       const fetchQuestions = useCallback(async() => { 
         const {data, status} = await api.getQuestions(experimentName);
@@ -172,7 +173,7 @@ export function EditForm({
         const filters = summary && summary.filters;
         const isGradient = filters && filters.isGradient ; 
         const minWeight = filters && filters.minWeight ; 
-
+        const disabled = form && !form.editable;
         const FilterTag = ({children, style}) => <Paper variant="outlined" style={{
             marginBottom: '10px',
             marginRight: '10px',
@@ -193,7 +194,7 @@ export function EditForm({
               <FilterTag>
                 <Typography color="textSecondary" style={{marginRight:'5px'}}>Palete Size: </Typography>
                 <Select
-                  disabled={form}
+                  disabled={disabled}
                   labelId="select-color-sizes"
                   id="select-#colors"
 
@@ -214,7 +215,7 @@ export function EditForm({
                 </Select>
                 <Typography color="textSecondary" style={{marginRight:'5px'}}>Palete: </Typography>
                 <Select
-                  disabled={form}
+                  disabled={disabled}
                   labelId="select-color-sizes"
                   id="select-#colors"
 
@@ -239,7 +240,7 @@ export function EditForm({
               <FilterTag style={{width:'150px'}}>
                 <Typography color="textSecondary">Gradient</Typography>
                 <ToggleButton
-                    disabled={form}
+                    disabled={disabled}
                     value="check"
                     selected={isGradient}
                     onChange={() => {
@@ -253,7 +254,7 @@ export function EditForm({
 
               <FilterTag >
                 <TextField 
-                  disabled={form}
+                  disabled={disabled}
                   style={{width:'180px', marginBottom:'15px'}}
                   inputProps={{min:0,max:1, step:0.1}}
                   type="number"
@@ -270,8 +271,9 @@ export function EditForm({
         );
       },[formDTO, form]); 
 
-      const SummaryComp = useMemo(() => {
+      const SummaryComp = useCallback(() => {
         const {summary,isReadSummary}  = formDTO;
+        const disabled = form && !form.editable;
         if(!summary || !isReadSummary)
           return null;
 
@@ -280,7 +282,7 @@ export function EditForm({
             {summaryError && <div>ERROR</div>}
             <div style={{ display: 'flex'}}>
               <Autocomplete
-                  disabled={form}
+                  disabled={disabled}
                   style={{ width: '200px', marginRight:10 }}
                   options={['auto','eyes','merged']}
                   autoHighlight
@@ -308,7 +310,7 @@ export function EditForm({
               />
               { summary.type && 
                 <Autocomplete
-                    disabled={form}
+                    disabled={disabled}
                     style={{ width: '200px', marginRight:10 }}
                     options={summaries[summary.type]}
                     autoHighlight
@@ -340,18 +342,20 @@ export function EditForm({
       )},[form, formDTO, summaryTypeText, summaryNameText, summaryError]);
   
       const QuestionSectionComp = useMemo(() => {
+        const disabled = form && !form.editable;
         return formDTO.isFillAnswers && 
           <div style={{marginBottom:'20px', marginLeft:'15px'}}>
             {questionsError && <Typography>ERROR</Typography>}
             <Select
-              disabled={form}
               labelId="select-questions"
               id="select-questions"
               multiple
               value={formDTO.questionIds}
               onChange={(event) => {
-                setQuestionsError(false);
-                setFormDTO({...formDTO, questionIds:event.target.value });
+                if(!form || form.editable){
+                  setQuestionsError(false);
+                  setFormDTO({...formDTO, questionIds:event.target.value });
+                }
               }}
               input={<Input style={{display:'block'}}/>}
               renderValue={(selected) => {
@@ -363,8 +367,10 @@ export function EditForm({
               MenuProps={MenuProps}
             >
             {questions.map((question) => (
-              <MenuItem key={question.id} value={question.id}>
-                <Checkbox checked={formDTO.questionIds.indexOf(question.id) > -1} />
+              <MenuItem key={question.id} value={question.id} style={disabled ? {cursor:'auto'}: {}} >
+                <Checkbox
+                  disabled={disabled}
+                  checked={formDTO.questionIds.indexOf(question.id) > -1} />
                 <ListItemText primary={question.data.question} />
                 <Button onClick={(e) => {
                     e.stopPropagation();
@@ -377,6 +383,7 @@ export function EditForm({
           </Select>
           {!addQuestion &&
             <Button 
+              disabled={disabled}
               style={{display: 'block'}}
               color="primary"
               onClick={() => {
@@ -399,9 +406,10 @@ export function EditForm({
                 }} />
           }
         </div>
-      },[formDTO, addQuestion, questionsError]);
+      },[form, formDTO, addQuestion, questionsError, questions]);
   
       const renderSwitch = useCallback((title,field,withFooter, onChange, ) => {
+        const disabled = form && !form.editable;
         return (
         <div>
           <div>
@@ -409,7 +417,7 @@ export function EditForm({
               {title}
             </Typography>
             <Switch
-              disabled={form}
+              disabled={disabled}
               style={{display:'block'}}
               checked={formDTO[field]}
               onChange={() => { 
@@ -430,12 +438,12 @@ export function EditForm({
           <Grid item xs={12} sm={6}>
             <Card style={{marginTop: '10px', padding: '20px'}}>
               <Typography variant="h5">
-                {form? 'Edit Form' : 'Create Form'}
+                {form? `Edit Form${disabled && ' (not editable)'}` : 'Create Form'}
               </Typography>
               <Divider/>
   
               <TextField 
-                disabled={form}
+                disabled={disabled}
                 error={formNameExists}
                 helperText={formNameExists && "Name empty, or already exsits" }
                 value={formDTO.name}
@@ -463,7 +471,7 @@ export function EditForm({
                   'isReadSummary',
                   true
                 )}
-                {SummaryComp}
+                {SummaryComp()}
               </div>
               
               {renderSwitch(
@@ -478,7 +486,7 @@ export function EditForm({
               )}
               
               <Button
-                disabled={form}
+                disabled={disabled}
                 style={{display: 'block' ,marginTop: '10px', float:'right'}}
                 variant="contained"
                 onClick={onClickSave}>

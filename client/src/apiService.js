@@ -85,10 +85,31 @@ const api = {
     uploadFixations: async (experimentName, name, buffer) => {
         const formData = new FormData();
         formData.append('fixations', buffer);
-        const data = JSON.stringify({
+        formData.append('data', JSON.stringify({
             testId: name,
-        })
-        const res = await axios.post(`/api/experiments/${experimentName}/tests?data=${data}`, formData,{ 
+        }));
+        const res = await axios.post(`/api/experiments/${experimentName}/tests`, formData,{ 
+            headers:{
+                "Content-Type": "multipart/form-data"
+            },
+        });
+        return res.data;
+    },
+
+
+    addTest: async ({experimentName, testId, formId,  answers, sentanceWeights, buffer}) => {
+        const formData = new FormData();
+        if(buffer){
+            formData.append('fixations', buffer);
+        }
+        formData.append('data', JSON.stringify({
+            testId,
+            formId,
+            answers,
+            sentanceWeights
+        }));
+        
+        const res = await axios.post(`/api/experiments/${experimentName}/tests`, formData,{ 
             headers:{
                 "Content-Type": "multipart/form-data"
             },

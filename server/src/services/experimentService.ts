@@ -69,7 +69,7 @@ addTest = async (params) => {
     const experiment= await this.collectionsService.experiments().get(params.experimentName)
     const paramsList = {'testId': params.testId};
     const error = this.validateIds(paramsList);
-
+    
     if(error != ''){
         return response(ERROR_STATUS.NAME_NOT_VALID,{error} );
     }
@@ -81,21 +81,7 @@ addTest = async (params) => {
     if(!img){
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.IM_NOT_EXISTS} );
     }
-    const word_ocr = await this.storageService.downloadToBuffer(img.word_ocr_path);
-    if(!word_ocr){
-        return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: 'word_ocr does not exist'} );
-    }
-    const base_sentences_table = await this.storageService.downloadToBuffer(img.base_sent_table_path);
-    if(!base_sentences_table){
-        return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: 'base_sentences_table does not exist'} );
-    }
-    // update form editable to false after first test
-    var form = await this.collectionsService.experiments().formsOf(params.experimentName).get(params.formId)
-    
-    form['editable'] = false
-
-    await this.collectionsService.experiments().formsOf(params.experimentName).add(form.name,form)
-
+ 
     const test = await this.collectionsService
         .experiments()
         .getTests(params.experimentName)
@@ -105,12 +91,34 @@ addTest = async (params) => {
         return response(ERROR_STATUS.NAME_NOT_VALID, {error: ERRORS.TEST_EXISTS});
     }
 
-    const tables = await this.pythonService.genTableFromEyez(params.fixations, word_ocr, base_sentences_table);
+    let baseTestData = {};
 
-    const expUploadPaths = {
-        sent_table:`experiments/${params.experimentName}/tests/${params.testId}/testSentTables`,
-        word_table:`experiments/${params.experimentName}/tests/${params.testId}/testWordTables`
+    if(params.fixations){
+        const word_ocr = await this.storageService.downloadToBuffer(img.word_ocr_path);
+        if(!word_ocr){
+            return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: 'word_ocr does not exist'} );
+        }
+        const base_sentences_table = await this.storageService.downloadToBuffer(img.base_sent_table_path);
+        if(!base_sentences_table){
+            return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: 'base_sentences_table does not exist'} );
+        }
+
+        const tables = await this.pythonService.genTableFromEyez(params.fixations, word_ocr, base_sentences_table);
+
+        const expUploadPaths = {
+            sent_table:`experiments/${params.experimentName}/tests/${params.testId}/testSentTables`,
+            word_table:`experiments/${params.experimentName}/tests/${params.testId}/testWordTables`
+        }
+        await this.storageService.uploadBuffer(expUploadPaths.word_table, tables.word_table, fileTypes.Text);
+        await this.storageService.uploadBuffer(expUploadPaths.sent_table, tables.sentences_table, fileTypes.Text);
+        baseTestData = {
+            sent_table_path: expUploadPaths.sent_table,
+            word_table_path: expUploadPaths.word_table,
+        }
     }
+
+    const form = await this.collectionsService.experiments().formsOf(params.experimentName).get(params.formId);
+
     const answers = params.answers
     const questions = form.questionIds
     var score = params.score;
@@ -126,18 +134,20 @@ addTest = async (params) => {
         }
         score = (correctAns / questions.length) * 100;
     }
-    await this.storageService.uploadBuffer(expUploadPaths.word_table, tables.word_table, fileTypes.Text);
-    await this.storageService.uploadBuffer(expUploadPaths.sent_table, tables.sentences_table, fileTypes.Text);
+
+    // update form editable to false after first test
+
+    form.editable = false;
+    await this.collectionsService.experiments().formsOf(params.experimentName).add(form.name,form)
+
     await this.collectionsService.experiments().getTests(params.experimentName).add(params.testId,{
+        ...baseTestData,
         name: params.testId,
         formId: params.formId,
         answers : params.answers || [],
-        //thats can be int without toString
         score : score || 0,
         sentanceWeights : params.sentanceWeights || [],
         creation_date: Date.now(),
-        sent_table_path: expUploadPaths.sent_table,
-        word_table_path: expUploadPaths.word_table,
         type:'eyes'
     });
     return response(0);    
@@ -432,7 +442,7 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
         return response(0, {
             data:{
                 auto: this.intersectAutomaticAlgs(allAutomaticAlgs, autoSentTables),
-                eyes: allTestsTable,
+                eyes: allTestsTable.filter(test => test.data.sent_table_path),
                 merged: allMergedTables,
             }
         });
@@ -518,6 +528,7 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
         const experimentImageName = experiment.imageName;
         const id = uuidv4();
         await this.collectionsService.images().questionsOf(experimentImageName).add(id, {
+            id,
             question: question,
             answers,
             correctAnswer: correctAnswer,

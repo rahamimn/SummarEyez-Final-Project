@@ -122,7 +122,7 @@ app.post('/api/runAutoAlgs', bodyParser.json(), (req, res) => errorHandling(res,
 }));
 
 app.post('/api/experiments/:experimentName/tests', upload.single('fixations'), (req, res) => errorHandling(res, async () => {   
-    const jsonData = JSON.parse(req.query.data);
+    const jsonData = JSON.parse(req.body.data);
     console.log(jsonData);
     const params={
         testId: jsonData.testId,
@@ -131,7 +131,7 @@ app.post('/api/experiments/:experimentName/tests', upload.single('fixations'), (
         score : 0,
         sentanceWeights : jsonData.sentanceWeights || [],
         experimentName: req.params.experimentName,
-        fixations: req.file.buffer }
+        fixations: req.file && req.file.buffer }
         
     const {status, error} = await experimentService.addTest(params);
     res.send({status: status, error: error})
