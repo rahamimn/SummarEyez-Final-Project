@@ -189,10 +189,27 @@ app.post('/api/experiments/:experimentName/forms', bodyParser.json(), (req, res)
         ...req.body,
         experimentName: experimentName,        
     }
-    console.log(params);
     const ans = await experimentService.addForm(params);
     res.send(ans)
 }));
+
+app.post('/api/experiments/:experimentName/forms/:formid', bodyParser.json(), (req, res) => errorHandling(res, async () => {
+    
+    const params={
+        experimentName: req.params.experimentName,
+        name: req.params.formid,
+        questionIds: req.body.questionIds || [],
+        summary: req.body.summary || {},
+        isRankSentences : req.body.isRankSentences || false,
+        isReadSummary : req.body.isReadSummary || false,
+        isFillAnswers : req.body.isFillAnswers || false,
+        withFixations : req.body.withFixations || false,
+    }
+
+    const ans = await experimentService.updateForm(params);
+    res.send(ans)
+}));
+
 
 app.get('/api/experiments/:experimentName/forms',(req, res) => 
  errorHandling(res, async () => {

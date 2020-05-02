@@ -241,6 +241,38 @@ addForm = async (params) =>{
     return response(0);
 }
 
+updateForm = async (params) =>{
+ 
+    const expriment = await this.collectionsService.experiments().get(params.experimentName)
+    if(!expriment){
+        return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
+    }
+
+    const form = await this.collectionsService.experiments().formsOf(params.experimentName).get(params.name);
+    if(!form){
+        return response(ERROR_STATUS.NAME_NOT_VALID,{error: ERRORS.FORM_NOT_EXISTS} );
+    }
+   
+    if(!form.editable){
+        return response(ERROR_STATUS.NAME_NOT_VALID,{error: ERRORS.FORM_NOT_EDITABLE} );
+    }
+
+    await this.collectionsService.experiments().formsOf(params.experimentName).add(params.name,{
+        name: params.name ,
+        questionIds: params.questionIds ,
+        summary: params.summary ,
+        isRankSentences : params.isRankSentences ,
+        isReadSummary : params.isReadSummary ,
+        isFillAnswers : params.isFillAnswers ,
+        withFixations : params.withFixations ,
+        editable : true,  
+        creation_date: form.creation_date,
+    });
+
+    return response(0);
+}
+
+
 getAllForms = async (experimentName) =>{
     const expriment = await this.collectionsService.experiments().get(experimentName)
     if(!expriment){
