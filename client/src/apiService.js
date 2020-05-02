@@ -122,8 +122,8 @@ const api = {
         return res.data;
     },
 
-    getForm: async (experimentName, formName) => {
-        const res = await axios.get(`/api/experiments/${experimentName}/forms/${formName}`);
+    getForm: async (experimentName, formName, onlyMetaData = false) => {
+        const res = await axios.get(`/api/experiments/${experimentName}/forms/${formName}${onlyMetaData ? '?onlyMeta=true' : ''}`);
         return res.data;
     },
 
@@ -156,6 +156,19 @@ const api = {
 
     addQuestion: async (experimentName, question) => {
         const res = await axios.post(`/api/experiments/${experimentName}/questions`,question);
+        return res.data;
+    },
+
+    getTestPlans: async () => {
+        const res = await axios.get(`/api/allTestPlan`);
+        return res.data;
+    },
+
+    addTestPlans: async (testPlanName, formsDetails) => {
+        const res = await axios.post(`/api/testPlan`,{
+            testPlanName,
+            formsDetails
+        });
         return res.data;
     }
 }

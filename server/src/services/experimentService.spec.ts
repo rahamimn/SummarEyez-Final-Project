@@ -884,25 +884,25 @@ describe('ExperimentService Tests',() =>{
         });
 
         it('success- add one testPlan', async () => {
-           const res = await experimentService.addTestPlan(testPlanName, [{'formExpiramentName': expName, 'formIds':formName }]);
+           const res = await experimentService.addTestPlan(testPlanName, [{experimentName: expName, formId:formName }]);
            expect(res.status).toEqual(0);
         });
 
         it('fail- experiment name not exist', async () => {
-            const {status, error} = await experimentService.addTestPlan(testPlanName, [{'formExpiramentName': 'badExpName', 'formIds':formName }]);
+            const {status, error} = await experimentService.addTestPlan(testPlanName, [{experimentName: 'badExpName', formId: formName }]);
             expect(status).toEqual(ERROR_STATUS.OBJECT_NOT_EXISTS);
             expect(error).toEqual(ERRORS.EXP_NOT_EXISTS);
         });
 
         it('fail- form name does not exist', async () => {
-            const {status, error} = await experimentService.addTestPlan(testPlanName, [{'formExpiramentName': expName, 'formIds':'badFormName' }]);
+            const {status, error} = await experimentService.addTestPlan(testPlanName, [{experimentName: expName, formId:'badFormName' }]);
             expect(status).toEqual(ERROR_STATUS.OBJECT_NOT_EXISTS);
             expect(error).toEqual(ERRORS.FORM_NOT_EXISTS);
         });
 
         it('fail- testPlan name already exist', async () => {
-            await experimentService.addTestPlan(testPlanName, [{'formExpiramentName': expName, 'formIds':formName }]);
-            const {status, error} = await experimentService.addTestPlan(testPlanName, [{'formExpiramentName': expName, 'formIds':formName }]);
+            await experimentService.addTestPlan(testPlanName, [{experimentName: expName, formId: formName }]);
+            const {status, error} = await experimentService.addTestPlan(testPlanName, [{experimentName: expName, formId:formName }]);
             expect(status).toEqual(ERROR_STATUS.NAME_NOT_VALID);
             expect(error).toEqual(ERRORS.TEST_PLAN_NAME_EXISTS);
         });
@@ -925,7 +925,7 @@ describe('ExperimentService Tests',() =>{
         beforeEach( async () => {
             await collectionsService.experiments().add(expName, {});
             await experimentService.addForm(FormsParams);
-            await experimentService.addTestPlan(testPlanName, [{'formExpiramentName': expName, 'formIds':formName }]);
+            await experimentService.addTestPlan(testPlanName, [{experimentName: expName, formId:formName }]);
         });
 
         it('success- testPlan name exist', async () => {
@@ -962,7 +962,7 @@ describe('ExperimentService Tests',() =>{
         });
 
         it('success- testPlan exist', async () => {
-            await experimentService.addTestPlan(testPlanName, [{'formExpiramentName': expName, 'formIds':formName }]);
+            await experimentService.addTestPlan(testPlanName, [{experimentName: expName, formId: formName }]);
             const {status, data } = await experimentService.getAllTestPlans();
             expect(status).toEqual(0);
             expect(data.length).toBe(1);

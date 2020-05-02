@@ -205,7 +205,8 @@ app.get('/api/experiments/:experimentName/forms/:formId',(req, res) =>
  errorHandling(res, async () => {
     const experimentName = req.params.experimentName;
     const formId = req.params.formId;
-    const forms = await experimentService.getForm(experimentName, formId);
+    const onlyMetaData = req.query.onlyMeta;
+    const forms = await experimentService.getForm(experimentName, formId, onlyMetaData);
     res.send(forms)
 }));
 

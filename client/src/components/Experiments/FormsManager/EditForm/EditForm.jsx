@@ -438,7 +438,7 @@ export function EditForm({
           <Grid item xs={12} sm={6}>
             <Card style={{marginTop: '10px', padding: '20px'}}>
               <Typography variant="h5">
-                {form? `Edit Form${disabled && ' (not editable)'}` : 'Create Form'}
+                {form? `Edit Form${disabled? ' (not editable)' : ''}` : 'Create Form'}
               </Typography>
               <Divider/>
   

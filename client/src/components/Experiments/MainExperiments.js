@@ -7,6 +7,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
+import AllInboxIcon from '@material-ui/icons/AllInbox';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import AssessmentIcon from '@material-ui/icons/Assessment';
@@ -26,6 +27,7 @@ import {Summaries} from './Summaries/Summaries';
 import {UploadAlgorithm} from './UploadAutomaticAlg/UploadAutomaticAlg';
 import {UploadFixations} from './UploadFixations/UploadFixations';
 import { FormsManager } from './FormsManager/FormsManager';
+import { TestPlanManager } from './TestPlansManager/TestPlanManager';
 
 
 const drawerWidth = 240;
@@ -92,6 +94,13 @@ function MainExperiments({permit}) {
             <DeveloperBoardIcon />
           </ListItemIcon>
             <ListItemText primary={'Test Forms Manager'} />
+          </ListItem>,
+
+          <ListItem button key={'TestPlans'} onClick={e => history.push(experimetPage('testPlans'))}>
+          <ListItemIcon>
+            <AllInboxIcon />
+          </ListItemIcon>
+            <ListItemText primary={'Test Plans Manager'} />
           </ListItem>,
 
           <ListItem button key={'Tests'} onClick={e => history.push(experimetPage('tests'))}>
@@ -163,6 +172,9 @@ function MainExperiments({permit}) {
             </Route>
             <Route path={experimetRoutePage('forms')}>
               <FormsManager/>
+            </Route>
+            <Route path={experimetRoutePage('testPlans')}>
+              <TestPlanManager/>
             </Route>
             <Route path={experimetRoutePage('uploadFixations')}>
               <UploadFixations

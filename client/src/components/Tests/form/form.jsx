@@ -22,22 +22,9 @@ export function Form({
         setRankSentences(form.isRankSentences && addWeight(form.base_sentences_table));
     },[form]);
 
-    const nextStep = useCallback((answersInput) => {
-        if(step+1 === renderByStage.length){
-            onFinish({
-                answers: answersInput || answers,
-                sentanceWeights:rankSentences,
-                buffer: fixations
-             });
-            }
-        else{
-            setStep(step+1)
-        }
-    },[answers,rankSentences, fixations, step]);
-
     const Summary = useCallback(() => {
         return (
-        <StepPage onClick={nextStep}>
+        <StepPage onClick={() => nextStep()}>
             <QuizViewer
                 experimentName={form.experimentName}
                 type={form.summary.type}
@@ -47,12 +34,9 @@ export function Form({
         </StepPage>
     )},[form, step, answers]);
 
-    const uploadArea = useMemo(() => {
-        return  },[form, step])
-
     const UploadFixations = useCallback(() => {
         return (
-        <StepPage onClick={nextStep}>
+        <StepPage onClick={() => nextStep()}>
             <DropzoneArea
                 initialFiles={[fixations && URL.createObjectURL(fixations)].filter(f=>f)}
                 filesLimit={1}
@@ -65,14 +49,13 @@ export function Form({
 
     const RankSentencesComp = useCallback(() => {
         return (
-        <StepPage onClick={nextStep}>
+        <StepPage onClick={() => nextStep()}>
             <RankSentences
                 rankSentences={rankSentences}
                 setRankSentences={setRankSentences}
             />
         </StepPage>
     )},[form,rankSentences, step]);
-
 
     const renderByStage = useMemo(() => [
         form.isReadSummary && <Summary/>,
@@ -84,11 +67,28 @@ export function Form({
             }}    />,
         form.isRankSentences && <RankSentencesComp/>,
         form.withFixations && <UploadFixations/>
+
     ].filter(x => x),[form, rankSentences, step, fixations, answers]);
 
+    const nextStep = useCallback((answersInput) => {
+        if(step+1 === renderByStage.length){
+            onFinish({
+                formId: form.name,
+                experimentName: form.experimentName,
+                answers: answersInput || answers,
+                sentanceWeights:rankSentences,
+                buffer: fixations
+             });
+            }
+        else{
+            setStep(step+1)
+        }
+    },[answers,rankSentences, fixations, step, form]);
+
+    
   return (
     <Container>
-        <Card style={{ padding:'30px', display:'flex', flexDirection:'column', alignItems:'center'}}>
+        <Card elevation={4} style={{ padding:'30px', display:'flex', flexDirection:'column', alignItems:'center'}}>
             {renderByStage[step]}
         </Card>
     </Container>

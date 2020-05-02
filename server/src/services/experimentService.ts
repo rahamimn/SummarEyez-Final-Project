@@ -164,7 +164,7 @@ private checkExpiramentExist = async (experimentsNames) => {
     return response(0);
 }
 
-private checkformsExist = async (experimentsNames, formsId) => {
+private checkFormsExist = async (experimentsNames, formsId) => {
     for(var i=0; i<experimentsNames.length; i++){
         var nameOfForm = formsId[i]
         var nameOfExpirament = experimentsNames[i]
@@ -177,14 +177,15 @@ private checkformsExist = async (experimentsNames, formsId) => {
 }
 
 addTestPlan = async (testPlanName: any, formsDetails: any) =>{
-    var experimentNames  = formsDetails.map(expiramentName => expiramentName.formExpiramentName);
-    var formsId = formsDetails.map(formDetail => formDetail.formIds);
+    var experimentNames  = formsDetails.map(formDetail => formDetail.experimentName);
+    var formIds = formsDetails.map(formDetail => formDetail.formId);
+
     const validExpiraments = await this.checkExpiramentExist(experimentNames );
     if(validExpiraments.status === ERROR_STATUS.NAME_NOT_VALID )
     {
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS, {error: ERRORS.EXP_NOT_EXISTS})
     }
-    const validFroms = await this.checkformsExist(experimentNames , formsId);
+    const validFroms = await this.checkFormsExist(experimentNames , formIds);
     if(validFroms.status === ERROR_STATUS.NAME_NOT_VALID )
     {
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS, {error: ERRORS.FORM_NOT_EXISTS})
@@ -250,7 +251,7 @@ getAllForms = async (experimentName) =>{
     return response(0, {data: forms});
 }
 
-getForm = async (experimentName, formId) =>{
+getForm = async (experimentName, formId, onlyMeta = false) =>{
     const expriment = await this.collectionsService.experiments().get(experimentName)
     if(!expriment){
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
@@ -266,28 +267,33 @@ getForm = async (experimentName, formId) =>{
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.IM_NOT_EXISTS} );
     }
 
-    var base_sentences_table;
-    if(form.isRankSentences == true){
-        base_sentences_table = await this.storageService.downloadToBuffer(img.base_sent_table_path);
-        if(!base_sentences_table){
-            return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.SENT_TBL_NOT_EXISTS} );
+    if(onlyMeta){
+        return response(0, {data: form});
+    }
+    else{
+        var base_sentences_table;
+        if(form.isRankSentences == true){
+            base_sentences_table = await this.storageService.downloadToBuffer(img.base_sent_table_path);
+            if(!base_sentences_table){
+                return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.SENT_TBL_NOT_EXISTS} );
+            }
+            base_sentences_table = await csvToJson({delimiter:'auto'}).fromString(base_sentences_table.toString('utf16le'))
         }
-        base_sentences_table = await csvToJson({delimiter:'auto'}).fromString(base_sentences_table.toString('utf16le'))
-    }
+        
+        var questions = []
+        var questionIds = form.questionIds;
+        
+        for (let index = 0; index < questionIds.length; index++) { 
+           const question = await this.collectionsService.images().questionsOf(img.name).get((questionIds[index]))
+           questions = questions.concat(question); 
+        }
     
-    var questions = []
-    var questionIds = form.questionIds;
+        var res = {...form,
+                    questions: questions,
+                    base_sentences_table: base_sentences_table}
     
-    for (let index = 0; index < questionIds.length; index++) { 
-       const question = await this.collectionsService.images().questionsOf(img.name).get((questionIds[index]))
-       questions = questions.concat(question); 
+        return response(0, {data: res});
     }
-
-    var res = {...form,
-                questions: questions,
-                base_sentences_table: base_sentences_table}
-
-    return response(0, {data: res});
 }
 
 getFilteredTest = async (experimentName, formId, minScore) =>{
