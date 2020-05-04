@@ -1,6 +1,7 @@
 
 import importlib.util
 import sys
+import os
 import pandas as pd
 pd.options.mode.chained_assignment = None 
 from sklearn import preprocessing
@@ -15,7 +16,10 @@ def main(base_sent_table, text, paths_algs):
     for index in range(len(paths_algs)):
         try:
             sent_table_copy = base_sent_table.copy()
-            spec = importlib.util.spec_from_file_location("*", "./automatic-algorithms/"+paths_algs[index])
+            route = "./automatic-algorithms/"
+            if not os.path.exists('./automatic-algorithms'): 
+                route = "../automatic-algorithms/"
+            spec = importlib.util.spec_from_file_location("*",route+paths_algs[index])
             alg = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(alg)
             sent_table = pd.DataFrame(alg.run(text))
