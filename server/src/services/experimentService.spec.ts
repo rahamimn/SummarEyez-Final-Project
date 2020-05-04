@@ -1024,6 +1024,93 @@ describe('ExperimentService Tests',() =>{
          });
     });
 
+    describe('update form' , () => {
+
+        const expName = 'exp1'; 
+        const FormsParams = {
+            experimentName: expName,
+            name: 'form1',
+            questionIds: [1,2,3],
+            summary: {type:"eyes", name:"name", filters:"filter"},
+            isRankSentences: false,
+            isFillAnswers: true,
+            isReadSummary: false,
+            withFixations: true,
+            editable: true
+        }
+        const updatedFormsParams = {
+            experimentName: expName,
+            name: 'form1',
+            questionIds: [1,3],
+            summary: {type:"newEyes", name:"newName", filters:"newFilter"},
+            isRankSentences: false,
+            isFillAnswers: false,
+            isReadSummary: true,
+            withFixations: false,
+            editable: true
+        }
+        const formPramsNotEditable = {
+            experimentName: expName,
+            name: 'notEditable',
+            questionIds: [1,3],
+            summary: {type:"newEyes", name:"newName", filters:"newFilter"},
+            isRankSentences: false,
+            isFillAnswers: false,
+            isReadSummary: true,
+            withFixations: false,
+            editable: false
+        }
+        const FormsParamsNotExist_expName={
+            ...FormsParams,
+            experimentName: 'notExist',
+        }
+        const FormsParamsNotExist_formName={
+            ...FormsParams,
+            name: 'notExist',
+        }
+        const FormNotEditable={
+            ...formPramsNotEditable,
+            editable: false,
+        }
+                   
+        beforeEach( async () => {
+            await collectionsService.experiments().add(expName, {});
+            await collectionsService.experiments().formsOf(FormsParams.experimentName).add(FormsParams.name,FormsParams)
+            await collectionsService.experiments().formsOf(formPramsNotEditable.experimentName).add(formPramsNotEditable.name,formPramsNotEditable)
+        });
+        it('success- update form', async () => {
+           const res = await experimentService.updateForm(updatedFormsParams);
+           expect(res.status).toEqual(0);
+           const form =  await collectionsService.experiments().formsOf(FormsParams.experimentName).get(FormsParams.name)
+           expect(form).toBeDefined;
+           expect(form.name).toBe(updatedFormsParams.name);
+           expect(form.withFixations).toBe(updatedFormsParams.withFixations);
+           expect(form.summary).toBe(updatedFormsParams.summary);
+           expect(form.isRankSentences).toBe(updatedFormsParams.isRankSentences);
+           expect(form.isReadSummary).toBe(updatedFormsParams.isReadSummary);
+           expect(form.questionIds).toBe(updatedFormsParams.questionIds);
+        });
+
+        it('fail- experiment name not exist', async () => {
+            const {status, error} = await experimentService.updateForm(FormsParamsNotExist_expName);
+            expect(status).toEqual(ERROR_STATUS.OBJECT_NOT_EXISTS);
+            expect(error).toEqual(ERRORS.EXP_NOT_EXISTS);
+         });
+
+         it('fail- form name not exist', async () => {
+            const {status, error}= await experimentService.updateForm(FormsParamsNotExist_formName);
+
+            expect(status).toEqual(ERROR_STATUS.NAME_NOT_VALID);
+            expect(error).toEqual(ERRORS.FORM_NOT_EXISTS);
+         });
+
+         it('fail- form not editable', async () => {
+            const {status, error} = await experimentService.updateForm(FormNotEditable);
+            expect(status).toEqual(ERROR_STATUS.NAME_NOT_VALID);
+            expect(error).toEqual(ERRORS.FORM_NOT_EDITABLE);
+         });
+    });
+
     describe('get all tests' , () => {
         const expName = 'exp1';
         const expNameNotExist = 'notExist';
