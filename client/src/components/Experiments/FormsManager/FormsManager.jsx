@@ -84,6 +84,7 @@ export function FormsManager({}){
         {(newForm || selectedForm) && <EditForm 
           form={selectedForm}
           onSave={() => fetchForms()}
+          experimentName={experimentName}
           />
         }
       </div>

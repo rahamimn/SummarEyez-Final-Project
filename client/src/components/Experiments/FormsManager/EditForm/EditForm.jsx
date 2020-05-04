@@ -43,8 +43,8 @@ const paleteColors = (colors) => <div style={{display:'flex',justifyContent: 'ce
 export function EditForm({
     onSave,
     form,
+    experimentName
     }){
-      const {experimentName} = useParams();
       const [formNameExists, setFormNameError] = useState(false);
       const [questionsError, setQuestionsError] = useState(false);
       const [addQuestion, setAddQuestion] = useState(false);
@@ -56,6 +56,7 @@ export function EditForm({
           merged: []
       });
       const [question,setQuestion] = useState(null);
+      const [isFetchingData,setIsFetchingData] = useState(false);
       const [summaryNameText, setSummaryNameText] = useState('');
       const [summaryTypeText, setSummaryTypeText] = useState('');
       const [formDTO,setFormDTO] = useState(form || emptyForm);
@@ -68,20 +69,23 @@ export function EditForm({
         //Handle status
         setQuestions(data);
         return data;
-      },[]);
+      },[experimentName]);
 
       const fetchSummaries = useCallback(async() => {
         const {data, status} = await api.getSummaries(experimentName);
         //Handle status
         setSummaries(data);
         return data;
-      },[]);
+      },[experimentName]);
+
+      const fetchData = useCallback(async() => {
+        setIsFetchingData(true);
+        await fetchQuestions();
+        await fetchSummaries();
+        setIsFetchingData(false);
+      },[experimentName]);
   
-      //run once
-      useEffect(() => {
-        fetchQuestions();
-        fetchSummaries();
-      },[]);
+      useEffect(() => fetchData,[experimentName]);
   
       useEffect(() => {
           
@@ -147,7 +151,7 @@ export function EditForm({
         else{
           onSave && onSave();
         }
-      },[formDTO]);
+      },[formDTO, experimentName]);
   
   
       const ViewSummaryComp = useMemo(() => {
@@ -165,7 +169,7 @@ export function EditForm({
               filters={formDTO.summary.filters}
             />
           </Card>
-      },[formDTO]);
+      },[formDTO, experimentName]);
       
 
       const filtersComp = useMemo(() => {
@@ -433,7 +437,7 @@ export function EditForm({
         [formDTO, form]
       );
   
-      return (
+      return (isFetchingData ? <div>loading</div> : 
         <Grid container spacing={3} style={{width:"100%"}}>
           <Grid item xs={12} sm={6}>
             <Card style={{marginTop: '10px', padding: '20px'}}>

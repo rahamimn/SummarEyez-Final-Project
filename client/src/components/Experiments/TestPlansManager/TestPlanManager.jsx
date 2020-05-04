@@ -27,7 +27,7 @@ export function TestPlanManager({}){
   
   const fetchForm = async (experimentName, formId) => {
     const res = await api.getForm(experimentName, formId, true);
-    setSelectedForm(res.data);
+    setSelectedForm({...res.data,experimentName});
   }
 
   return (
@@ -95,6 +95,7 @@ export function TestPlanManager({}){
       {(selectedForm) && <EditForm 
         form={selectedForm}
         onSave={() =>{}}
+        experimentName={selectedForm.experimentName}
         />
       }
     </div>
