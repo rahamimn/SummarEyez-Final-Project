@@ -1,12 +1,9 @@
 
 
+export const enterNewExperimentPage = async (browser) => {
+    const inputElem = await browser.$('#welcome-dialog-permission-input');
+    await inputElem.setValue('1234');
 
-const getHandler = (page,datahook) => page.$(`[datahook="${datahook}"]`);
-
-export const fullPageDriver = async (page) => {
-    const elementHandler = await getHandler(page,'full-page');
-    
-    return {
-        exists : () => !!elementHandler
-    }
-};
+    const submitBtn = await browser.$('#welcome-dialog-new-experiment');
+    await submitBtn.click();
+}

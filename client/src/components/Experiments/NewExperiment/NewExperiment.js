@@ -80,11 +80,11 @@ class NewExperimentComponent extends Component{
                   value={this.state.experimentName}
                   style={{width: '200px',marginTop:'10px', marginBottom: '20px'}}
                   onChange={this.handleChangeExperimentName}
-                  id="text-experiments"
+                  id="new-experiment-experiment-name"
                   label="Experiment Name" />
 
                 <Autocomplete
-                  id="legue-select"
+                  id="new-experiment-experiment-image"
                   style={{ width: '200px', marginRight:10 }}
                   options={this.state.images}
                   autoHighlight
@@ -120,6 +120,7 @@ class NewExperimentComponent extends Component{
                           Upload new Image
                     </Button> }
                 <Button 
+                  id="new-experiment-submit"
                   style={{marginTop: '20px', float:'right'}}
                   disabled={!!(!this.state.image || !this.state.experimentName)}
                   variant="contained"

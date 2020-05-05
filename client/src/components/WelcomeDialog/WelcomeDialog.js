@@ -61,7 +61,7 @@ export default function WelcomeDialog({
             helperText="Incorrect Key"
             autoFocus
             margin="dense"
-            id="password"
+            id="welcome-dialog-permission-input" 
             label="permission key"
             value={permKey}
             onChange={(e) => setPermKey(e.target.value)}
@@ -100,6 +100,7 @@ export default function WelcomeDialog({
               margin: '30px 0 10px'
           }}>
             <Button
+                    id="welcome-dialog-new-experiment"
                     variant="contained"
                     size="large"
                     style={{marginRight: '10px'}}
