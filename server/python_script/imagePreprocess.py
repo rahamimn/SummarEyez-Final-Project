@@ -15,13 +15,19 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 nltk.data.path.append("/root/nltk_data")
 
 def extract_text_from_jpg(image):
-    textFile = open('./output/text.txt', 'w')
+    route = "./output/text.txt"
+    if not os.path.exists('./output/text.txt'): 
+        route = "../output/text.txt"
+    textFile = open(route, 'w')
     text = pytesseract.image_to_string(image)
     textFile.write(text)
     return text
 
 def extract_tsv_from_jpg(image):
-    tsvFile = open('./output/data.tsv', 'w')
+    route = "./output/data.tsv"
+    if not os.path.exists('./output/data.tsv'): 
+        route = "../output/data.tsv"
+    tsvFile = open(route, 'w')
     tsvData = pytesseract.image_to_data(image, output_type='data.frame')
     tsvFileData = pytesseract.image_to_data(image)
     tsvFile.write(tsvFileData)
@@ -85,9 +91,9 @@ def pre_process(word_ocr, sentences):
     #create sent table 
     word_ocr, base_sentences_table = create_sentences_table(word_ocr, sentences)
     
-    base_sentences_table.to_csv('./output/base_sent_table.tsv', index=True, sep="\t", na_rep='',
+    base_sentences_table.to_csv('../output/base_sent_table.tsv', index=True, sep="\t", na_rep='',
         header=True, index_label=None, mode='w', decimal='.')
-    word_ocr.to_csv('./output/word_ocr.tsv', index=True, sep="\t", na_rep='', 
+    word_ocr.to_csv('../output/word_ocr.tsv', index=True, sep="\t", na_rep='', 
         header=True, index_label=None, mode='w', decimal='.')
     return word_ocr, base_sentences_table
 
