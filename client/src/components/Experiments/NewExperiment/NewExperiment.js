@@ -112,6 +112,7 @@ class NewExperimentComponent extends Component{
                 />
                 {!this.state.uploadingNewImage &&
                     <Button 
+                      id="new-experiment-upload-image"
                       style={{display: 'block'}}
                       color="primary"
                       onClick={() => this.setState({

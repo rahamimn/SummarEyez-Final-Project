@@ -60,7 +60,7 @@ export class UploadImage extends Component{
         <Divider/>
         <div> 
           {this.state.uploading ? 
-            <div style={{ width: '100%', textAlign:'center', marginTop:'20px'}}>
+            <div id="uplaod-image-loader" style={{ width: '100%', textAlign:'center', marginTop:'20px'}}>
               <CircularProgress />
             </div>
           :
@@ -71,13 +71,13 @@ export class UploadImage extends Component{
                 value={this.state.imageName}
                 style={{width: '200px', marginBottom: '20px'}}
                 onChange={this.handleChangeName}
-                id="standard-basic"
+                id="upload-image-image-name"
                 label="Image Name" />
-                
             <DropzoneArea 
                 filesLimit={1}
                 onChange={this.handleChangeFile}/>
             <Button 
+                id="upload-image-submit-button"
                 style={{display: 'block', marginTop: '15px', float: 'right'}}
                 disabled={this.state.files.length === 0 || !this.state.imageName}
                 variant="contained"
