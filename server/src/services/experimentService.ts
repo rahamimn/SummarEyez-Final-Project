@@ -118,27 +118,28 @@ addTest = async (params) => {
     }
 
     const form = await this.collectionsService.experiments().formsOf(params.experimentName).get(params.formId);
+    if(form){
+        const answers = params.answers
+        const questions = form.questionIds
+        var score = params.score;
 
-    const answers = params.answers
-    const questions = form.questionIds
-    var score = params.score;
-
-    // check for not devide by zero
-    if(questions.length != 0 ){
-        var correctAns = 0
-        for (let index = 0; index < questions.length; index++) { 
-            const question = await this.collectionsService.images().questionsOf(img.name).get((answers[index].id))
-            if(question.correctAnswer == answers[index].ans) {
-                correctAns++;
+        // check for not devide by zero
+        if(questions.length != 0 ){
+            var correctAns = 0
+            for (let index = 0; index < questions.length; index++) { 
+                const question = await this.collectionsService.images().questionsOf(img.name).get((answers[index].id))
+                if(question.correctAnswer == answers[index].ans) {
+                    correctAns++;
+                }
             }
+            score = (correctAns / questions.length) * 100;
         }
-        score = (correctAns / questions.length) * 100;
+
+        form.editable = false;
+
+        await this.collectionsService.experiments().formsOf(params.experimentName).add(form.name,form)
     }
-
-    // update form editable to false after first test
-
-    form.editable = false;
-    await this.collectionsService.experiments().formsOf(params.experimentName).add(form.name,form)
+  
 
     await this.collectionsService.experiments().getTests(params.experimentName).add(params.testId,{
         ...baseTestData,
@@ -314,7 +315,6 @@ getForm = async (experimentName, formId, onlyMeta = false) =>{
         
         var questions = []
         var questionIds = form.questionIds;
-        
         for (let index = 0; index < questionIds.length; index++) { 
            const question = await this.collectionsService.images().questionsOf(img.name).get((questionIds[index]))
            questions = questions.concat(question); 
