@@ -116,7 +116,10 @@ function MainTests() {
               style={{float:'right'}} 
               onClick={async () => {
                 const responses = await Promise.all(tests.map(
-                  async testInput => await api.addTest(testInput))
+                  async testInput => await api.addTest({
+                    ...testInput,
+                    testPlanId: selectedTestPlan.id
+                  }))
                 );
                 
                 if(responses.some(res => res.status === ERROR_STATUS.NAME_NOT_VALID)){

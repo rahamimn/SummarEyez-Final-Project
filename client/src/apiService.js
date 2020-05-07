@@ -97,7 +97,7 @@ const api = {
     },
 
 
-    addTest: async ({experimentName, testId, formId,  answers, sentanceWeights, buffer}) => {
+    addTest: async ({experimentName, testId, formId,  answers, sentanceWeights, buffer, testPlanId}) => {
         const formData = new FormData();
         if(buffer){
             formData.append('fixations', buffer);
@@ -105,6 +105,7 @@ const api = {
         formData.append('data', JSON.stringify({
             testId,
             formId,
+            testPlanId,
             answers,
             sentanceWeights
         }));
