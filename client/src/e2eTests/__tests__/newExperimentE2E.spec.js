@@ -32,10 +32,8 @@ describe('new Experiment', () => {
         const inputElem = await browser.$('#new-experiment-experiment-name');
         await inputElem.setValue(newExperimentName);
 
-        const imageDropdown = await browser.$('#new-experiment-experiment-image');
-        await imageDropdown.click();
-        const option0 = await browser.$('#new-experiment-experiment-image-option-0');
-        await option0.click();
+        await chooseImage(0);
+
         const submit = await browser.$('#new-experiment-submit');
         await submit.click();
 
@@ -44,11 +42,25 @@ describe('new Experiment', () => {
         expect(await browser.getUrl()).toBe(`http://localhost:3000/experiments/${newExperimentName}/summaries`);
     });
 
+    it('fail - experimentNameExists',async () => {
+        const existsingExperimentName = 'exp1'
+
+        const inputElem = await browser.$('#new-experiment-experiment-name');
+        await inputElem.setValue(existsingExperimentName);
+
+        await chooseImage(0);
+
+        const submit = await browser.$('#new-experiment-submit');
+        await submit.click();
+
+        const helperError = await browser.$('#new-experiment-experiment-name-helper-text');
+
+        expect(await helperError.getText()).toBe(`Name already exsits, please choose different name`);
+    });
+
     it('success - upload new image',async () => {
         const newExperimentName = chance.word();
         const newImageName = chance.word();
-
-        const filePath = path.join(__dirname, '../../../../server/test1.jpg');
 
         const inputElem = await browser.$('#new-experiment-experiment-name');
         await inputElem.setValue(newExperimentName);
@@ -60,12 +72,9 @@ describe('new Experiment', () => {
         await inputImageName.setValue(newImageName);
         await browser.pause(1000);
         
-        const uploadInput = await browser.$(`input[type="file"]`);
-        await uploadInput.setValue(filePath);
-        const submitUpload = await browser.$('#upload-image-submit-button');
-        await submitUpload.click();
+        uploadImageAndSubmit();
 
-        await browser.pause(10000);
+        await browser.pause(15000);
 
         const submit = await browser.$('#new-experiment-submit');
         await submit.click();
@@ -75,7 +84,37 @@ describe('new Experiment', () => {
     });
 
     it('fail upload image - name exists',async () => {
-        //TODO
+        const existsImageName = 'img1';
+
+        const toggleImageUploader = await browser.$('#new-experiment-upload-image');
+        await toggleImageUploader.click();
+
+        const inputImageName = await browser.$('#upload-image-image-name');
+        await inputImageName.setValue(existsImageName);
+        await browser.pause(1000);
+        
+        uploadImageAndSubmit();
+
+        const ErrorText = await browser.$('#upload-image-image-name-helper-text');
+        expect(await ErrorText.getText()).toBe('name not valid')
     });
 
+    const chooseImage = async (index) => {
+        const imageDropdown = await browser.$('#new-experiment-experiment-image');
+        await imageDropdown.click();
+
+        const option = await browser.$(`#new-experiment-experiment-image-option-${index}`);
+        await option.click();
+    };
+
+    const uploadImageAndSubmit = async () => {
+        const filePath = path.join(__dirname, '../../../../server/test1.jpg');
+        const uploadInput = await browser.$(`input[type="file"]`);
+        await uploadInput.setValue(filePath);
+
+        const submitUpload = await browser.$('#upload-image-submit-button');
+        await submitUpload.click();
+    };
 })
+
+

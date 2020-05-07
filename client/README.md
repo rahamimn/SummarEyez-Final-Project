@@ -1,4 +1,18 @@
+## OUR NOTES
+
+## E2E Tests
+    1. run in a terminal `npm run clientServer-local`
+    2. wait few seconds till server initilized with all data.
+    2. run in another `npm run test` 
+
+
+
+
+
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
 
 ## Available Scripts
 

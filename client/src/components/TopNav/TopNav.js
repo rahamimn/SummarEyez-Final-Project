@@ -38,10 +38,18 @@ export const TopNav = ({
           display: 'flex',
           justifyContent: 'space-between'
         }}>
+        <div style={{display:"flex"}}>
+          <Typography variant="h6" noWrap style={{marginRight: '10px'}}>
+            SummarEyez
+          </Typography> 
 
-        <Typography variant="h6" noWrap>
-          SummarEyez
-        </Typography>
+          {experimentName && <Typography 
+            style={{color:'#dddddd'}}
+            variant="h6"
+            noWrap>
+            {experimentName}
+          </Typography>}
+        </div>
         <div>
           {isExperimentMode && <Button style={{marginRight: '8px'}} endIcon={<LibraryAddIcon/>} color="inherit" onClick={() => history.push(
             experimentName ? `/experiments/${experimentName}/new` : '/experiments-new'
@@ -61,4 +69,4 @@ export const TopNav = ({
   
 }
 
-export default TopNav;
+export default TopNav;     
