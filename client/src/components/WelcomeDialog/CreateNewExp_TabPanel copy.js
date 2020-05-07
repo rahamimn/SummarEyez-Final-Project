@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import {useHistory} from "react-router-dom";
-import api from '../../apiService';
+import { Typography } from '@material-ui/core';
 
 export default function ChooseFromExisting_TabPanel({
   onClose,
@@ -11,19 +11,8 @@ export default function ChooseFromExisting_TabPanel({
 }) {
   const history = useHistory();
   const [permKey, setPermKey] = useState();
-  const [experimentText, setExperimentText] = useState();
-  const [experiment, setExperiment] = useState();
-  const [experiments, setExperiments] = useState();
   const [isKeyError, setKeyError] = useState(false);
 
-  useEffect(() => {
-    fetchExperiments();
-  }, []);
-
-  const fetchExperiments = async () => {
-    const res = await api.getExperiments();
-    setExperiments(res.data);
-  }
   const validate = () => {
     permit(false);
     if (permKey === '1234') {
@@ -33,21 +22,24 @@ export default function ChooseFromExisting_TabPanel({
     return false;
   }
 
-
   return (
-    <div>
-      <TextField
-        error={isKeyError}
-        helperText=""
-        autoFocus
-        margin="dense"
-        id="welcome-dialog-permission-input"
-        label="Enter Permission key"
-        value={permKey}
-        onChange={(e) => setPermKey(e.target.value)}
-        type="password"
-        fullWidth
-      />
+    <div style={{display:'flex', flexDirection:'column', justifyContent:'space-between', height:'40vh'}}>
+      <div>
+        <Typography style={{color:'#aaaaaa'}}>Create New Research, it will contain all conducted tests and summaries</Typography>
+        <TextField
+          error={isKeyError}
+          helperText=""
+          autoFocus
+          margin="dense"
+          id="welcome-dialog-permission-input"
+          label="Enter Permission key"
+          value={permKey}
+          onChange={(e) => setPermKey(e.target.value)}
+          type="password"
+          fullWidth
+        />
+      </div>
+   
 
       <div style={{
         display: 'flex',
@@ -67,7 +59,7 @@ export default function ChooseFromExisting_TabPanel({
             ) : setKeyError(true);
           }}
         >
-          Create New Experiment
+          Create New
             </Button>
       </div>
     </div>

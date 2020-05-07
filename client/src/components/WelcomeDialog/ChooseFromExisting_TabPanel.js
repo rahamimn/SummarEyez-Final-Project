@@ -4,6 +4,7 @@ import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { useHistory } from "react-router-dom";
 import api from '../../apiService';
+import { Typography } from '@material-ui/core';
 
 export default function ChooseFromExisting_TabPanel({
   onClose,
@@ -35,48 +36,49 @@ export default function ChooseFromExisting_TabPanel({
 
 
   return (
-    <div>
+    <div style={{display:'flex', flexDirection:'column', justifyContent:'space-between', height:'40vh'}}>
+      <div>
+        <Typography style={{color:'#aaaaaa'}}>Choose From Exisiting Research, and see related summaries, and tests</Typography>
+        <Autocomplete
+          id="experiment-select"
+          style={{ width: '100%', marginRight: 10 }}
+          options={experiments}
+          autoHighlight
+          getOptionLabel={option => option.id}
+          renderInput={params => (
+            <TextField
+              {...params}
+              label="Choose an experiment"
+              fullWidth
+              inputProps={{
+                ...params.inputProps,
+                autoComplete: 'disabled', // disable autocomplete and autofill
+              }}
+            />
+          )}
+          onChange={(e, experiment) =>
+            setExperiment(experiment)
+          }
+          onInputChange={(e, value) =>
+            setExperimentText(value)
+          }
+          inputValue={experimentText}
 
-      <Autocomplete
-        id="experiment-select"
-        style={{ width: '100%', marginRight: 10 }}
-        options={experiments}
-        autoHighlight
-        getOptionLabel={option => option.id}
-        renderInput={params => (
-          <TextField
-            {...params}
-            label="Choose an experiment"
-            fullWidth
-            inputProps={{
-              ...params.inputProps,
-              autoComplete: 'disabled', // disable autocomplete and autofill
-            }}
-          />
-        )}
-        onChange={(e, experiment) =>
-          setExperiment(experiment)
-        }
-        onInputChange={(e, value) =>
-          setExperimentText(value)
-        }
-        inputValue={experimentText}
+        />
 
-      />
-
-      <TextField
-        error={isKeyError}
-        helperText=""
-        autoFocus
-        margin="dense"
-        id="welcome-dialog-permission-input"
-        label="Enter Permission key"
-        value={permKey}
-        onChange={(e) => setPermKey(e.target.value)}
-        type="password"
-        fullWidth
-      />
-
+        <TextField
+          error={isKeyError}
+          helperText=""
+          autoFocus
+          margin="dense"
+          id="welcome-dialog-permission-input"
+          label="Enter Permission key"
+          value={permKey}
+          onChange={(e) => setPermKey(e.target.value)}
+          type="password"
+          fullWidth
+        />
+      </div>
       <div style={{
         display: 'flex',
         justifyContent: 'flex-end',
@@ -95,9 +97,8 @@ export default function ChooseFromExisting_TabPanel({
               setKeyError(true);
           }}
         >
-          Go To Experiment
+          Research
             </Button>
-
       </div>
     </div>
   );

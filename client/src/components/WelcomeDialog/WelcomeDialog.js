@@ -1,37 +1,23 @@
-import React,{useState, useEffect} from 'react';
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import {useHistory} from "react-router-dom";
-import api from '../../apiService';
+import React from 'react';
+
 import TabPanel from './TabPanel';
+import { Tabs, Tab, Dialog, AppBar } from '@material-ui/core';
+
+import ChooseFromExisting_TabPanel from './ChooseFromExisting_TabPanel';
+import CreateNewExp_TabPanel from './CreateNewExp_TabPanel copy';
+import Tests_TabPanel from './Tests_TabPanel';
+
+
 
 export default function WelcomeDialog({
   onClose,
   permit,
 }) {
-  const history = useHistory();
-  const [permKey,setPermKey] = useState();
-  const [experimentText,setExperimentText] = useState();
-  const [experiments,setExperiments] = useState();
-  
-  useEffect(() => {
-    fetchExperiments();
-  },[]);
+  const [value, setValue] = React.useState(0);
 
-  const fetchExperiments = async () => {
-    const res = await api.getExperiments();
-    setExperiments(res.data);
-  }
-  const validate = () => {
-    permit(false);
-    if(permKey === '1234'){
-      permit();
-      return true;
-    }
-    return false;
-  }
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   return (
     <div>
@@ -42,14 +28,43 @@ export default function WelcomeDialog({
         disableBackdropClick = {!!!onClose}
         disableEscapeKeyDown = {!!!onClose}
         >
-        <DialogTitle id="form-dialog-title">Welcome to SummarEYEZ </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Please choose your option:
-          </DialogContentText>
-          <TabPanel permit={permit}></TabPanel>
-        </DialogContent>
+        <AppBar position="static" color="default" style={{padding: '0 3px'}}>
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            variant="scrollable"
+            indicatorColor="primary"
+            textColor="primary"
+            aria-label="scrollable force tabs example"
+          >
+            <Tab label="Create New" {...a11yProps(0)} />
+            <Tab label="Choose Existing" {...a11yProps(1)} />
+            <Tab label="Tests" {...a11yProps(2)} />
+          </Tabs>
+        </AppBar>
+
+        <div style={{minHeight:'250px', maxWidth:'470px'}}>
+          <TabPanel  value={value} index={0}>
+            <CreateNewExp_TabPanel permit={permit}/>
+          </TabPanel>
+
+          <TabPanel value={value} index={1}>
+            <ChooseFromExisting_TabPanel permit={permit}/>
+          </TabPanel>
+
+          <TabPanel  value={value} index={2}>
+            <Tests_TabPanel/>
+          </TabPanel>
+        </div>
       </Dialog>
+      
     </div>
   );
+}
+
+function a11yProps(index) {
+  return {
+    id: `scrollable-force-tab-${index}`,
+    'aria-controls': `scrollable-force-tabpanel-${index}`,
+  };
 }
