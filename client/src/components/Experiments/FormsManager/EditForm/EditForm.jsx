@@ -85,7 +85,9 @@ export function EditForm({
         setIsFetchingData(false);
       },[experimentName]);
   
-      useEffect(() => fetchData,[experimentName]);
+      useEffect(() =>{ 
+        experimentName && fetchData()
+      },[experimentName]);
   
       useEffect(() => {
           
@@ -140,6 +142,12 @@ export function EditForm({
             experimentName
           }); 
           status = res.status;
+        }else{
+          const res = await api.updateForm({
+            ...formDTO,
+            experimentName
+          }); 
+          status = res.status;
         }
   
         if(status === ERROR_STATUS.NAME_NOT_VALID){
@@ -151,7 +159,7 @@ export function EditForm({
         else{
           onSave && onSave();
         }
-      },[formDTO, experimentName]);
+      },[form, formDTO, experimentName]);
   
   
       const ViewSummaryComp = useMemo(() => {
@@ -447,7 +455,7 @@ export function EditForm({
               <Divider/>
   
               <TextField 
-                disabled={disabled}
+                disabled={form}
                 error={formNameExists}
                 helperText={formNameExists && "Name empty, or already exsits" }
                 value={formDTO.name}
