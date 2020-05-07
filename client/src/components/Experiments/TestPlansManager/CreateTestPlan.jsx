@@ -16,7 +16,7 @@ export function CreateTestPlan({ setSelectedForm, onCreate, onClose}){
     const [testPlanNameError,setTestPlanNameError] = useState(null);
 
     const onSelectForm = (experimentName, form) => {
-        setSelectedForm(form);
+        setSelectedForm({...form,experimentName});
         setFormsDetails([...formsDetails,{
             experimentName,
             form

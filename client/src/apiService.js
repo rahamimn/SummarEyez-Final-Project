@@ -150,6 +150,28 @@ const api = {
         return res.data;
     },
 
+    updateForm: async ({
+        experimentName,
+        name,
+        isFillAnswers,
+        isRankSentences,
+        isReadSummary,
+        withFixations,
+        questionIds,
+        summary,
+    }) => {
+        const res = await axios.post(`/api/experiments/${experimentName}/forms/${name}`,{
+            name,
+            isFillAnswers,
+            isRankSentences,
+            isReadSummary,
+            withFixations,
+            questionIds,
+            summary,
+        });
+        return res.data;
+    },
+
     getQuestions: async (experimentName) => {
         const res = await axios.get(`/api/experiments/${experimentName}/questions`);
         return res.data;
