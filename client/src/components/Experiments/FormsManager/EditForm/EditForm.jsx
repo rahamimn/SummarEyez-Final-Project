@@ -1,9 +1,6 @@
 import React,{useState,useEffect, useCallback, useMemo} from 'react';
 import { Typography, Grid, Card, TextField, Button, Divider, Select, MenuItem, Checkbox, ListItemText, Input, Switch, Paper } from '@material-ui/core';
 import { QuizViewer } from '../../../Viewers/quizViewer/quizViewer';
-import {
-  useParams,
-} from "react-router-dom";
 import api from '../../../../apiService';
 import { Question } from '../../../Tests/Form/Quiz/Question/Question';
 import { ERROR_STATUS } from '../../../ERRORS';
@@ -37,7 +34,7 @@ const MenuProps = {
 };
 
 const paleteColors = (colors) => <div style={{display:'flex',justifyContent: 'center'}}>
-    {colors.map(color => <div style={{height:'30px', width:'30px', backgroundColor: color}}></div>)}
+    {colors.map((color,i) => <div key={`color-${i}`} style={{height:'30px', width:'30px', backgroundColor: color}}></div>)}
 </div>
 
 export function EditForm({
@@ -290,7 +287,7 @@ export function EditForm({
           return null;
 
         return isReadSummary && (
-          <Card variant="outlined" style={{margin:'10px 0 20px 15px', padding:'15px 30px 30px'}}>
+          <Card variant="outlined" style={{margin:'10px 0 20px 15px', padding:'15px $0px 30px'}}>
             {summaryError && <div>ERROR</div>}
             <div style={{ display: 'flex'}}>
               <Autocomplete
@@ -383,7 +380,7 @@ export function EditForm({
                 <Checkbox
                   disabled={disabled}
                   checked={formDTO.questionIds.indexOf(question.id) > -1} />
-                <ListItemText primary={question.data.question} />
+                <ListItemText primaryTypographyProps={{noWrap:true}} primary={question.data.question} />
                 <Button onClick={(e) => {
                     e.stopPropagation();
                     setQuestion(question.data);
@@ -393,17 +390,19 @@ export function EditForm({
               </MenuItem>
             ))}
           </Select>
-          {!addQuestion &&
-            <Button 
-              disabled={disabled}
-              style={{display: 'block'}}
-              color="primary"
-              onClick={() => {
-                setAddQuestion(true)
-              }}
-              >
-                  Add Question
-          </Button>}
+          {
+            !addQuestion &&
+              <Button 
+                disabled={disabled}
+                style={{display: 'block'}}
+                color="primary"
+                onClick={() => {
+                  setAddQuestion(true)
+                }}
+                >
+                    Add Question
+            </Button>
+          }
   
           { addQuestion && 
                 <AddQuestion 

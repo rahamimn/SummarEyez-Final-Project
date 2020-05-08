@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import {useHistory} from "react-router-dom";
@@ -47,7 +47,7 @@ export default function ChooseFromExisting_TabPanel({
         margin: '30px 0 10px'
       }}>
         <Button
-          id="welcome-dialog-new-experiment"
+          id="editFwelcome-dialog-new-experiment"
           variant="contained"
           size="large"
           style={{ marginRight: '10px' }}
@@ -55,7 +55,7 @@ export default function ChooseFromExisting_TabPanel({
             onClose && onClose();
             validate() ? history.push(experimentName ?
               `/experiments/${experimentName}/new` :
-              `/experiments-new`
+              `/experiments-new/new`
             ) : setKeyError(true);
           }}
         >

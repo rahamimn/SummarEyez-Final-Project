@@ -11,10 +11,10 @@ export default function ChooseFromExisting_TabPanel({
   permit,
 }) {
   const history = useHistory();
-  const [permKey, setPermKey] = useState();
-  const [experimentText, setExperimentText] = useState();
+  const [permKey, setPermKey] = useState('');
+  const [experimentText, setExperimentText] = useState('');
   const [experiment, setExperiment] = useState();
-  const [experiments, setExperiments] = useState();
+  const [experiments, setExperiments] = useState([]);
   const [isKeyError, setKeyError] = useState(false);
 
   useEffect(() => {
@@ -71,7 +71,7 @@ export default function ChooseFromExisting_TabPanel({
           helperText=""
           autoFocus
           margin="dense"
-          id="welcome-dialog-permission-input"
+          id="welcome-dialog-choose- permission-input"
           label="Enter Permission key"
           value={permKey}
           onChange={(e) => setPermKey(e.target.value)}
