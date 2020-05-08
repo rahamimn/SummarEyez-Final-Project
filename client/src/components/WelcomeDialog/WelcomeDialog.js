@@ -38,7 +38,7 @@ export default function WelcomeDialog({
             aria-label="scrollable force tabs example"
           >
             <Tab label="Create New" {...a11yProps(0)} />
-            <Tab label="Choose Existing" {...a11yProps(1)} />
+            <Tab id="welcome dialog-choose" label="Choose Existing" {...a11yProps(1)} />
             <Tab label="Tests" {...a11yProps(2)} />
           </Tabs>
         </AppBar>
@@ -64,7 +64,7 @@ export default function WelcomeDialog({
 
 function a11yProps(index) {
   return {
-    id: `scrollable-force-tab-${index}`,
-    'aria-controls': `scrollable-force-tabpanel-${index}`,
+    id: `tabPanel-${index}`,
+    'aria-controls': `tabpanel-control-${index}`,
   };
 }

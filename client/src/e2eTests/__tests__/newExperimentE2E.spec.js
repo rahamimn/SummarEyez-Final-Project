@@ -74,7 +74,7 @@ describe('new Experiment', () => {
         
         uploadImageAndSubmit();
 
-        await browser.pause(15000);
+        await browser.pause(80000);
 
         const submit = await browser.$('#new-experiment-submit');
         await submit.click();
