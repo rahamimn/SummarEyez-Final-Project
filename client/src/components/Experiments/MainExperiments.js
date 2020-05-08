@@ -28,6 +28,7 @@ import {UploadAlgorithm} from './UploadAutomaticAlg/UploadAutomaticAlg';
 import {UploadFixations} from './UploadFixations/UploadFixations';
 import { FormsManager } from './FormsManager/FormsManager';
 import { TestPlanManager } from './TestPlansManager/TestPlanManager';
+import { Typography } from '@material-ui/core';
 
 
 const drawerWidth = 240;
@@ -67,76 +68,67 @@ function MainExperiments({permit}) {
   const classes = useStyles();
   const history = useHistory();
   const experimetPage = (page) => experimentName ? `/experiments/${experimentName}/${page}` : `/experiments-new/${page}`;
-  const experimetRoutePage = (page) => `/experiments/:experimentName/${page}`;
+  const experimetRoutePage = (page, withoutExperiment = false) => !experimentName && withoutExperiment ? `/experiments-new/${page}` : `/experiments/:experimentName/${page}`;
 
   const drawer = (
     <div>
       <div className={classes.toolbar} />
       <Divider />
       <List>
-
         <ListItem button key={'Upload Algorithm'} onClick={e => history.push(experimetPage('algorithm'))}>
           <ListItemIcon>
             <CloudUploadIcon />
           </ListItemIcon>
           <ListItemText primary={'Upload Algorithm'} />
         </ListItem>
-        {experimentName &&
-          [<ListItem button key={'Summaries'} onClick={e => history.push(experimetPage('summaries'))}>
+        <ListItem button key={'TestPlans'} onClick={e => history.push(experimetPage('testPlans'))}>
           <ListItemIcon>
-            <LibraryBooksIcon />
+              <AllInboxIcon />
           </ListItemIcon>
-            <ListItemText primary={'Summaries'} />
-          </ListItem>,
-
-          <ListItem button key={'Forms'} onClick={e => history.push(experimetPage('forms'))}>
+          <ListItemText primary={'Test Plans Manager'} />
+        </ListItem>
+        <ListItem button onClick={e => history.push(experimetPage('tests'))}>
           <ListItemIcon>
-            <DeveloperBoardIcon />
-          </ListItemIcon>
-            <ListItemText primary={'Test Forms Manager'} />
-          </ListItem>,
-
-          <ListItem button key={'TestPlans'} onClick={e => history.push(experimetPage('testPlans'))}>
-          <ListItemIcon>
-            <AllInboxIcon />
-          </ListItemIcon>
-            <ListItemText primary={'Test Plans Manager'} />
-          </ListItem>,
-
-          <ListItem button key={'Tests'} onClick={e => history.push(experimetPage('tests'))}>
-            <ListItemIcon>
-              <AssessmentIcon />
-            </ListItemIcon>   
-            <ListItemText primary={'Test pool'} />
-          </ListItem>,
-
-          <ListItem button key={'Upload Fixations'} onClick={e => history.push(experimetPage('uploadFixations'))}>
-            <ListItemIcon>
-              <DashboardIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Upload Fixations'} />
-          </ListItem>]
-        }
-
-
-        {/* <ListItem button key={'Conduct Test'} onClick={e => setOpenH2H(!openH2H)}>
-          <ListItemText primary={'Conduct Test'} />
-          {openH2H ? <ExpandLess /> : <ExpandMore />}
-        </ListItem> */}
-
-        {/* <Collapse in={openH2H} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            {[{ text: 'Predictions', link:'/h2h'}, { text: 'Last Games', link:'/h2h-stats'} ].map((navItem) => (
-              <ListItem button key={navItem.text} onClick={e => history.push(navItem.link)} className={classes.nested}>
-                <ListItemText primary={navItem.text} />
-              </ListItem>
-            ))}
-          </List>
-        </Collapse> */}
+            <AssessmentIcon />
+          </ListItemIcon>   
+          <ListItemText primary={'Test pool'} />
+        </ListItem>
       </List>
+      
+        {experimentName &&
+          <List component="div" disablePadding>
+            <Typography style={{paddingLeft:'10px'}} variant="h5" >{experimentName}</Typography>
+            <ListItem button onClick={e => history.push(experimetPage('summaries'))}>
+              <ListItemIcon>
+                <LibraryBooksIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Summaries'} />
+            </ListItem>
+
+            <ListItem button  onClick={e => history.push(experimetPage('forms'))}>
+            <ListItemIcon>
+              <DeveloperBoardIcon />
+            </ListItemIcon>
+              <ListItemText primary={'Test Forms Manager'} />
+            </ListItem>
+
+            <ListItem button onClick={e => history.push(experimetPage('tests'))}>
+              <ListItemIcon>
+                <AssessmentIcon />
+              </ListItemIcon>   
+              <ListItemText primary={'Test pool'} />
+            </ListItem>
+
+            <ListItem button onClick={e => history.push(experimetPage('uploadFixations'))}>
+              <ListItemIcon>
+                <DashboardIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Upload Fixations'} />
+            </ListItem>
+          </List>
+        }
     </div>
   );
-
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -158,7 +150,15 @@ function MainExperiments({permit}) {
         <div className={classes.toolbar} />
 
         <Switch>
-            <Route path={'/experiments-new'}>
+            <Route path={experimetRoutePage('algorithm',true)}>
+              <UploadAlgorithm/>
+            </Route>
+
+            <Route path={experimetRoutePage('testPlans',true)}>
+              <TestPlanManager/>
+            </Route>
+            
+            <Route path={'/experiments-new/new'}>
               <NewExperiment/>
             </Route>
             <Route path={experimetRoutePage('new')}>
@@ -167,15 +167,11 @@ function MainExperiments({permit}) {
             <Route path={experimetRoutePage('summaries')}>
               <Summaries/>
             </Route>
-            <Route path={experimetRoutePage('algorithm')}>
-              <UploadAlgorithm/>
-            </Route>
+ 
             <Route path={experimetRoutePage('forms')}>
               <FormsManager/>
             </Route>
-            <Route path={experimetRoutePage('testPlans')}>
-              <TestPlanManager/>
-            </Route>
+
             <Route path={experimetRoutePage('uploadFixations')}>
               <UploadFixations
                 onSuccess={() => history.push(`/experiments/${experimentName}/summaries`)}
