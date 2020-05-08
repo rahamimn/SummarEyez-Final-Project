@@ -47,7 +47,7 @@ export default function ChooseFromExisting_TabPanel({
         margin: '30px 0 10px'
       }}>
         <Button
-          id="editFwelcome-dialog-new-experiment"
+          id="welcome-dialog-new-experiment"
           variant="contained"
           size="large"
           style={{ marginRight: '10px' }}
