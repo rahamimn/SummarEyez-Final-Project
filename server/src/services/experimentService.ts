@@ -41,22 +41,26 @@ export class ExperimentService{
     }
 
     private addAutomaticAlgToImg = async (tables, imageName) => {
-        await forEP(tables, async row => {
-            const path = `images/${imageName}/algs/${row.name}`;
-            await this.storageService.uploadBuffer(path, row.sent_table, fileTypes.Csv);
-            await this.collectionsService.images().sentTablesOf(imageName).add(row.name,{
-                type: 'auto',
-                name: row.name,
-                path,
-                creation_date: Date.now()
+        if(tables.length > 0){
+            await forEP(tables, async row => {
+                const path = `images/${imageName}/algs/${row.name}`;
+                await this.storageService.uploadBuffer(path, row.sent_table, fileTypes.Csv);
+                await this.collectionsService.images().sentTablesOf(imageName).add(row.name,{
+                    type: 'auto',
+                    name: row.name,
+                    path,
+                    creation_date: Date.now()
+                });
             });
-        });
+        }
     }
     private getAutoAlgsSavedLocally = async () => {
         const files = await fs.readdir('./automatic-algorithms');
         let algNames = [];
         if(files.length > 0){
+            console.log('before forEp');
             await forEP(files, async (file:string) => {
+                console.log('before forEp');
                 if(file.endsWith('.py')){
                     algNames.push(file);
                 }
@@ -386,7 +390,9 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
             automaticAlgsSavedLocally,
             files.text,
             files.base_sent_table);
-        await this.addAutomaticAlgToImg(tables,name);
+        if(tables.length> 0){
+            await this.addAutomaticAlgToImg(tables,name);
+        }
 
         return response(0);
     }
@@ -491,6 +497,7 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
     private verifyAutomaticAlgorithmExists = async (names: string[]) => {
         const automaticAlgsSavedLocally = await this.getAutoAlgsSavedLocally();
         //we should fetch newly algorithms 
+        console.log(names);
         await forEP(names, async name => {
             const metaAuto = await this.collectionsService.automaticAlgos().get(name);
             if(!automaticAlgsSavedLocally.includes(name)){
@@ -511,9 +518,13 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
         const imageName =  experiment.imageName;
         const text = await this.storageService.downloadToBuffer(`images/${imageName}/text`);
         const base_sent_table = await this.storageService.downloadToBuffer(`images/${imageName}/base_sent_table`);
+        console.log(algsNames)
         await this.verifyAutomaticAlgorithmExists(algsNames);
         const {tables} = await this.pythonService.runAutomaticAlgs(algsNames, text,base_sent_table);
-        await this.addAutomaticAlgToImg(tables,imageName);
+        if(tables.length > 0){
+            await this.addAutomaticAlgToImg(tables,imageName);
+        }
+
         return response(0);
     }
 
