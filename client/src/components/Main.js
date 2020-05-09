@@ -26,13 +26,13 @@ function Main() {
           <LayersMain/>
         </Route>
         <Route path="/experiments-new" render={ () => {
-          if(experimentsPermission || true) {
+          if(experimentsPermission) {
             return <MainExperiments permit={permit} />
           }
           return <Redirect to={{pathname: "/"}}/>
         }}/>
         <Route path="/experiments/:experimentName" render={ () => {
-          if(experimentsPermission || true) {
+          if(experimentsPermission) {
             return <MainExperiments permit={permit} />
           }
           return <Redirect to={{pathname: "/"}}/>
