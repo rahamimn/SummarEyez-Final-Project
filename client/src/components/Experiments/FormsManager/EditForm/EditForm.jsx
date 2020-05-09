@@ -359,7 +359,10 @@ export function EditForm({
               multiple
               value={formDTO.questionIds}
               onChange={(event) => {
-                if(!form || form.editable){
+                console.log(event.target.value)
+                if(event.target.value[0] === 'empty'){
+                  !disabled && setAddQuestion(true)
+                } else if(!form || form.editable){
                   setQuestionsError(false);
                   setFormDTO({...formDTO, questionIds:event.target.value });
                 }
@@ -373,7 +376,11 @@ export function EditForm({
               }}
               MenuProps={MenuProps}
             >
-            {questions.map((question) => (
+            {questions.length === 0 ? 
+              <MenuItem key={'empty'} value={'empty'} style={disabled || questions.length === 0 ? {cursor:'auto'}: {}} >
+                <ListItemText primaryTypographyProps={{noWrap:true}} primary={disabled ?'You Have No Questions' : "No Questions, You May Add New, on click!!"} />
+              </MenuItem> :
+             questions.map((question) => (
               <MenuItem key={question.id} value={question.id} style={disabled ? {cursor:'auto'}: {}} >
                 <Checkbox
                   disabled={disabled}
@@ -441,7 +448,7 @@ export function EditForm({
         )},
         [formDTO, form]
       );
-  
+      const {isReadSummary, isFillAnswers, isRankSentences, withFixations} = formDTO;
       return (isFetchingData ? <div>loading</div> : 
         <Grid container spacing={3} style={{width:"100%"}}>
           <Grid item xs={12} sm={6}>
@@ -495,7 +502,7 @@ export function EditForm({
               )}
               
               <Button
-                disabled={disabled}
+                disabled={disabled || (!isRankSentences && !withFixations && !isReadSummary && !isFillAnswers)}
                 style={{display: 'block' ,marginTop: '10px', float:'right'}}
                 variant="contained"
                 onClick={onClickSave}>
