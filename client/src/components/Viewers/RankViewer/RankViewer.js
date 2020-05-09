@@ -13,11 +13,18 @@ export const RankSentences = ({
             <Card elevation={5} style={{padding:'5px 10px', display:'flex', alignItems:'center'}}>
                 <TextField 
                     style={{width:'180px', marginBottom:'15px'}}
-                    inputProps={{min:0,max:1, step:0.1}}
+                    inputProps={{
+                        min:0,
+                        max:1,
+                        step:0.1,
+                    }}
                     type="number"
                     value={val}
                     onChange={(e) => {
-                        setVal(e.target.value);
+                        const {value} = e.target;
+                        if(value >= 0 && value <= 1){
+                            setVal(value);
+                        }
                     }}
                     id="minimumWeight"
                     label="minimum weight" />

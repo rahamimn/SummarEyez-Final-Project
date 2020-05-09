@@ -147,16 +147,26 @@ export const ArticleViewer = ({summary, title}) => {
                         inputProps={{min:0,max:1, step:0.1}}
                         type="number"
                         value={minWeight}
-                        onChange={(e) => setMinWeight(e.target.value)}
+                        onChange={(e) => {
+                            const {value} = e.target;
+                            if(value >= 0 && value <= 1){
+                                setMinWeight(value)
+                            }
+                        }}
                         id="minimumWeight"
                         label="minimum weight" />
 
                     <TextField 
                         style={{width:'180px', marginBottom:'15px'}}
-                        inputProps={{min:0,max:summary.length, step:1}}
+                        inputProps={{min:0, max:summary.length, step:1}}
                         type="number"
                         value={topSentencesCount}
-                        onChange={(e) => setTopSentencesCount(e.target.value)}
+                        onChange={(e) => {
+                            const {value} = e.target;
+                            if(value >= 0 && value < summary.length){
+                                setTopSentencesCount(value)
+                            }
+                        }}
                         id="minimumWeight"
                         label="Top Sentences"/>
 

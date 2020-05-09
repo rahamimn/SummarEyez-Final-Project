@@ -269,8 +269,11 @@ export function EditForm({
                   type="number"
                   value={minWeight}
                   onChange={(e) => {
-                    filters.minWeight =  e.target.value;
-                    updateField('summary',{...summary, filters })
+                    const {value} = e.target;
+                    if(value >= 0 && value <= 1){
+                      filters.minWeight = value;
+                      updateField('summary',{...summary, filters })
+                    }
                   }}
                   id="minimumWeight"
                   label="minimum weight" />

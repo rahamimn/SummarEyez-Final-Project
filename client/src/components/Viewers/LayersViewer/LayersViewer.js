@@ -120,7 +120,12 @@ export const LayersViewer = ({summaries, title, summariesMetadata, experimentNam
                         inputProps={{min:0,max:1, step:0.1}}
                         type="number"
                         value={minWeight}
-                        onChange={(e) => setMinWeight(e.target.value)}
+                        onChange={(e) =>{ 
+                            const {value} = e.target;
+                            if(value >= 0 && value <= 1){
+                                setMinWeight(value)
+                            }
+                        }}
                         id="minimumWeight"
                         label="minimum weight" />
                     <Typography variant="h5" style={{marginBottom:'20px', marginTop:'20px'}}>
