@@ -1,13 +1,9 @@
 import React,{useState,useEffect, useCallback} from 'react';
 import { Typography, Card, TextField, Button, Divider, Paper} from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import {
-  useParams,
-} from "react-router-dom";
 import api from '../../../apiService';
 import { EditForm } from '../FormsManager/EditForm/EditForm';
 import { CreateTestPlan } from './CreateTestPlan';
-import { truncateSync } from 'fs';
 
 export function TestPlanManager({}){
   const [selectedTestPlan,setSelectedTestPlan] = useState(null);
@@ -39,7 +35,7 @@ export function TestPlanManager({}){
         <Divider/>
         <div style={{display:'flex', alignItems:'flex-end', marginTop:'10px'}}>
           <Autocomplete
-            id="legue-select"
+            id="test-manager-choose-test-plan"
             style={{ width: '200px', marginRight:10 }}
             options={testPlans}
             autoHighlight

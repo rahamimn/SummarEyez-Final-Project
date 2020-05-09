@@ -1,7 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
-import Autocomplete from '@material-ui/lab/Autocomplete';
 import Typography from '@material-ui/core/Typography';
 import CheckIcon from '@material-ui/icons/Check';
 import ToggleButton from '@material-ui/lab/ToggleButton';
@@ -36,8 +34,6 @@ const paleteColors = (colors) => <div style={{display:'flex',justifyContent: 'ce
 </div>
 
 export const ArticleViewer = ({summary, title}) => {
-    // let [colorInput, setColorInput] = useState('');
-    // let [color, setColor] = useState(90);
     let [colorSize, setColorSize] = useState('5');
     let [colorPalete, setColorPalete] = useState('op_1');
     let [isGradient, setIsGradient] = useState(true);
@@ -117,31 +113,6 @@ export const ArticleViewer = ({summary, title}) => {
                     <div style={{marginTop:'10px', marginBottom:'20px'}}>
                         {paleteColors(COLORS[colorSize][colorPalete])}
                     </div>
-                    
-                    {/* <Autocomplete
-                        style={{ width: '180px', marginRight:10, marginBottom:'15px' }}
-                        options={colors}
-                        autoHighlight
-                        getOptionLabel={option => option.id}
-                        renderInput={params => (
-                            <TextField
-                            {...params}
-                            label="Choose a color"
-                            fullWidth
-                            inputProps={{
-                                ...params.inputProps,
-                                autoComplete: 'disabled', // disable autocomplete and autofill
-                            }}
-                            />
-                        )}
-                        onChange={(e,color) => 
-                            setColor(color.value)
-                        }
-                        onInputChange={(e, value) => 
-                            setColorInput(value)
-                        }
-                        inputValue={colorInput}
-                    /> */}
                     <TextField 
                         style={{width:'180px', marginBottom:'15px'}}
                         inputProps={{min:0,max:1, step:0.1}}
@@ -186,33 +157,6 @@ export const ArticleViewer = ({summary, title}) => {
                 </div>
         </div>       
 }
-
-
-const colors = [{
-    id:'yellow',
-    value: 90,
-},
-{
-    id:'red',
-    value: 35,
-},
-{
-    id:'blue',
-    value: 200,
-},
-{
-    id:'adir confused1',
-    value: 260,
-},
-{
-    id:'adir confused2',
-    value: 150,
-},
-{
-    id:'adir confused3',
-    value: 15,
-}];
-
 
 const SentPopper = ({weight, isOpen, id, anchorEl}) => <Popper id={id} open={isOpen} anchorEl={anchorEl}>
     <Card elevation={5} style={{padding:'5px 10px'}}>

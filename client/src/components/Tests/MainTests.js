@@ -57,10 +57,11 @@ function MainTests() {
             value={testId}
             style={{width: '200px',marginTop:'10px', marginBottom: '20px'}}
             onChange={(e) => setTestId(e.target.value)}
-            id="text"
+            id="main-tests-student-id"
             label="Student ID" />
 
           <Autocomplete
+            id="main-test-choose-test-plan"
             style={{ width: '200px', marginRight:10 }}
             options={testPlans}
             autoHighlight
@@ -74,7 +75,7 @@ function MainTests() {
             renderInput={params => (
               <TextField  
                 {...params}
-                label="Choose a summary"
+                label="Choose a Test Plan"
                 // variant="outlined"
                 fullWidth
                 inputProps={{
@@ -107,7 +108,7 @@ function MainTests() {
             value={testId}
             style={{width: '200px',marginTop:'10px', marginBottom: '20px'}}
             onChange={(e) => setTestId(e.target.value)}
-            id="text"
+            id="main-tests-student-id"
             label="Student ID" />
         
           <div>

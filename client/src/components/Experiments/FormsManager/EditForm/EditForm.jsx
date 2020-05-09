@@ -294,6 +294,7 @@ export function EditForm({
             {summaryError && <div>ERROR</div>}
             <div style={{ display: 'flex'}}>
               <Autocomplete
+                  id="edit-form-summary-type"
                   disabled={disabled}
                   style={{ width: '200px', marginRight:10 }}
                   options={['auto','eyes','merged']}
@@ -322,6 +323,7 @@ export function EditForm({
               />
               { summary.type && 
                 <Autocomplete
+                    id="edit-form-choose-summary"
                     disabled={disabled}
                     style={{ width: '200px', marginRight:10 }}
                     options={summaries[summary.type]}

@@ -1,9 +1,7 @@
 import React,{useState, useCallback} from 'react';
 import { TextField } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import {
-  useParams,
-} from "react-router-dom";
+
 import api from '../../../apiService';
 
 export function FormChooser({experiments, onSelectForm}){
@@ -21,7 +19,7 @@ export function FormChooser({experiments, onSelectForm}){
     return (
       <div style={{ display: 'flex', justifyContent:'space-between', flexGrow: 1}}>       
         <Autocomplete
-          id="legue-select"
+          id="form-chooser-choose-experiment"
           style={{ width: '200px', marginRight:10 }}
           options={experiments}
           autoHighlight
@@ -50,7 +48,7 @@ export function FormChooser({experiments, onSelectForm}){
         />
 
         <Autocomplete
-          id="legue-select"
+          id="form-chooser-choose-form"
           style={{ width: '200px', marginRight:10 }}
           options={forms}
           autoHighlight
@@ -67,7 +65,7 @@ export function FormChooser({experiments, onSelectForm}){
           renderInput={params => (
             <TextField
               {...params}
-              label="Choose an image"
+              label="Choose a form"
               // variant="outlined"
               fullWidth
               inputProps={{

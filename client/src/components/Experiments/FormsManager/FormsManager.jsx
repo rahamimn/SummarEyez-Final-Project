@@ -40,7 +40,7 @@ export function FormsManager({}){
           </Typography>
           <Divider/>
           <Autocomplete
-            id="legue-select"
+            id="forms-manager-choose-form"
             style={{ width: '200px', marginRight:10 }}
             options={forms}
             autoHighlight
@@ -48,7 +48,7 @@ export function FormsManager({}){
             renderInput={params => (
               <TextField
                 {...params}
-                label="Choose an image"
+                label="Choose existing form"
                 // variant="outlined"
                 fullWidth
                 inputProps={{
