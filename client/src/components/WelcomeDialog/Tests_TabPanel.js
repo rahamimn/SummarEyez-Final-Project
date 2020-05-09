@@ -26,8 +26,7 @@ export default function Tests_TabPanel({
           size="large"
           style={{ marginRight: '10px' }}
           onClick={() => {
-            onClose && onClose();
-            history.push('/tests');
+            window.open('/tests');
           }}
         >
          Conduct Test
