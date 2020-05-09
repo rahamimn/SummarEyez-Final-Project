@@ -14,8 +14,10 @@ export function CreateTestPlan({ setSelectedForm, onCreate, onClose}){
     const [experiments,setExperiments] = useState([]);
     const [testPlanName,setTestPlanName] = useState('');
     const [testPlanNameError,setTestPlanNameError] = useState(null);
+    const [addIsOpen,setAddIsOpen] = useState(false);
 
     const onSelectForm = (experimentName, form) => {
+        setAddIsOpen(false);
         setSelectedForm({...form,experimentName});
         setFormsDetails([...formsDetails,{
             experimentName,
@@ -73,8 +75,10 @@ export function CreateTestPlan({ setSelectedForm, onCreate, onClose}){
           </Paper>)
         )}
         <Paper style={{padding:'15px', width:'500px', marginTop:'10px'}} variant="outlined">
-            <Typography>Add Form</Typography>
-            <FormChooser experiments={experiments.filter(e => !usedExperiments.includes(e))} onSelectForm={onSelectForm} />
+          { addIsOpen ? 
+              <FormChooser experiments={experiments.filter(e => !usedExperiments.includes(e))} onSelectForm={onSelectForm} /> :
+              <Button onClick={() => setAddIsOpen(true)}>Add Form</Button>
+          }
         </Paper>
         <div style={{display: 'flex', justifyContent: 'flex-end'}}>
           <Button disabled={!testPlanName} style={{marginTop:'10px'}} onClick={addTestPlan}>Create Test Plan</Button>
