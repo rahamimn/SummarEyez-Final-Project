@@ -261,22 +261,15 @@ export function EditForm({
                 </ToggleButton> 
               </FilterTag>
 
-              <FilterTag >
-                <TextField 
+              <FilterTag>
+                <FilterWeightSetter 
                   disabled={disabled}
-                  style={{width:'180px', marginBottom:'15px'}}
-                  inputProps={{min:0,max:1, step:0.1}}
-                  type="number"
-                  value={minWeight}
-                  onChange={(e) => {
-                    const {value} = e.target;
-                    if(value >= 0 && value <= 1){
-                      filters.minWeight = value;
-                      updateField('summary',{...summary, filters })
-                    }
+                  weight={minWeight}
+                  updateWeight={(val) => {
+                    filters.minWeight = val;
+                    updateField('summary',{...summary, filters })
                   }}
-                  id="minimumWeight"
-                  label="minimum weight" />
+                />
               </FilterTag>
             </div>
           </div>
@@ -290,7 +283,7 @@ export function EditForm({
           return null;
 
         return isReadSummary && (
-          <Card variant="outlined" style={{margin:'10px 0 20px 15px', padding:'15px $0px 30px'}}>
+          <Card variant="outlined" style={{margin:'10px 0 20px 15px', padding:'15px 20px 30px'}}>
             {summaryError && <div>ERROR</div>}
             <div style={{ display: 'flex'}}>
               <Autocomplete
@@ -520,5 +513,38 @@ export function EditForm({
           </Grid>
         </Grid> 
     )
+  };
+
+  const FilterWeightSetter = ({weight, updateWeight, disabled }) => {
+
+    const [val,setVal] = useState(weight);
+    const [lastVal,setLastVal] = useState(null);
+
+    useEffect(() => {setVal(weight)},[weight]);
+
+    return <div style={{display:'flex', alignItems:'center'}}>
+      <TextField 
+        disabled={disabled}
+        style={{width:'180px', marginBottom:'15px'}}
+        inputProps={{min:0,max:1, step:0.1}}
+        type="number"
+        value={val}
+        onChange={(e) => {
+          const {value} = e.target;
+          if(value >= 0 && value <= 1){
+              setVal(value);
+          }
+        }}
+        id="minimumWeight"
+        label="minimum weight" />
+        
+      <Button
+        disabled={disabled || (!val && val !==0) || lastVal === val}
+        onClick={()=>{
+          setLastVal(val)
+          updateWeight(val)
+        }}>
+          Set
+      </Button>
+    </div>
   }
-  
