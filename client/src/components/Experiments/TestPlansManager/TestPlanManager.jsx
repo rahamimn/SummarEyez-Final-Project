@@ -35,6 +35,7 @@ export function TestPlanManager({}){
         <Divider/>
         <div style={{display:'flex', alignItems:'flex-end', marginTop:'10px'}}>
           <Autocomplete
+            disabled={isCreating}
             id="test-manager-choose-test-plan"
             style={{ width: '200px', marginRight:10 }}
             options={testPlans}
@@ -44,6 +45,7 @@ export function TestPlanManager({}){
               if(testPlan){
                 setSelectedTestPlan(testPlan.data)
                 setIsCreating(false);
+                setSelectedForm(null);
               }else{
                 setSelectedTestPlan(null)
               }
@@ -84,6 +86,7 @@ export function TestPlanManager({}){
             onClose={() =>  setIsCreating(false)}
             onCreate={async () => {
               setIsCreating(false);
+              setSelectedForm(null);
               await fetchTestPlans();
           }}/>
         }

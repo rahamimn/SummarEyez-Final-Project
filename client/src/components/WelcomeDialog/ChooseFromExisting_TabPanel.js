@@ -40,7 +40,7 @@ export default function ChooseFromExisting_TabPanel({
       <div>
         <Typography style={{color:'#aaaaaa'}}>Choose From Exisiting Research, and see related summaries, and tests</Typography>
         <Autocomplete
-          id="experiment-select"
+          id="choose-from-exisiting-experiment-select"
           style={{ width: '100%', marginRight: 10 }}
           options={experiments}
           autoHighlight

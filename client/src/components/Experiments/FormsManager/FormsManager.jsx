@@ -40,6 +40,7 @@ export function FormsManager({}){
           </Typography>
           <Divider/>
           <Autocomplete
+            disabled={newForm}
             id="forms-manager-choose-form"
             style={{ width: '200px', marginRight:10 }}
             options={forms}
