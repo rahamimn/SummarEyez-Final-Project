@@ -152,7 +152,6 @@ app.post('/api/experiments/:experimentName/questions', bodyParser.json(), (req, 
     const experimentName = req.params.experimentName;
     const {question, answers, correctAnswer}  = req.body;
     const questionAdded = await experimentService.addQuestion(experimentName,question, answers, correctAnswer);
-    
     res.send(questionAdded);
 }));
 
