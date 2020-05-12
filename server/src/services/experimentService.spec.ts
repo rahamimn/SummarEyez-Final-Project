@@ -572,7 +572,8 @@ describe('ExperimentService Tests',() =>{
             isFillAnswers: true,
             isReadSummary: false,
             withFixations: true
-        }        
+        }  
+              
         beforeEach( async () => {
             await collectionsService.experiments().add(expName, {imageName});
             await collectionsService.images().add(imageName, {
@@ -777,7 +778,7 @@ describe('ExperimentService Tests',() =>{
             
             const {status, error} = await experimentService.addTest(params);
             expect(status).toEqual(ERROR_STATUS.OBJECT_NOT_EXISTS);
-            expect(error).toEqual('base_sentences_table does not exist');
+            expect(error).toEqual('base_sent_table not exist');
 
         });
 
