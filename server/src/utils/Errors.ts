@@ -17,6 +17,8 @@ export const ERRORS = {
     SUMMARY_NOT_EXISTS: 'summary not exists',
     TEST_PLAN_NAME_NOT_EXISTS: 'test plan name does not exist',
     SENT_TBL_NOT_EXISTS: 'base_sent_table not exist',
+    WORD_OCR_TBL_NOT_EXISTS: 'word_ocr does not exist',
+    
 }
     
 export const ERROR_STATUS = {

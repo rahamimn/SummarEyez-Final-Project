@@ -100,11 +100,18 @@ addTest = async (params) => {
     if(params.fixations){
         const word_ocr = await this.storageService.downloadToBuffer(img.word_ocr_path);
         if(!word_ocr){
-            return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: 'word_ocr does not exist'} );
+            return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.WORD_OCR_TBL_NOT_EXISTS} );
         }
         const base_sentences_table = await this.storageService.downloadToBuffer(img.base_sent_table_path);
         if(!base_sentences_table){
-            return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: 'base_sentences_table does not exist'} );
+            return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.SENT_TBL_NOT_EXISTS} );
+        }
+   
+        if(params.testPlanId && params.testPlanId != -1){
+            const testPlanNameExist = await this.collectionsService.testPlans().get(params.testPlanId);
+            if(!testPlanNameExist){
+                return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.TEST_PLAN_NAME_NOT_EXISTS} );  
+            }
         }
 
         const tables = await this.pythonService.genTableFromEyez(params.fixations, word_ocr, base_sentences_table);
@@ -153,7 +160,8 @@ addTest = async (params) => {
         score : score || 0,
         sentanceWeights : params.sentanceWeights || [],
         creation_date: Date.now(),
-        type:'eyes'
+        type:'eyes',
+        testPlanId: params.testPlanId
     });
     return response(0);    
 }
