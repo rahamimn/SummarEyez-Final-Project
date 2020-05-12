@@ -77,7 +77,7 @@ export class UploadAlgorithm extends Component {
                 value={this.state.algorithmName}
                 style={{ marginBottom: '20px' }}
                 onChange={this.handleChangeName}
-                id="standard-basic"
+                id="insert-algorithm-name"
                 label="Insert algorithm name"
               />
 
@@ -93,6 +93,7 @@ export class UploadAlgorithm extends Component {
                 disabled={this.state.files.length === 0 || !this.state.algorithmName}
                 variant="contained"
                 color="primary"
+                id="upload-algorithm-button"
                 onClick={this.handleAddAlg}>
                 Upload algorithm
           </Button>
@@ -110,7 +111,7 @@ export class UploadAlgorithm extends Component {
           anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
           open={this.state.successShows}
           onClose={this.handleSuccessAlert}>
-          <Alert variant="filled" severity="success" onClose={this.handleSuccessAlert}> Uploaded Successfully </Alert>
+          <Alert id="success-alert-upload-algo" variant="filled" severity="success" onClose={this.handleSuccessAlert}> Uploaded Successfully </Alert>
         </Snackbar>
 
       </Card>
