@@ -75,7 +75,7 @@ function MainExperiments({permit}) {
       <div className={classes.toolbar} />
       <Divider />
       <List>
-        <ListItem button key={'Upload Algorithm'} onClick={e => history.push(experimetPage('algorithm'))}>
+        <ListItem id='upload-algorithm-side-button' button key={'Upload Algorithm'} onClick={e => history.push(experimetPage('algorithm'))}>
           <ListItemIcon>
             <CloudUploadIcon />
           </ListItemIcon>
