@@ -549,7 +549,18 @@ describe('ExperimentService Tests',() =>{
             sentanceWeights : '5',
             experimentName: expName,
             fixations: 'buffer' 
-        };   
+        };
+        
+        const paramsWithNoExistTestPlan={
+            testId: 'testId2',
+            formId : 'form1',
+            answers: [{id:1, ans:1, time:3}, {id:2, ans:2, time:3}, {id:3, ans:3, time:3}],
+            score : 33,
+            sentanceWeights : '5',
+            experimentName: expName,
+            fixations: 'buffer',
+            testPlanId: 111
+        }; 
 
 
         const FormsParams = {
@@ -794,6 +805,16 @@ describe('ExperimentService Tests',() =>{
             expect(status).toEqual(ERROR_STATUS.NAME_NOT_VALID);
             expect(error).toEqual(ERRORS.TEST_EXISTS);
      
+        });
+        it('fail - testPlan not exist', async () => {
+
+            const word_table = new Buffer('word_table');
+            const sent_table = new Buffer('sent_table');
+            const tables = {word_table: word_table, sentences_table: sent_table};
+
+            const {status, error} = await experimentService.addTest(paramsWithNoExistTestPlan);
+            expect(status).toEqual(ERROR_STATUS.OBJECT_NOT_EXISTS);
+            expect(error).toEqual("test plan name does not exist");
         });
     });
 
