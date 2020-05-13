@@ -72,8 +72,8 @@ export function TestPlanManager(){
          </div>
          { selectedTestPlan && !isCreating &&
             <div>
-              {selectedTestPlan.forms.map(detail => (
-                <Paper style={{padding:'5px', width:'500px', marginTop:'10px', display:'flex', alignItems:'center'}} variant="outlined">
+              {selectedTestPlan.forms.map((detail,ind) => (
+                <Paper keys={`form-${ind}`} style={{padding:'5px', width:'500px', marginTop:'10px', display:'flex', alignItems:'center'}} variant="outlined">
                   <Typography style={{width:'250px', padding:'0 5px'}}>{detail.experimentName}</Typography>
                   <Button size="small" onClick={() => fetchForm(detail.experimentName, detail.formId )}>{detail.formId}</Button>
                 </Paper>)

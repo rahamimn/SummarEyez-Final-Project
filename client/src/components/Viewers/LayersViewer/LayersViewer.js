@@ -35,7 +35,7 @@ export const LayersViewer = ({summaries, title, summariesMetadata, experimentNam
         <Popper open={isOpen} anchorEl={anchorEl}>
             <Card elevation={5} style={{padding:'5px 10px'}}>
                 {weights.map((weight,i)=> 
-                    <div><SmallCircle color={colors[i].value}/>({summariesMetadata[i].name}) {weight}</div>
+                    <div key={`weight-${i}`}><SmallCircle color={colors[i].value}/>({summariesMetadata[i].name}) {weight}</div>
                 )}
             </Card>
         </Popper>

@@ -30,7 +30,7 @@ const FilterRow = ({children, text}) => <div style={{
     </div>
 
 const paleteColors = (colors) => <div style={{display:'flex',justifyContent: 'center'}}>
-    {colors.map(color => <div style={{height:'30px', width:'30px', backgroundColor: color}}></div>)}
+    {colors.map((color,ind) => <div key={`col-${ind}`} style={{height:'30px', width:'30px', backgroundColor: color}}></div>)}
 </div>
 
 export const ArticleViewer = ({summary, title}) => {

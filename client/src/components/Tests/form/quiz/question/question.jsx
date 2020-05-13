@@ -23,6 +23,7 @@ export function Question({
 }) {
   const [selected,setSelected] = useState(null);
 
+
   const time = useMemo(() => Date.now(),[question]);
 
   const onNextQuestion = () => {
@@ -36,7 +37,8 @@ export function Question({
       <Typography style={{marginBottom:'15px'}}>{question.question}</Typography>
       {
         question.answers.map((ans,i) =>(
-          <Paper 
+          <Paper
+            key={`ans-${i}`} 
             style={{
               minHeight:'55px',
               margin:'10px 0',
