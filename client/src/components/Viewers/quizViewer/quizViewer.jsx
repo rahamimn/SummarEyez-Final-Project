@@ -1,6 +1,5 @@
 import React ,{useState,useEffect} from 'react';
 import { BaseViewer } from "../BaseViewer/BaseViewer";
-import { Card } from '@material-ui/core';
 import api from '../../../apiService';
 
 export const QuizViewer = ({
@@ -20,7 +19,7 @@ export const QuizViewer = ({
         setSummaryDetails(res.data);
       }
       fetch();
-    },[name, type, filters]);
+    },[name, type, filters, experimentName]);
 
     return <BaseViewer 
             summary={summaryDetails.summary} 

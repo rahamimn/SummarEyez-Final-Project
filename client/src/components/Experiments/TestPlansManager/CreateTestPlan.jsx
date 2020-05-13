@@ -1,8 +1,5 @@
 import React,{useState,useEffect, useCallback} from 'react';
 import { Typography, TextField, Button, Paper, IconButton} from '@material-ui/core';
-import {
-  useParams,
-} from "react-router-dom";
 import api from '../../../apiService';
 import { ERROR_STATUS } from '../../ERRORS';
 import CloseIcon from '@material-ui/icons/Close';
@@ -32,7 +29,7 @@ export function CreateTestPlan({ setSelectedForm, onCreate, onClose}){
 
     useEffect(() => {
         fetchExperiments();
-    },[]);
+    },[fetchExperiments]);
 
     const usedExperiments = formsDetails.map(d => d.experimentName);
 

@@ -3,9 +3,9 @@ import React from 'react';
 import TabPanel from './TabPanel';
 import { Tabs, Tab, Dialog, AppBar } from '@material-ui/core';
 
-import ChooseFromExisting_TabPanel from './ChooseFromExisting_TabPanel';
-import CreateNewExp_TabPanel from './CreateNewExp_TabPanel copy';
-import Tests_TabPanel from './Tests_TabPanel';
+import ChooseFromExistingTabPanel from './ChooseFromExisting_TabPanel';
+import CreateNewExpTabPanel from './CreateNewExp_TabPanel copy';
+import TestsTabPanel from './Tests_TabPanel';
 
 
 
@@ -45,15 +45,15 @@ export default function WelcomeDialog({
 
         <div style={{minHeight:'250px', maxWidth:'470px'}}>
           <TabPanel  value={value} index={0}>
-            <CreateNewExp_TabPanel permit={permit}/>
+            <CreateNewExpTabPanel permit={permit}/>
           </TabPanel>
 
           <TabPanel value={value} index={1}>
-            <ChooseFromExisting_TabPanel permit={permit}/>
+            <ChooseFromExistingTabPanel permit={permit}/>
           </TabPanel>
 
           <TabPanel  value={value} index={2}>
-            <Tests_TabPanel/>
+            <TestsTabPanel/>
           </TabPanel>
         </div>
       </Dialog>

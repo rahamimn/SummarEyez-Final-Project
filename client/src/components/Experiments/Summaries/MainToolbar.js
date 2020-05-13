@@ -1,4 +1,4 @@
-import React,{useState, useCallback} from 'react'
+import React,{useState} from 'react'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import clsx from 'clsx';
@@ -8,7 +8,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import api from '../../../apiService';
 import {useParams} from 'react-router-dom'
 import MergeDialog from './MergeSummaries/MergeDialog'
-import { stringify, parse } from 'qs'
+import { stringify } from 'qs'
 import {saveAs} from 'save-as';
 const useToolbarStyles = makeStyles(theme => ({
     root: {
@@ -41,11 +41,12 @@ const useToolbarStyles = makeStyles(theme => ({
     const disabled = selected.auto.filter((selected) => selected.disabled) 
     
 
-    const onExport = useCallback(async (summaryData) => {
+    const onExport = async (summaryData) => {
       const {type, name, creation_date} = summaryData;
       const file = await api.exportSummaryCsv(experimentName, type, name)
       saveAs(file, handleName(experimentName, name, creation_date));
-    })
+    };
+
     const justDisabled = allSelected.length === disabled.length
         && allSelected.length > 0 ;
         

@@ -5,7 +5,7 @@ import api from '../../../apiService';
 import { EditForm } from '../FormsManager/EditForm/EditForm';
 import { CreateTestPlan } from './CreateTestPlan';
 
-export function TestPlanManager({}){
+export function TestPlanManager(){
   const [selectedTestPlan,setSelectedTestPlan] = useState(null);
   const [testPlanText,setTestPlanText] = useState('');
   const [testPlans,setTestPlans] = useState([]);
@@ -19,7 +19,7 @@ export function TestPlanManager({}){
 
   useEffect(() => {
     fetchTestPlans();
-  },[]);
+  },[fetchTestPlans]);
   
   const fetchForm = async (experimentName, formId) => {
     const res = await api.getForm(experimentName, formId, true);

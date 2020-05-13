@@ -6,7 +6,6 @@ import {
   useParams,
 } from "react-router-dom";
 import api from '../../../../apiService';
-import { ERROR_STATUS } from '../../../ERRORS';
 import CloseIcon from '@material-ui/icons/Close';
 
 
@@ -72,7 +71,7 @@ export function AddQuestion({
             style={{display: 'block' ,marginTop: '10px', float:'right'}}
             variant="contained"
             onClick={async () => {
-                const {status, data} = await api.addQuestion(experimentName,question)
+                const {data} = await api.addQuestion(experimentName,question)
                 //TODO handle errors
                 onAdd && onAdd(data.id);
             }}>

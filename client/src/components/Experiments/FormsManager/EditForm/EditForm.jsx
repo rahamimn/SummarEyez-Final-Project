@@ -58,18 +58,18 @@ export function EditForm({
       const [summaryTypeText, setSummaryTypeText] = useState('');
       const [formDTO,setFormDTO] = useState(form || emptyForm);
   
-      const updateField = (name, value) => setFormDTO({...formDTO,[name]: value });
+      const updateField = useCallback((name, value) => setFormDTO({...formDTO,[name]: value }),[formDTO]);
       const disabled = form && !form.editable;
 
       const fetchQuestions = useCallback(async() => { 
-        const {data, status} = await api.getQuestions(experimentName);
+        const {data} = await api.getQuestions(experimentName);
         //Handle status
         setQuestions(data);
         return data;
       },[experimentName]);
 
       const fetchSummaries = useCallback(async() => {
-        const {data, status} = await api.getSummaries(experimentName);
+        const {data} = await api.getSummaries(experimentName);
         //Handle status
         setSummaries(data);
         return data;
@@ -80,11 +80,11 @@ export function EditForm({
         await fetchQuestions();
         await fetchSummaries();
         setIsFetchingData(false);
-      },[experimentName]);
+      },[ fetchQuestions, fetchSummaries]);
   
       useEffect(() =>{ 
         experimentName && fetchData()
-      },[experimentName]);
+      },[experimentName, fetchData]);
   
       useEffect(() => {
           
@@ -156,7 +156,7 @@ export function EditForm({
         else{
           onSave && onSave();
         }
-      },[form, formDTO, experimentName]);
+      },[form, formDTO, experimentName, onSave]);
   
   
       const ViewSummaryComp = useMemo(() => {
@@ -274,7 +274,7 @@ export function EditForm({
             </div>
           </div>
         );
-      },[formDTO, form]); 
+      },[formDTO, form, updateField]); 
 
       const SummaryComp = useCallback(() => {
         const {summary,isReadSummary}  = formDTO;
@@ -319,7 +319,7 @@ export function EditForm({
                     id="edit-form-choose-summary"
                     disabled={disabled}
                     style={{ width: '200px', marginRight:10 }}
-                    options={summaries[summary.type]}
+                    options={summaries[summary.type].filter(sum => !sum.disabled)}
                     autoHighlight
                     getOptionLabel={option => option.data.name}
                     renderInput={params => (
@@ -346,7 +346,7 @@ export function EditForm({
             </div>
             { summary.name && summary.type && filtersComp}
          </Card>
-      )},[form, formDTO, summaryTypeText, summaryNameText, summaryError]);
+      )},[form, formDTO, summaryTypeText, summaryNameText, summaryError, filtersComp, summaries]);
   
       const QuestionSectionComp = useMemo(() => {
         const disabled = form && !form.editable;
@@ -422,7 +422,7 @@ export function EditForm({
                 }} />
           }
         </div>
-      },[form, formDTO, addQuestion, questionsError, questions]);
+      },[form, formDTO, addQuestion, questionsError, questions, fetchQuestions]);
   
       const renderSwitch = useCallback((title,field,withFooter, onChange, ) => {
         const disabled = form && !form.editable;

@@ -1,9 +1,8 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState} from 'react';
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography';
 import { Popper, Card } from '@material-ui/core';
-import { borderRadius } from '@material-ui/system';
 
 
 const SmallCircle  = ({color}) => <span style={{
@@ -18,16 +17,21 @@ const SmallCircle  = ({color}) => <span style={{
 
 export const LayersViewer = ({summaries, title, summariesMetadata, experimentName }) => {
 
-    const summaryDetail = useCallback((metaData, index) => <div key={index} style={{marginBottom: "40px"}}>
-        <div style={{display:"flex", alignItems: "center"}}>
-            <div style={{ marginRight:"10px",height:"30px", width:"50px", backgroundColor:`hsl(${colors[index].value}, 100%, 75%)`}}></div>
-            <Typography>{metaData.name}({metaData.type})</Typography>
+    const summaryDetail = (metaData, index) => (
+        <div key={index} style={{marginBottom: "40px"}}>
+            <div style={{display:"flex", alignItems: "center"}}>
+                <div style={{ marginRight:"10px",height:"30px", width:"50px", backgroundColor:`hsl(${colors[index].value}, 100%, 75%)`}}></div>
+                <Typography>{metaData.name}({metaData.type})</Typography>
+            </div>
+            <Button 
+                size="small"  
+                onClick={() => window.open(`/article/${experimentName}/${metaData.type}/${metaData.name}`,'_blank')}>
+                    Go to Summary
+            </Button>
         </div>
+    );
 
-        <Button size="small"  onClick={() => window.open(`/article/${experimentName}/${metaData.type}/${metaData.name}`,'_blank')}>Go to Summary</Button>
-    </div>);
-
-    const SentPopper = useCallback(({weights, isOpen, anchorEl}) => (
+    const SentPopper = ({weights, isOpen, anchorEl}) => (
         <Popper open={isOpen} anchorEl={anchorEl}>
             <Card elevation={5} style={{padding:'5px 10px'}}>
                 {weights.map((weight,i)=> 
@@ -35,7 +39,7 @@ export const LayersViewer = ({summaries, title, summariesMetadata, experimentNam
                 )}
             </Card>
         </Popper>
-    ));
+    );
 
     let paragraphs = [];
     let paragraphNum = -1;

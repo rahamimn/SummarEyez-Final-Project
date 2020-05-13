@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react'
+import React, { useState, useEffect, useCallback} from 'react'
 import Typography from '@material-ui/core/Typography'
 import TableSummaries from './TableSummaries';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
@@ -50,17 +50,17 @@ export function Summaries({
     return summaries;
   }
 
-  const fetchSummaries = async () => {
+  const fetchSummaries = useCallback (async () => {
     const res = await api.getSummaries(experimentName); 
     setSummaries(formatData(res.data));
     setAutoSelected([]);
     setEyesSelected([]);
     setMergedSelected([]);
-  }
+  },[experimentName]);
 
   useEffect(() => {
     fetchSummaries();
-  }, [experimentId])
+  }, [experimentId, fetchSummaries])
 
   return (
     <div className={classes.root}>

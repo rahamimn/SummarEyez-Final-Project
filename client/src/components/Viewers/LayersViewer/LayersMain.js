@@ -35,7 +35,7 @@ export const LayersMain = () => {
         });
       }
       fetch();
-    },[]);
+    },[experimentName, query]);
 
     return <Container>
         <Card elevation={4}>

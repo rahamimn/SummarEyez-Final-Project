@@ -1,5 +1,5 @@
   
-import React, {useState, useMemo, useCallback, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import { QuizViewer } from '../../Viewers/quizViewer/quizViewer';
 import { Quiz } from './Quiz/Quiz';
 import { Card, Container, Button } from '@material-ui/core';
@@ -22,8 +22,7 @@ export function Form({
         setRankSentences(form.isRankSentences && addWeight(form.base_sentences_table));
     },[form]);
 
-    const Summary = useCallback(() => {
-        return (
+    const Summary = () => (
         <StepPage onClick={() => nextStep()}>
             <QuizViewer
                 experimentName={form.experimentName}
@@ -32,10 +31,9 @@ export function Form({
                 filters={form.summary.filters}
             />
         </StepPage>
-    )},[form, step, answers]);
+    )
 
-    const UploadFixations = useCallback(() => {
-        return (
+    const UploadFixations = () => (
         <StepPage onClick={() => nextStep()}>
             <DropzoneArea
                 initialFiles={[fixations && URL.createObjectURL(fixations)].filter(f=>f)}
@@ -45,9 +43,9 @@ export function Form({
                 dropzoneText={"Upload fixation file here"}
             />
         </StepPage>
-    )},[form, step, fixations]);
+    )
 
-    const RankSentencesComp = useCallback(() => {
+    const RankSentencesComp = () => {
         return (
         <StepPage onClick={() => nextStep()}>
             <RankSentences
@@ -55,9 +53,11 @@ export function Form({
                 setRankSentences={setRankSentences}
             />
         </StepPage>
-    )},[form,rankSentences, step]);
+    )};
 
-    const renderByStage = useMemo(() => [
+
+
+    const renderByStage = [
         form.isReadSummary && <Summary/>,
         form.isFillAnswers && <Quiz 
             questions={form.questions}
@@ -68,9 +68,9 @@ export function Form({
         form.isRankSentences && <RankSentencesComp/>,
         form.withFixations && <UploadFixations/>
 
-    ].filter(x => x),[form, rankSentences, step, fixations, answers]);
-
-    const nextStep = useCallback((answersInput) => {
+    ].filter(x => x);
+    
+    const nextStep = (answersInput) => {
         if(step+1 === renderByStage.length){
             onFinish({
                 formId: form.name,
@@ -83,7 +83,7 @@ export function Form({
         else{
             setStep(step+1)
         }
-    },[answers,rankSentences, fixations, step, form]);
+    };
 
     
   return (

@@ -21,7 +21,7 @@ export const ArticleMain = () => {
         setSummaryDetails(res.data);
       }
       fetch();
-    },[]);
+    },[experimentName,type,name]);
 
     return <Container>
         <Card elevation={4}>

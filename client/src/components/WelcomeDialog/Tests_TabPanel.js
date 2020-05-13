@@ -1,13 +1,8 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
-import {useHistory} from "react-router-dom";
 import { Typography } from '@material-ui/core';
 
-export default function Tests_TabPanel({
-  onClose,
-}) {
-  const history = useHistory();
-
+export default function Tests_TabPanel() {
   return (
     <div style={{display:'flex', flexDirection:'column', justifyContent:'space-between', height:'40vh'}}>
       <div>

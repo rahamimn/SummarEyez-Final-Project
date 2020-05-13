@@ -8,7 +8,7 @@ import api from '../../../apiService';
 import { EditForm } from './EditForm/EditForm';
 
 
-export function FormsManager({}){
+export function FormsManager(){
     const {experimentName} = useParams();
     const [selectedForm,setSelectedForm] = useState(null);
     const [forms,setForms] = useState([]);
@@ -20,7 +20,7 @@ export function FormsManager({}){
       setForms(forms.data);
       setSelectedForm(null)
       setNewForm(false)
-    },[]);
+    },[experimentName]);
 
     useEffect(() => {
       if(selectedForm){
@@ -30,7 +30,7 @@ export function FormsManager({}){
 
     useEffect(() => {
       fetchForms();
-    },[]);
+    },[fetchForms]);
 
     return (
       <div style={{ flexGrow: 1}}>

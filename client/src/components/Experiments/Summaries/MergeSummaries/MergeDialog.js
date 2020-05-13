@@ -103,7 +103,8 @@ export default function MergeDialog({
               async () => {
                 setIsSubmitted(true)
                 setIsLoading(true);
-                const res = await api.mergeAlgorithms(experimentName, mergeName, mergeInput);
+                await api.mergeAlgorithms(experimentName, mergeName, mergeInput);
+                //TO-DO error handling
                 setIsLoading(false);
                 onClose(mergeName);
               }

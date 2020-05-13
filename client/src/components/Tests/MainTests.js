@@ -1,9 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import {
-  Switch,
-  Route,
-  useParams
-} from "react-router-dom";
 import { Form } from './Form/Form';
 import api from '../../apiService';
 import { Typography, Button, Container, Card, TextField } from '@material-ui/core';
@@ -42,7 +37,7 @@ function MainTests() {
     setTestPlans(res.data);
   },[]);
 
-  useEffect(() => fetchTestPlans(),[]);
+  useEffect(() => fetchTestPlans(),[fetchTestPlans]);
 
   
 
