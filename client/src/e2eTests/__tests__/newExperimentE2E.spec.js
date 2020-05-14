@@ -9,7 +9,7 @@ describe('new Experiment', () => {
     let browser;
     beforeAll(async ()=>{
         browser = await remote({
-            logLevel: 'trace',
+            logLevel: 'debug',
             capabilities: {
                 browserName: 'chrome'
             }
@@ -34,7 +34,7 @@ describe('new Experiment', () => {
 
         await chooseImage(0);
 
-        const submit = await browser.$('#new-experiment-submit');
+        const submit = await browser.$('#existing-experiment-submit');
         await submit.click();
 
         // await browser.pause(5000);
