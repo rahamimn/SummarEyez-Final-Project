@@ -216,6 +216,25 @@ addTestPlan = async (testPlanName: any, formsDetails: any) =>{
     })
     return response(0);
 }
+getFullTestPlan = async (testPlanId, csv) =>{
+    const testPlan = await this.collectionsService.testPlans().get(testPlanId);
+    if(!testPlan){
+        return response(ERROR_STATUS.OBJECT_NOT_EXISTS, {error: ERRORS.TEST_PLAN_NAME_NOT_EXISTS})
+    }
+    var jsonAns = []
+
+    for (let index = 0; index < testPlan.forms.length; index++) {
+        const test = testPlan.forms[index]; 
+        const formsOfExp = await this.collectionsService.experiments().formsOf(test.experimentName)
+        const formToAdd = await formsOfExp.get(test.formId)
+        jsonAns = jsonAns.concat(formToAdd)
+        
+    }
+
+    return response(0, {data: jsonAns});
+}
+
+
 
 getAllTestPlans = async () =>{
     const allTestPlans = await this.collectionsService.testPlans().getAll();
