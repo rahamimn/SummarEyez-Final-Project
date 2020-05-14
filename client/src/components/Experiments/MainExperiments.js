@@ -105,7 +105,7 @@ function MainExperiments({permit}) {
               <ListItemText primary={'Summaries'} />
             </ListItem>
 
-            <ListItem button  onClick={e => history.push(experimetPage('forms'))}>
+            <ListItem button  id='test-form-manager-side-button' onClick={e => history.push(experimetPage('forms'))}>
             <ListItemIcon>
               <DeveloperBoardIcon />
             </ListItemIcon>

@@ -44,12 +44,25 @@ describe('Add Automatic Algorithm', () => {
         const isSuccExists = await successMessage.isExisting()
 
         expect(isSuccExists).toBe(true);
-
-
+        
     });
 
     it('fail - name exists', async () => {
-        //TODO
+        const existsAlgoName = 'algo1';
+
+        const uploadAlgorithmButton = await browser.$('#upload-algorithm-side-button');
+        await uploadAlgorithmButton.click();
+
+        const inputAlgoName = await browser.$('#insert-algorithm-name');
+        await inputAlgoName.setValue(existsAlgoName);
+        await browser.pause(1000);
+
+        uploadAlgoAndSubmit();
+        await browser.pause(2000);
+
+        const ErrorText = await browser.$('#insert-algorithm-name-helper-text');
+        expect(await ErrorText.getText()).toBe('Name already exsits, please choose different name')
+
     });
 
     const uploadAlgoAndSubmit = async () => {

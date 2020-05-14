@@ -38,9 +38,9 @@ export default function ChooseFromExisting_TabPanel({
   return (
     <div style={{display:'flex', flexDirection:'column', justifyContent:'space-between', height:'40vh'}}>
       <div>
-        <Typography style={{color:'#aaaaaa'}}>Choose From Exisiting Research, and see related summaries, and tests</Typography>
+        <Typography style={{color:'#aaaaaa'}}>Choose From Existing Research, and see related summaries, and tests</Typography>
         <Autocomplete
-          id="choose-from-exisiting-experiment-select"
+          id="choose-from-existing-experiment-select"
           style={{ width: '100%', marginRight: 10 }}
           options={experiments}
           autoHighlight
@@ -71,7 +71,7 @@ export default function ChooseFromExisting_TabPanel({
           helperText=""
           autoFocus
           margin="dense"
-          id="welcome-dialog-choose- permission-input"
+          id="welcome-dialog-permission-input"
           label="Enter Permission key"
           value={permKey}
           onChange={(e) => setPermKey(e.target.value)}
@@ -86,6 +86,7 @@ export default function ChooseFromExisting_TabPanel({
       }}>
 
         <Button
+          id='existing-experiment-submit'
           disabled={!experiment}
           variant="contained"
           size="large"

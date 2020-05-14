@@ -440,7 +440,7 @@ export function EditForm({
                 setFormDTO({...formDTO, [field]: !formDTO[field]});
                 onChange && onChange();
               }}
-              inputProps={{ 'aria-label': 'secondary checkbox' }}
+              inputProps={{ 'aria-label': 'secondary checkbox', 'id' : `${title} Toggle`}}
             />
           </div>
           {withFooter && formDTO[field] && <Divider style={{width: '350px'}}/>}
@@ -496,12 +496,13 @@ export function EditForm({
                 false,
               )}
               {renderSwitch(
-                'Rank Sentances',
+                'Rank Sentences',
                 'isRankSentences',
                 false,
               )}
               
               <Button
+                id='create-form-submit-btn'
                 disabled={disabled || (!isRankSentences && !withFixations && !isReadSummary && !isFillAnswers)}
                 style={{display: 'block' ,marginTop: '10px', float:'right'}}
                 variant="contained"
