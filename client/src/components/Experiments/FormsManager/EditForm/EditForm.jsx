@@ -424,7 +424,13 @@ export function EditForm({
         </div>
       },[form, formDTO, addQuestion, questionsError, questions, fetchQuestions]);
   
-      const renderSwitch = useCallback((title,field,withFooter, onChange, ) => {
+      const renderSwitch = useCallback(({
+        title,
+        field,
+        withFooter = false,
+        onChange,
+        id
+      }) => {
         const disabled = form && !form.editable;
         return (
         <div>
@@ -440,7 +446,7 @@ export function EditForm({
                 setFormDTO({...formDTO, [field]: !formDTO[field]});
                 onChange && onChange();
               }}
-              inputProps={{ 'aria-label': 'secondary checkbox', 'id' : `${title} Toggle`}}
+              inputProps={{ 'aria-label': 'secondary checkbox', id}}
             />
           </div>
           {withFooter && formDTO[field] && <Divider style={{width: '350px'}}/>}
@@ -472,34 +478,37 @@ export function EditForm({
                 label="Form Name"/>
   
               <div id="questions-section">
-                {renderSwitch(
-                  'Questions',
-                  'isFillAnswers',
-                  true,
-                  () => setAddQuestion(false)
-                )}
+                {renderSwitch({
+                  title: 'Questions',
+                  field: 'isFillAnswers',
+                  withFooter: true,
+                  onChange: () => setAddQuestion(false),
+                  id:'questions-switch'
+                })}
                 {QuestionSectionComp}
               </div>
   
               <div id="summary-section">
-                {renderSwitch(
-                  'Read Summary',
-                  'isReadSummary',
-                  true
-                )}
+                {renderSwitch({
+                  title: 'Read Summary',
+                  field: 'isReadSummary',
+                  withFooter: true,
+                  onChange: () => setAddQuestion(false),
+                  id:'read-summary-switch'
+                })}
                 {SummaryComp()}
               </div>
               
-              {renderSwitch(
-                'Upload Fixations',
-                'withFixations',
-                false,
-              )}
-              {renderSwitch(
-                'Rank Sentences',
-                'isRankSentences',
-                false,
-              )}
+              {renderSwitch({
+                  title: 'Upload Fixations',
+                  field: 'withFixations',
+                  id:'upload-fixations-switch',
+              })}
+              {renderSwitch({
+                title: 'Rank Sentences',
+                field: 'isRankSentences',
+                id:'rank-sentences-switch',
+              })}
               
               <Button
                 id='create-form-submit-btn'

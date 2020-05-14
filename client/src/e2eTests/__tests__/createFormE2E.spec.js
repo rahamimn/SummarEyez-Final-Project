@@ -28,26 +28,26 @@ describe('Manage Form', () => {
 
     it('success - create new form',async () => {
         
-        // const testFormManagerButton = await browser.$('#test-form-manager-side-button');
-        // await testFormManagerButton.click();
+        const testFormManagerButton = await browser.$('#test-form-manager-side-button');
+        await testFormManagerButton.click();
 
-        // const createNewFormButton = await browser.$('#create-new-form-btn');
-        // await createNewFormButton.click();
+        const createNewFormButton = await browser.$('#create-new-form-btn');
+        await createNewFormButton.click();
 
-        // const newFormName = chance.word();
-        // const formNameBox = await browser.$('#form-name');
-        // await formNameBox.setValue(newFormName);
+        const newFormName = chance.word();
+        const formNameBox = await browser.$('#form-name');
+        await formNameBox.setValue(newFormName);
 
-        // const uploadFixationButton = await browser.$('#Upload Fixations Toggle');
-        // await uploadFixationButton.click();
+        const uploadFixationButton = await browser.$('#upload-fixations-switch');
+        await uploadFixationButton.click();
 
-        // const rankSentencesButton = await browser.$('#Rank Sentences Toggle');
-        // await rankSentencesButton.click();
+        const rankSentencesButton = await browser.$('#rank-sentences-switch');
+        await rankSentencesButton.click();
 
         // const createFormSubmitBtn = await browser.$('#create-form-submit-btn');
         // await createFormSubmitBtn.click();
         
-        // await browser.pause(1000);
+        await browser.pause(1000);
 
     });
 
