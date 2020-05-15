@@ -226,6 +226,14 @@ app.get('/api/experiments/:experimentName/forms/:formId',(req, res) =>
     res.send(forms)
 }));
 
+app.get('/api/testPlans/:testPlanId/tests?csv={true/false}',(req, res) => 
+ errorHandling(res, async () => {
+    const testId = req.params.testPlanId;
+    const csv = req.params.csv;
+    const ans = await experimentService.getFullTestPlan(testId, csv);
+    res.send(ans)
+}));
+
 if(localMode){
     dataCreation(experimentService).then(() => {
         app.listen(port, () => console.log(`Server runs on RAM storage is running on port ${port}!`))
