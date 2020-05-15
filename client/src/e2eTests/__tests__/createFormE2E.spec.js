@@ -44,18 +44,35 @@ describe('Manage Form', () => {
         const rankSentencesButton = await browser.$('#rank-sentences-switch');
         await rankSentencesButton.click();
 
-        // const createFormSubmitBtn = await browser.$('#create-form-submit-btn');
-        // await createFormSubmitBtn.click();
+        const createFormSubmitBtn = await browser.$('#create-form-submit-btn');
+        await createFormSubmitBtn.click();
         
         await browser.pause(1000);
 
     });
 
     it('fail - form name exists',async () => {
-        //TODO
+        const testFormManagerButton = await browser.$('#test-form-manager-side-button');
+        await testFormManagerButton.click();
+
+        const createNewFormButton = await browser.$('#create-new-form-btn');
+        await createNewFormButton.click();
+
+        const existingFormName = 'formA1';
+        const formNameBox = await browser.$('#form-name');
+        await formNameBox.setValue(existingFormName);
+
+        const uploadFixationButton = await browser.$('#upload-fixations-switch');
+        await uploadFixationButton.click();
+
+        const rankSentencesButton = await browser.$('#rank-sentences-switch');
+        await rankSentencesButton.click();
+
+        const createFormSubmitBtn = await browser.$('#create-form-submit-btn');
+        await createFormSubmitBtn.click();
+
+        const ErrorText = await browser.$('#form-name-helper-text');
+        expect(await ErrorText.getText()).toBe('Name empty, or already exsits')
     });
-
-
-
 
 })
