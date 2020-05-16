@@ -239,7 +239,7 @@ getFullTestPlan = async (testPlanId, csv) =>{
     var csvRes
     if(csv == true){
         try{
-        const fields = ['testId', 'formId', 'answers','score','sentanceWeights','experimentName','testPlanId'];
+        const fields = ['testId', 'formId', 'answers','score','experimentName','testPlanId'];
         const opts = { fields };
         const parser = new Parser(opts);
         csvRes = parser.parse(jsonAns);
