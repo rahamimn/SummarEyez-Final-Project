@@ -58,9 +58,7 @@ export class ExperimentService{
         const files = await fs.readdir('./automatic-algorithms');
         let algNames = [];
         if(files.length > 0){
-            console.log('before forEp');
             await forEP(files, async (file:string) => {
-                console.log('before forEp');
                 if(file.endsWith('.py')){
                     algNames.push(file);
                 }
@@ -224,10 +222,17 @@ getFullTestPlan = async (testPlanId, csv) =>{
     var jsonAns = []
 
     for (let index = 0; index < testPlan.forms.length; index++) {
-        const test = testPlan.forms[index]; 
-        const formsOfExp = await this.collectionsService.experiments().formsOf(test.experimentName)
-        const formToAdd = await formsOfExp.get(test.formId)
-        jsonAns = jsonAns.concat(formToAdd)
+        const form = testPlan.forms[index]; 
+        const expName = form.experimentName;
+        const formId = form.formId;
+        const experiments = await this.collectionsService.experiments().getTests(expName).getAll()
+        
+        for (let j = 0; j < experiments.length; j++) { 
+            if(experiments[j].data.formId == formId){
+                const testToAdd = experiments[j].data
+                jsonAns = jsonAns.concat(testToAdd)
+            }
+        }
         
     }
 
@@ -524,7 +529,7 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
     private verifyAutomaticAlgorithmExists = async (names: string[]) => {
         const automaticAlgsSavedLocally = await this.getAutoAlgsSavedLocally();
         //we should fetch newly algorithms 
-        console.log(names);
+
         await forEP(names, async name => {
             const metaAuto = await this.collectionsService.automaticAlgos().get(name);
             if(!automaticAlgsSavedLocally.includes(name)){
@@ -545,7 +550,6 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
         const imageName =  experiment.imageName;
         const text = await this.storageService.downloadToBuffer(`images/${imageName}/text`);
         const base_sent_table = await this.storageService.downloadToBuffer(`images/${imageName}/base_sent_table`);
-        console.log(algsNames)
         await this.verifyAutomaticAlgorithmExists(algsNames);
         const {tables} = await this.pythonService.runAutomaticAlgs(algsNames, text,base_sent_table);
         if(tables.length > 0){
