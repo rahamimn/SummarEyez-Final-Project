@@ -10,7 +10,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Checkbox from '@material-ui/core/Checkbox';
 
-function EnhancedTableHead({headers, selected}) {
+function EnhancedTableHead({headers, selected, sample}) {
   return (
     <TableHead>
       <TableRow>
@@ -21,8 +21,8 @@ function EnhancedTableHead({headers, selected}) {
             {headers[0].label}
           </TableCell>
         {headers.slice(1).map(header => (
-          <TableCell key={header.id + header.type==="array" ? header.index: '' } align="right">
-            {header.label}
+          <TableCell key={header.id + header.type ==="array" ? header.index: '' } align="right">
+            {header.id == 'answers' ? header.labelFormat(sample && sample.data.answers[header.index].id) : header.label}
           </TableCell>
         ))}
       </TableRow>
@@ -109,7 +109,7 @@ export default function TableSummaries({
             size={'small'}
             aria-label="enhanced table"
           >
-            <EnhancedTableHead headers={headers} selected={selected}/>
+            <EnhancedTableHead headers={headers} selected={selected} sample={rows[0]}/>
             <TableBody>
                 {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {

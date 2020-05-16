@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@material-ui/core';
+import { Button, Popper } from '@material-ui/core';
 import {saveAs} from 'save-as';
  
 export const testsHeadersDefault = [
@@ -8,12 +8,12 @@ export const testsHeadersDefault = [
     { id: 'formId', label: 'Form Name' },
 ];
   
-export const createHeadersFromForm = (form, experimentName) => {
+export const createHeadersFromForm = (form, experimentName, openQuestionModal) => {
   let headers = [...testsHeadersDefault];
   if(form.isFillAnswers){
     headers = [...headers, ...form.questionIds.map((id,ind) => ({ 
         id: 'answers',
-        label: `Q${ind}`,
+        labelFormat: (qId) => <span style={{cursor:'pointer'}} onClick={() => openQuestionModal(qId)}>Q{ind}</span>,
         index: ind,
         type:'array',
         format: (answer) =>`${answer.ans} ~${answer.time/1000}~` })
