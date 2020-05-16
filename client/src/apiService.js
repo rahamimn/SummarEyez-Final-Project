@@ -193,6 +193,11 @@ const api = {
             formsDetails
         });
         return res.data;
+    },
+
+    getExperimentTests: async (experimentName, formName, minScore ) => {
+        const res = await axios.get(`/api/experiments/${experimentName}/tests?${formName? `formId=${formName}`:''}&minscore=0`);
+        return res.data;
     }
 }
 

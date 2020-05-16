@@ -58,9 +58,7 @@ export class ExperimentService{
         const files = await fs.readdir('./automatic-algorithms');
         let algNames = [];
         if(files.length > 0){
-            console.log('before forEp');
             await forEP(files, async (file:string) => {
-                console.log('before forEp');
                 if(file.endsWith('.py')){
                     algNames.push(file);
                 }
@@ -373,6 +371,7 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
     }
 
     addImage = async (name, buffer) => {
+        console.log('addImage-uploadImage-start');
         const image = await this.collectionsService.images().get(name);
         if(image){
             return response(ERROR_STATUS.NAME_NOT_VALID, {error:ERRORS.IM_EXISTS});
@@ -396,29 +395,37 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
             base_sent_table_path: `images/${name}/base_sent_table`,
         });
 
-        const automaticAlgsSavedLocally = await this.getAutoAlgsSavedLocally();
-        //we should fetch newly algorithms 
-        const allAutomaticAlgs: string[] = await this.collectionsService.automaticAlgos().getAll();
-        if(allAutomaticAlgs.length > 0){
-            await forEP(allAutomaticAlgs, async (metaAuto) => {
-                const autoName = metaAuto.data.name;
-                if(allAutomaticAlgs.includes(autoName)){
-                    return;
-                }
-                await this.storageService.downloadToPath(
-                    metaAuto.data.path,
-                    `./automatic-algorithms/${autoName}`
-                )
-                automaticAlgsSavedLocally.push(autoName)
-            });
+        console.log('addImage-uploadImage-end');
+        console.log('addImage-run-automatic-start');
+        try{
+
+            const automaticAlgsSavedLocally = await this.getAutoAlgsSavedLocally();
+            //we should fetch newly algorithms 
+            const allAutomaticAlgs: string[] = await this.collectionsService.automaticAlgos().getAll();
+            if(allAutomaticAlgs.length > 0){
+                await forEP(allAutomaticAlgs, async (metaAuto) => {
+                    const autoName = metaAuto.data.name;
+                    if(allAutomaticAlgs.includes(autoName)){
+                        return;
+                    }
+                    await this.storageService.downloadToPath(
+                        metaAuto.data.path,
+                        `./automatic-algorithms/${autoName}`
+                    )
+                    automaticAlgsSavedLocally.push(autoName)
+                });
+            }
+        
+            const {tables} = await this.pythonService.runAutomaticAlgs(
+                automaticAlgsSavedLocally,
+                files.text,
+                files.base_sent_table);
+            if(tables.length> 0){
+                await this.addAutomaticAlgToImg(tables,name);
+            }
         }
-    
-        const {tables} = await this.pythonService.runAutomaticAlgs(
-            automaticAlgsSavedLocally,
-            files.text,
-            files.base_sent_table);
-        if(tables.length> 0){
-            await this.addAutomaticAlgToImg(tables,name);
+        catch(e){
+            console.log('addImage-run-automatic-failed');
         }
 
         return response(0);

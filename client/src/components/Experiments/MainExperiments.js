@@ -29,6 +29,7 @@ import {UploadFixations} from './UploadFixations/UploadFixations';
 import { FormsManager } from './FormsManager/FormsManager';
 import { TestPlanManager } from './TestPlansManager/TestPlanManager';
 import { Typography } from '@material-ui/core';
+import { TestsPoolMain } from './FormsManager/TestPool/TestPoolMain';
 
 
 const drawerWidth = 240;
@@ -87,7 +88,7 @@ function MainExperiments({permit}) {
           </ListItemIcon>
           <ListItemText primary={'Test Plans Manager'} />
         </ListItem>
-        <ListItem button onClick={e => history.push(experimetPage('tests'))}>
+        <ListItem button onClick={e => history.push(experimetPage('testPool'))}>
           <ListItemIcon>
             <AssessmentIcon />
           </ListItemIcon>   
@@ -112,12 +113,12 @@ function MainExperiments({permit}) {
               <ListItemText primary={'Test Forms Manager'} />
             </ListItem>
 
-            <ListItem button onClick={e => history.push(experimetPage('tests'))}>
+            {/* <ListItem button onClick={e => history.push(experimetPage('tests'))}>
               <ListItemIcon>
                 <AssessmentIcon />
               </ListItemIcon>   
               <ListItemText primary={'Test pool'} />
-            </ListItem>
+            </ListItem> */}
 
             <ListItem button onClick={e => history.push(experimetPage('uploadFixations'))}>
               <ListItemIcon>
@@ -156,6 +157,9 @@ function MainExperiments({permit}) {
 
             <Route path={experimetRoutePage('testPlans',true)}>
               <TestPlanManager/>
+            </Route>
+            <Route path={experimetRoutePage('testPool',true)}>
+              <TestsPoolMain/>
             </Route>
             
             <Route path={'/experiments-new/new'}>

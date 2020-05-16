@@ -4,7 +4,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 
 import api from '../../../apiService';
 
-export function FormChooser({experiments, onSelectForm}){
+export function FormChooser({experiments, onSelectForm, dontRefresh, alreadyDone}){
     const [selectedExperiment,setSelectedExperiment] = useState(null);
     const [forms,setForms] = useState([]);
 
@@ -50,14 +50,16 @@ export function FormChooser({experiments, onSelectForm}){
         <Autocomplete
           id="form-chooser-choose-form"
           style={{ width: '200px', marginRight:10 }}
-          options={forms}
+          options={alreadyDone ? forms.filter(form => !form.data.editable): forms}
           autoHighlight
           getOptionLabel={option => option.id}
           onChange={(e,form) => {
-            setSelectedExperiment(null);
-            setExperimentText('');
-            setFormText('');
-            setForms([]);
+            if(!dontRefresh){
+              setSelectedExperiment(null);
+              setExperimentText('');
+              setFormText('');
+              setForms([]);
+            }
             form && onSelectForm(selectedExperiment, form.data);
           }}
           onInputChange={(e, value) => experimentText && setFormText(value)}

@@ -10,18 +10,18 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Checkbox from '@material-ui/core/Checkbox';
 
-function EnhancedTableHead({headers}) {
+function EnhancedTableHead({headers, selected}) {
   return (
     <TableHead>
       <TableRow>
-          <TableCell>
+          {selected &&<TableCell>
             Mark
-          </TableCell>
+          </TableCell>}
           <TableCell padding="none">
             {headers[0].label}
           </TableCell>
         {headers.slice(1).map(header => (
-          <TableCell key={header.id} align="right">
+          <TableCell key={header.id + header.type==="array" ? header.index: '' } align="right">
             {header.label}
           </TableCell>
         ))}
@@ -59,13 +59,16 @@ export default function TableSummaries({
   selected,
   onChangeSelected,
   headers,
-  rows
+  rows,
+  initPageSize
 }) {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(initPageSize || 5);
 
   const handleClick = (event, name) => {
+    if(!selected) 
+      return;
     const selectedIndex = selected.indexOf(name);
     let newSelected = [];
 
@@ -94,7 +97,7 @@ export default function TableSummaries({
     setPage(0);
   };
 
-  const isSelected = name => selected.indexOf(name) !== -1;
+  const isSelected = name => selected && selected.indexOf(name) !== -1;
 
 
   return (
@@ -106,7 +109,7 @@ export default function TableSummaries({
             size={'small'}
             aria-label="enhanced table"
           >
-            <EnhancedTableHead headers={headers}/>
+            <EnhancedTableHead headers={headers} selected={selected}/>
             <TableBody>
                 {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
@@ -124,21 +127,28 @@ export default function TableSummaries({
                       key={data.name}
                       selected={isItemSelected}
                     >
-                      <TableCell padding="checkbox">
+                      {selected && <TableCell padding="checkbox">
                         <Checkbox
                           checked={isItemSelected}
                           inputProps={{ 'aria-labelledby': labelId }}
                         />
-                      </TableCell>
+                      </TableCell>}
                       <TableCell component="th" id={labelId} scope="row" padding="none">
                         {data.name}
                       </TableCell>
                       {headers.slice(1).map(
                         header => {
-                          return <TableCell key={`${header.id}-${index}`} align="right">{
-                            header.type ==='date' && data[header.id] ?
-                              new Date(data[header.id]).toLocaleDateString() :
-                              data[header.id]}</TableCell>
+                          const type = header.type;
+                          const dataEntry = data[header.id];
+
+                          return <TableCell key={`${type==='array' ? header.id + header.index :  header.id}-${index}`} align="right">{
+                            type ==='date' && dataEntry ?
+                              new Date(dataEntry).toLocaleDateString() :
+                              type ==='array' && dataEntry[header.index]? 
+                              header.format(dataEntry[header.index]) :
+                              type ==='custom' && dataEntry? 
+                              header.format(dataEntry) :
+                              dataEntry}</TableCell>
                         }
                       )}
                     </TableRow>
