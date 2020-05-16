@@ -13,7 +13,7 @@ const { Parser } = require('json2csv');
 // var isUtf8 = require('is-utf8');
 
 const response = (status,{data=null, error=null}={}) => ({status, data, error});
-
+var groupBy = require('lodash.groupby');
 
 export class ExperimentService{
     private collectionsService : Collections;
@@ -215,13 +215,14 @@ addTestPlan = async (testPlanName: any, formsDetails: any) =>{
     })
     return response(0);
 }
+
 getFullTestPlan = async (testPlanId, csv) =>{
     const testPlan = await this.collectionsService.testPlans().get(testPlanId);
     if(!testPlan){
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS, {error: ERRORS.TEST_PLAN_NAME_NOT_EXISTS})
     }
     var jsonAns = []
-
+    
     for (let index = 0; index < testPlan.forms.length; index++) {
         const form = testPlan.forms[index]; 
         const expName = form.experimentName;
@@ -233,9 +234,11 @@ getFullTestPlan = async (testPlanId, csv) =>{
                 const testToAdd = experiments[j].data
                 jsonAns = jsonAns.concat(testToAdd)
             }
-        }
-        
-    }
+        } 
+    }  
+    
+    jsonAns = groupBy(jsonAns, (test) => test.testId);
+
     var csvRes
     if(csv == true){
         try{
@@ -250,7 +253,7 @@ getFullTestPlan = async (testPlanId, csv) =>{
         }
     }
     
-    return response(0, {data:{json: jsonAns, csv:csvRes}});
+    return response(0, {data:{json: jsonAns, csv: csvRes}});
 }
 
 
