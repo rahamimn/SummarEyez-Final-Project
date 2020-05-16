@@ -9,6 +9,7 @@ import * as csvToJson from 'csvtojson';
 import { v4 as uuidv4 } from 'uuid';
 import { ERROR_STATUS, ERRORS } from '../utils/Errors';
 
+const { Parser } = require('json2csv');
 // var isUtf8 = require('is-utf8');
 
 const response = (status,{data=null, error=null}={}) => ({status, data, error});
@@ -235,8 +236,21 @@ getFullTestPlan = async (testPlanId, csv) =>{
         }
         
     }
-
-    return response(0, {data: jsonAns});
+    var csvRes
+    if(csv == true){
+        try{
+        const fields = ['testId', 'formId', 'answers','score','sentanceWeights','experimentName','testPlanId'];
+        const opts = { fields };
+        const parser = new Parser(opts);
+        csvRes = parser.parse(jsonAns);
+        console.log(csvRes);
+        }
+        catch (err){
+            console.error(err);
+        }
+    }
+    
+    return response(0, {data:{json: jsonAns, csv:csvRes}});
 }
 
 

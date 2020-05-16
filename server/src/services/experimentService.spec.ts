@@ -1344,7 +1344,7 @@ describe('ExperimentService Tests',() =>{
 
         it('success- getFullTestPlan return 3 tests, different experiment', async () => {
             const  {status, data} = await experimentService.getFullTestPlan(testPlanName,false)
-            expect(data.length).toEqual(3);
+            expect(data.json.length).toEqual(3);
             expect(status).toEqual(0);     
         });
 
