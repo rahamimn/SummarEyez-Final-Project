@@ -236,17 +236,23 @@ getFullTestPlan = async (testPlanId, csv) =>{
             }
         } 
     }  
-
+    
     jsonAns = groupBy(jsonAns, (test) => test.testId);
-   
+
+    jsonAns =  Object.entries(jsonAns).map(entry => ({testId: entry[0], tests: entry[1]}))
     var csvRes
-    if(csv == true){
+    if(csv == false){
         try{
-        const fields = ['testId', 'formId', 'answers','score','experimentName','testPlanId'];
-        const opts = { fields };
-        const parser = new Parser(opts);
-        csvRes = parser.parse(jsonAns);
-        //console.log(csvRes);
+            var fields = [{label : 'TestId',value : (entry) => entry.testId},
+                {label : 'ExperimentName', value : (entry) => entry.tests.map(tmp => tmp.experimentName)},
+                {label : 'Q/A/T', value : (entry) => entry.tests.map(tmp => `${tmp.formId} - ${tmp.answers}`)},
+                {label : 'Score', value : (entry) => entry.tests.map(tmp =>`${tmp.formId} - ${tmp.score}`)}
+                ]
+        
+            var opts = { fields };
+            var parser = new Parser(opts);
+            var csvRes = parser.parse(jsonAns);
+            //console.log(csvRes);
         }
         catch (err){
             console.error(err);
