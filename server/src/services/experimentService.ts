@@ -241,14 +241,22 @@ getFullTestPlan = async (testPlanId, csv) =>{
 
     jsonAns =  Object.entries(jsonAns).map(entry => ({testId: entry[0], tests: entry[1]}))
     var csvRes
-    if(csv == false){
+    if(csv == true){
         try{
-            var fields = [{label : 'TestId',value : (entry) => entry.testId},
-                {label : 'ExperimentName', value : (entry) => entry.tests.map(tmp => tmp.experimentName)},
-                {label : 'Q/A/T', value : (entry) => entry.tests.map(tmp => `${tmp.formId} - ${tmp.answers}`)},
-                {label : 'Score', value : (entry) => entry.tests.map(tmp =>`${tmp.formId} - ${tmp.score}`)}
-                ]
-        
+            var fields =[]
+            const samp = jsonAns[0].tests
+            
+            samp.forEach((test, index) => {
+                fields.push({label: 'formId' , value: (entry) => entry.tests[index].formId })
+                fields.push({label: 'experimentName' , value: (entry) => entry.tests[index].experimentName })
+                if(test.answers){
+                fields.push({label: 'score' , value: (entry) => entry.tests[index].score})
+                test.answers.forEach((ans, i) => fields =  fields.concat
+                    ({label: `q${i} id` , value: (entry) => entry.tests[index].answers[i].id},
+                    {label: `q${i} answer` , value: (entry) => entry.tests[index].answers[i].ans},
+                    {label: `q${i} time` , value: (entry) => entry.tests[index].answers[i].time} ))
+            }});
+
             var opts = { fields };
             var parser = new Parser(opts);
             var csvRes = parser.parse(jsonAns);
