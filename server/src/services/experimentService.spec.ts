@@ -1280,8 +1280,9 @@ describe('ExperimentService Tests',() =>{
         const testPlanNameNotExist = "testPlanNotExist"
         const testId1 = 'testId1';
         const testId2 = 'testId2';
+        
 
-        const paramsWithTestPlan1={
+        const test1Params={
             testId: testId1,
             formId : 'form1',
             answers: [{id:1, ans:1, time:3}, {id:2, ans:2, time:3}, {id:3, ans:3, time:3}],
@@ -1291,19 +1292,19 @@ describe('ExperimentService Tests',() =>{
             fixations: 'buffer',
             testPlanId: "testPlan"
         }
-        const paramsWithTestPlan2={
+        const test2Params={
             testId: testId2,
             formId : 'form2',
             answers: [{id:1, ans:1, time:3}, {id:2, ans:2, time:3}, {id:3, ans:3, time:3}],
             score : 33,
             sentanceWeights : '5',
-            experimentName: expName2,
+            experimentName: expName,
             fixations: 'buffer',
             testPlanId: "testPlan"
         }
-        const paramsWithTestPlan3={
+        const test3Params={
             testId: testId2,
-            formId : 'form2',
+            formId : 'form3',
             answers: [{id:1, ans:1, time:3}, {id:2, ans:2, time:3}, {id:3, ans:3, time:3}],
             score : 33,
             sentanceWeights : '5',
@@ -1327,30 +1328,37 @@ describe('ExperimentService Tests',() =>{
             name: 'form2',
             isRankSentences: false,
         }
+        const FormsParams3={
+            ...FormsParams1,
+            experimentName: expName2,
+            name: 'form3',
+            isRankSentences: false,
+        }
 
         beforeEach( async () => {
             await collectionsService.experiments().add(expName, {imgName});
             await collectionsService.experiments().add(expName2, {imgName});
 
             await collectionsService.experiments().formsOf(expName).add(FormsParams1.name, FormsParams1)
-            await collectionsService.experiments().formsOf(expName2).add(FormsParams2.name, FormsParams2)
-            await collectionsService.experiments().formsOf(expName2).add(FormsParams2.name, FormsParams2)
+            await collectionsService.experiments().formsOf(expName).add(FormsParams2.name, FormsParams2)
+            await collectionsService.experiments().formsOf(expName2).add(FormsParams3.name, FormsParams3)
 
-            await collectionsService.experiments().getTests(expName).add(paramsWithTestPlan1.testId,paramsWithTestPlan1)
-            await collectionsService.experiments().getTests(expName2).add(paramsWithTestPlan2.testId,paramsWithTestPlan2)
-            await collectionsService.experiments().getTests(expName2).add(paramsWithTestPlan3.testId,paramsWithTestPlan3)
+            await collectionsService.experiments().getTests(expName).add(test1Params.testId,test1Params)
+            await collectionsService.experiments().getTests(expName).add(test2Params.testId,test2Params)
+            await collectionsService.experiments().getTests(expName2).add(test3Params.testId,test3Params)
 
             await collectionsService.testPlans().add(testPlanName, {
                 id: testPlanName,
                 forms: [{ experimentName: expName, formId: FormsParams1.name},
-                    { experimentName: expName2, formId: FormsParams2.name},
-                    { experimentName: expName2, formId: FormsParams2.name}]
+                    { experimentName: expName, formId: FormsParams2.name},
+                    { experimentName: expName2, formId: FormsParams3.name}]
             })
           
         });
 
         it('success- getFullTestPlan return 3 tests, different experiment', async () => {
             const  {status, data} = await experimentService.getFullTestPlan(testPlanName,false)
+            console.log(data.json)
             expect(data.json[testId1].length).toEqual(1);
             expect(data.json[testId2].length).toEqual(2);
             expect(status).toEqual(0);     

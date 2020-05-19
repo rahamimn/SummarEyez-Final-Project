@@ -222,13 +222,13 @@ getFullTestPlan = async (testPlanId, csv) =>{
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS, {error: ERRORS.TEST_PLAN_NAME_NOT_EXISTS})
     }
     var jsonAns = []
-    
+
     for (let index = 0; index < testPlan.forms.length; index++) {
         const form = testPlan.forms[index]; 
         const expName = form.experimentName;
         const formId = form.formId;
         const experiments = await this.collectionsService.experiments().getTests(expName).getAll()
-        
+
         for (let j = 0; j < experiments.length; j++) { 
             if(experiments[j].data.formId == formId){
                 const testToAdd = experiments[j].data
@@ -236,9 +236,9 @@ getFullTestPlan = async (testPlanId, csv) =>{
             }
         } 
     }  
-    
-    jsonAns = groupBy(jsonAns, (test) => test.testId);
 
+    jsonAns = groupBy(jsonAns, (test) => test.testId);
+   
     var csvRes
     if(csv == true){
         try{
@@ -246,7 +246,7 @@ getFullTestPlan = async (testPlanId, csv) =>{
         const opts = { fields };
         const parser = new Parser(opts);
         csvRes = parser.parse(jsonAns);
-        console.log(csvRes);
+        //console.log(csvRes);
         }
         catch (err){
             console.error(err);
