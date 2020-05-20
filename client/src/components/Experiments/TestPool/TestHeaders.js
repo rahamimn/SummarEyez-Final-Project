@@ -5,6 +5,7 @@ import {saveAs} from 'save-as';
 export const testsHeadersDefault = [
     { id: 'name', label: 'Test Id/Name'},
     { id: 'creation_date', label: 'Creation Date', type:'date' },
+    { id: 'testPlanId', label: 'Test Plan Id'},
     { id: 'formId', label: 'Form Name' },
 ];
   

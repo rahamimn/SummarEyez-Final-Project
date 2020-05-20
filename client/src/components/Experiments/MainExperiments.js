@@ -29,7 +29,7 @@ import {UploadFixations} from './UploadFixations/UploadFixations';
 import { FormsManager } from './FormsManager/FormsManager';
 import { TestPlanManager } from './TestPlansManager/TestPlanManager';
 import { Typography } from '@material-ui/core';
-import { TestsPoolMain } from './FormsManager/TestPool/TestPoolMain';
+import { TestsPoolMain } from './TestPool/TestPoolMain';
 
 
 const drawerWidth = 240;

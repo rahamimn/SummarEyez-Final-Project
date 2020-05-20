@@ -22,7 +22,7 @@ function EnhancedTableHead({headers, selected, sample}) {
           </TableCell>
         {headers.slice(1).map(header => (
           <TableCell key={header.id + header.type ==="array" ? header.index: '' } align="right">
-            {header.id == 'answers' ? header.labelFormat(sample && sample.data.answers[header.index].id) : header.label}
+            {header.id === 'answers' ? header.labelFormat(sample && sample.data.answers[header.index].id) : header.label}
           </TableCell>
         ))}
       </TableRow>

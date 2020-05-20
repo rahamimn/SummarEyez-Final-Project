@@ -226,10 +226,10 @@ app.get('/api/experiments/:experimentName/forms/:formId',(req, res) =>
     res.send(forms)
 }));
 
-app.get('/api/testPlans/:testPlanId/tests?csv={true/false}',(req, res) => 
+app.get('/api/testPlans/:testPlanId/tests',(req, res) => 
  errorHandling(res, async () => {
     const testId = req.params.testPlanId;
-    const csv = req.params.csv;
+    const csv = req.query.csv === "true";
     const ans = await experimentService.testOfTestPlan(testId, csv);
     res.send(ans)
 }));

@@ -198,7 +198,12 @@ const api = {
     getExperimentTests: async (experimentName, formName, minScore ) => {
         const res = await axios.get(`/api/experiments/${experimentName}/tests?${formName? `formId=${formName}`:''}&minscore=0`);
         return res.data;
-    }
+    },
+
+    exportAnswersByTestPlanCsv: async (testPlanId) => {
+        const res = await axios.get(`/api/testPlans/${testPlanId}/tests?csv=true`);
+        return new Blob([res.data.data.csv]);
+    },
 }
 
 export default api;

@@ -241,21 +241,25 @@ testOfTestPlan = async (testPlanId, csv) =>{
 
     jsonAns =  Object.entries(jsonAns).map(entry => ({testId: entry[0], tests: entry[1]}))
     var csvRes
-    if(csv == true){
+    if(csv === true){
         try{
             var fields =[]
             const samp = jsonAns[0].tests
+            const testData = (entry,ind) => entry.tests[ind].data;
 
             samp.forEach((test, index) => {
-                fields.push({label: 'formId' , value: (entry) => entry.tests[index].formId })
-                fields.push({label: 'experimentName' , value: (entry) => entry.tests[index].experimentName })
-                if(test.answers){
-                fields.push({label: 'score' , value: (entry) => entry.tests[index].score})
-                test.answers.forEach((ans, i) => fields =  fields.concat
-                    ({label: `q${i} id` , value: (entry) => entry.tests[index].answers[i].id},
-                    {label: `q${i} answer` , value: (entry) => entry.tests[index].answers[i].ans},
-                    {label: `q${i} time` , value: (entry) => entry.tests[index].answers[i].time} ))
-            }});
+                fields.push({label: 'studentId' , value: (entry) => entry.testId })
+                fields.push({label: 'formId' , value: (entry) => testData(entry,index).formId })
+                if(test.data.answers){
+                    fields.push({label: 'score' , value: (entry) => testData(entry,index).score})
+                    test.data.answers.forEach((ans, i) => fields = [
+                        ...fields,
+                        {label: `q${i} id` , value: (entry) => testData(entry,index).answers[i].id},
+                        {label: `q${i} answer` , value: (entry) => testData(entry,index).answers[i].ans},
+                        {label: `q${i} time` , value: (entry) => testData(entry,index).answers[i].time} 
+                    ]);
+                }
+            });
 
             var opts = { fields };
             var parser = new Parser(opts);
