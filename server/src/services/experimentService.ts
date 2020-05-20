@@ -230,12 +230,13 @@ testOfTestPlan = async (testPlanId, csv) =>{
         const tests = await this.collectionsService.experiments().getTests(expName).getAll()
 
         for (let j = 0; j < tests.length; j++) { 
-            if(tests[j].data.testPlanId == testPlan.id ){
+            if(tests[j].data.testPlanId === testPlan.id && tests[j].data.formId === formId){
                 const testToAdd = tests[j]
                 jsonAns = jsonAns.concat(testToAdd)
             }
         } 
     }  
+
     jsonAns = groupBy(jsonAns, (test) => test.id);
 
     jsonAns =  Object.entries(jsonAns).map(entry => ({testId: entry[0], tests: entry[1]}))

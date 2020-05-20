@@ -1274,7 +1274,6 @@ describe('ExperimentService Tests',() =>{
     describe('getFullTestPlan test' , () => {
 
         const expName = 'exp1';
-        const expName2 = 'exp2';
         const imgName = 'img1';
         const testPlanName = "testPlan"
         const testPlanNameNotExist = "testPlanNotExist"
@@ -1338,9 +1337,8 @@ describe('ExperimentService Tests',() =>{
           
         });
 
-        it('success- getFullTestPlan return 3 tests, different experiment', async () => {
+        it('success- getFullTestPlan return 2 tests, different experiment', async () => {
             const  {status, data} = await experimentService.testOfTestPlan(testPlanName,false)
-            console.log(data.json)
             expect(data.json[0].tests.length).toEqual(1);
             expect(data.json[1].tests.length).toEqual(1);
             expect(status).toEqual(0);     
