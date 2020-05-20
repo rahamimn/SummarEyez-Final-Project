@@ -224,14 +224,14 @@ testOfTestPlan = async (testPlanId, csv) =>{
     var jsonAns = []
 
     for (let index = 0; index < testPlan.forms.length; index++) {
-        const test = testPlan.forms[index]; 
-        const expName = test.experimentName;
-        const formId = test.formId;
-        const experiments = await this.collectionsService.experiments().getTests(expName).getAll()
+        const form = testPlan.forms[index]; 
+        const expName = form.experimentName;
+        const formId = form.formId;
+        const tests = await this.collectionsService.experiments().getTests(expName).getAll()
 
-        for (let j = 0; j < experiments.length; j++) { 
-            if(experiments[j].data.formId == formId){
-                const testToAdd = experiments[j]
+        for (let j = 0; j < tests.length; j++) { 
+            if(tests[j].data.testPlanId == testPlan.id ){
+                const testToAdd = tests[j]
                 jsonAns = jsonAns.concat(testToAdd)
             }
         } 

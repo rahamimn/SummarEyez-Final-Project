@@ -1323,16 +1323,12 @@ describe('ExperimentService Tests',() =>{
 
         beforeEach( async () => {
             await collectionsService.experiments().add(expName, {imgName});
-           // await collectionsService.experiments().add(expName2, {imgName});
 
             await collectionsService.experiments().formsOf(expName).add(FormsParams1.name, FormsParams1)
             await collectionsService.experiments().formsOf(expName).add(FormsParams2.name, FormsParams2)
 
             await collectionsService.experiments().getTests(expName).add(test1Params.testId,test1Params)
             await collectionsService.experiments().getTests(expName).add(test2Params.testId,test2Params)
-
-            await collectionsService.experiments().getTests(expName).add(test1Params.testId, test1Params)
-            await collectionsService.experiments().getTests(expName).add(test2Params.testId, test2Params)
 
             await collectionsService.testPlans().add(testPlanName, {
                 id: testPlanName,
@@ -1344,6 +1340,7 @@ describe('ExperimentService Tests',() =>{
 
         it('success- getFullTestPlan return 3 tests, different experiment', async () => {
             const  {status, data} = await experimentService.testOfTestPlan(testPlanName,false)
+            console.log(data.json)
             expect(data.json[0].tests.length).toEqual(1);
             expect(data.json[1].tests.length).toEqual(1);
             expect(status).toEqual(0);     
