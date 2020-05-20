@@ -216,7 +216,7 @@ addTestPlan = async (testPlanName: any, formsDetails: any) =>{
     return response(0);
 }
 
-getFullTestPlan = async (testPlanId, csv) =>{
+testOfTestPlan = async (testPlanId, csv) =>{
     const testPlan = await this.collectionsService.testPlans().get(testPlanId);
     if(!testPlan){
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS, {error: ERRORS.TEST_PLAN_NAME_NOT_EXISTS})
@@ -224,20 +224,19 @@ getFullTestPlan = async (testPlanId, csv) =>{
     var jsonAns = []
 
     for (let index = 0; index < testPlan.forms.length; index++) {
-        const form = testPlan.forms[index]; 
-        const expName = form.experimentName;
-        const formId = form.formId;
+        const test = testPlan.forms[index]; 
+        const expName = test.experimentName;
+        const formId = test.formId;
         const experiments = await this.collectionsService.experiments().getTests(expName).getAll()
 
         for (let j = 0; j < experiments.length; j++) { 
             if(experiments[j].data.formId == formId){
-                const testToAdd = experiments[j].data
+                const testToAdd = experiments[j]
                 jsonAns = jsonAns.concat(testToAdd)
             }
         } 
     }  
-    
-    jsonAns = groupBy(jsonAns, (test) => test.testId);
+    jsonAns = groupBy(jsonAns, (test) => test.id);
 
     jsonAns =  Object.entries(jsonAns).map(entry => ({testId: entry[0], tests: entry[1]}))
     var csvRes
@@ -245,7 +244,7 @@ getFullTestPlan = async (testPlanId, csv) =>{
         try{
             var fields =[]
             const samp = jsonAns[0].tests
-            
+
             samp.forEach((test, index) => {
                 fields.push({label: 'formId' , value: (entry) => entry.tests[index].formId })
                 fields.push({label: 'experimentName' , value: (entry) => entry.tests[index].experimentName })

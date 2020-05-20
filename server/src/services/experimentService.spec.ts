@@ -1343,14 +1343,14 @@ describe('ExperimentService Tests',() =>{
         });
 
         it('success- getFullTestPlan return 3 tests, different experiment', async () => {
-            const  {status, data} = await experimentService.getFullTestPlan(testPlanName,false)
+            const  {status, data} = await experimentService.testOfTestPlan(testPlanName,false)
             expect(data.json[0].tests.length).toEqual(1);
             expect(data.json[1].tests.length).toEqual(1);
             expect(status).toEqual(0);     
         });
 
         it('fail- testPlan not exist', async () => {
-            const  {status, data} = await experimentService.getFullTestPlan(testPlanNameNotExist, false)
+            const  {status, data} = await experimentService.testOfTestPlan(testPlanNameNotExist, false)
             expect(status).toEqual(-6);       
         });
     });
