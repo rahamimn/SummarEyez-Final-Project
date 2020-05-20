@@ -230,7 +230,7 @@ app.get('/api/testPlans/:testPlanId/tests?csv={true/false}',(req, res) =>
  errorHandling(res, async () => {
     const testId = req.params.testPlanId;
     const csv = req.params.csv;
-    const ans = await experimentService.getFullTestPlan(testId, csv);
+    const ans = await experimentService.testOfTestPlan(testId, csv);
     res.send(ans)
 }));
 

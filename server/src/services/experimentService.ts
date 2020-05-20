@@ -9,10 +9,11 @@ import * as csvToJson from 'csvtojson';
 import { v4 as uuidv4 } from 'uuid';
 import { ERROR_STATUS, ERRORS } from '../utils/Errors';
 
+const { Parser } = require('json2csv');
 // var isUtf8 = require('is-utf8');
 
 const response = (status,{data=null, error=null}={}) => ({status, data, error});
-
+var groupBy = require('lodash.groupby');
 
 export class ExperimentService{
     private collectionsService : Collections;
@@ -214,7 +215,8 @@ addTestPlan = async (testPlanName: any, formsDetails: any) =>{
     })
     return response(0);
 }
-getFullTestPlan = async (testPlanId, csv) =>{
+
+testOfTestPlan = async (testPlanId, csv) =>{
     const testPlan = await this.collectionsService.testPlans().get(testPlanId);
     if(!testPlan){
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS, {error: ERRORS.TEST_PLAN_NAME_NOT_EXISTS})
@@ -222,14 +224,50 @@ getFullTestPlan = async (testPlanId, csv) =>{
     var jsonAns = []
 
     for (let index = 0; index < testPlan.forms.length; index++) {
-        const test = testPlan.forms[index]; 
-        const formsOfExp = await this.collectionsService.experiments().formsOf(test.experimentName)
-        const formToAdd = await formsOfExp.get(test.formId)
-        jsonAns = jsonAns.concat(formToAdd)
-        
-    }
+        const form = testPlan.forms[index]; 
+        const expName = form.experimentName;
+        const formId = form.formId;
+        const tests = await this.collectionsService.experiments().getTests(expName).getAll()
 
-    return response(0, {data: jsonAns});
+        for (let j = 0; j < tests.length; j++) { 
+            if(tests[j].data.testPlanId === testPlan.id && tests[j].data.formId === formId){
+                const testToAdd = tests[j]
+                jsonAns = jsonAns.concat(testToAdd)
+            }
+        } 
+    }  
+
+    jsonAns = groupBy(jsonAns, (test) => test.id);
+
+    jsonAns =  Object.entries(jsonAns).map(entry => ({testId: entry[0], tests: entry[1]}))
+    var csvRes
+    if(csv == true){
+        try{
+            var fields =[]
+            const samp = jsonAns[0].tests
+
+            samp.forEach((test, index) => {
+                fields.push({label: 'formId' , value: (entry) => entry.tests[index].formId })
+                fields.push({label: 'experimentName' , value: (entry) => entry.tests[index].experimentName })
+                if(test.answers){
+                fields.push({label: 'score' , value: (entry) => entry.tests[index].score})
+                test.answers.forEach((ans, i) => fields =  fields.concat
+                    ({label: `q${i} id` , value: (entry) => entry.tests[index].answers[i].id},
+                    {label: `q${i} answer` , value: (entry) => entry.tests[index].answers[i].ans},
+                    {label: `q${i} time` , value: (entry) => entry.tests[index].answers[i].time} ))
+            }});
+
+            var opts = { fields };
+            var parser = new Parser(opts);
+            var csvRes = parser.parse(jsonAns);
+            //console.log(csvRes);
+        }
+        catch (err){
+            console.error(err);
+        }
+    }
+    
+    return response(0, {data:{json: jsonAns, csv: csvRes}});
 }
 
 
@@ -531,7 +569,7 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
     private verifyAutomaticAlgorithmExists = async (names: string[]) => {
         const automaticAlgsSavedLocally = await this.getAutoAlgsSavedLocally();
         //we should fetch newly algorithms 
-        console.log(names);
+
         await forEP(names, async name => {
             const metaAuto = await this.collectionsService.automaticAlgos().get(name);
             if(!automaticAlgsSavedLocally.includes(name)){
@@ -552,7 +590,6 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
         const imageName =  experiment.imageName;
         const text = await this.storageService.downloadToBuffer(`images/${imageName}/text`);
         const base_sent_table = await this.storageService.downloadToBuffer(`images/${imageName}/base_sent_table`);
-        console.log(algsNames)
         await this.verifyAutomaticAlgorithmExists(algsNames);
         const {tables} = await this.pythonService.runAutomaticAlgs(algsNames, text,base_sent_table);
         if(tables.length > 0){

@@ -1277,9 +1277,12 @@ describe('ExperimentService Tests',() =>{
         const imgName = 'img1';
         const testPlanName = "testPlan"
         const testPlanNameNotExist = "testPlanNotExist"
+        const testId1 = 'testId1';
+        const testId2 = 'testId2';
+        
 
-        const paramsWithTestPlan1={
-            testId: 'testId1',
+        const test1Params={
+            testId: testId1,
             formId : 'form1',
             answers: [{id:1, ans:1, time:3}, {id:2, ans:2, time:3}, {id:3, ans:3, time:3}],
             score : 33,
@@ -1288,8 +1291,9 @@ describe('ExperimentService Tests',() =>{
             fixations: 'buffer',
             testPlanId: "testPlan"
         }
-        const paramsWithTestPlan2={
-            testId: 'testId2',
+
+        const test2Params={
+            testId: testId2,
             formId : 'form2',
             answers: [{id:1, ans:1, time:3}, {id:2, ans:2, time:3}, {id:3, ans:3, time:3}],
             score : 33,
@@ -1298,7 +1302,7 @@ describe('ExperimentService Tests',() =>{
             fixations: 'buffer',
             testPlanId: "testPlan"
         }
-
+       
         const FormsParams1={
             experimentName: expName,
             name: 'form1',
@@ -1315,10 +1319,16 @@ describe('ExperimentService Tests',() =>{
             isRankSentences: false,
         }
 
+
         beforeEach( async () => {
             await collectionsService.experiments().add(expName, {imgName});
+
             await collectionsService.experiments().formsOf(expName).add(FormsParams1.name, FormsParams1)
             await collectionsService.experiments().formsOf(expName).add(FormsParams2.name, FormsParams2)
+
+            await collectionsService.experiments().getTests(expName).add(test1Params.testId,test1Params)
+            await collectionsService.experiments().getTests(expName).add(test2Params.testId,test2Params)
+
             await collectionsService.testPlans().add(testPlanName, {
                 id: testPlanName,
                 forms: [{ experimentName: expName, formId: FormsParams1.name},
@@ -1327,21 +1337,18 @@ describe('ExperimentService Tests',() =>{
           
         });
 
-        it('success- getFullTestPlan return 2 tests', async () => {
-            const  {status, data} = await experimentService.getFullTestPlan(testPlanName,false)
-            expect(data.length).toEqual(2);
+        it('success- getFullTestPlan return 2 tests, different experiment', async () => {
+            const  {status, data} = await experimentService.testOfTestPlan(testPlanName,false)
+            expect(data.json[0].tests.length).toEqual(1);
+            expect(data.json[1].tests.length).toEqual(1);
             expect(status).toEqual(0);     
         });
 
         it('fail- testPlan not exist', async () => {
-            const  {status, data} = await experimentService.getFullTestPlan(testPlanNameNotExist, false)
+            const  {status, data} = await experimentService.testOfTestPlan(testPlanNameNotExist, false)
             expect(status).toEqual(-6);       
         });
     });
-
-    
-
-  
 
 
 });
