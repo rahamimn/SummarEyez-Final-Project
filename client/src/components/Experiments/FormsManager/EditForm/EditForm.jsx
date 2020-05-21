@@ -1,5 +1,5 @@
 import React,{useState,useEffect, useCallback, useMemo} from 'react';
-import { Typography, Grid, Card, TextField, Button, Divider, Select, MenuItem, Checkbox, ListItemText, Input, Switch, Paper } from '@material-ui/core';
+import { Typography, Grid, Card, TextField, Button, Divider, Select, MenuItem, Checkbox, ListItemText, Input, Switch, Paper, IconButton } from '@material-ui/core';
 import { QuizViewer } from '../../../Viewers/quizViewer/quizViewer';
 import api from '../../../../apiService';
 import { Question } from '../../../Tests/Form/Quiz/Question/Question';
@@ -9,6 +9,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import CheckIcon from '@material-ui/icons/Check';
 import { COLORS_SIZES, COLORS } from '../../../Viewers/colors';
+import CloseIcon from '@material-ui/icons/Close';
 
 const emptyForm = {
     name:'',
@@ -39,6 +40,7 @@ const paleteColors = (colors) => <div style={{display:'flex',justifyContent: 'ce
 
 export function EditForm({
     onSave,
+    onClose,
     form,
     experimentName
     }){
@@ -177,7 +179,7 @@ export function EditForm({
       },[formDTO, experimentName]);
       
 
-      const filtersComp = useMemo(() => {
+      const filtersComp = useCallback(() => {
         const {summary} = formDTO;
         const filters = summary && summary.filters;
         const isGradient = filters && filters.isGradient ; 
@@ -344,7 +346,7 @@ export function EditForm({
                 />
               }
             </div>
-            { summary.name && summary.type && filtersComp}
+            { summary.name && summary.type && filtersComp()}
          </Card>
       )},[form, formDTO, summaryTypeText, summaryNameText, summaryError, filtersComp, summaries]);
   
@@ -459,9 +461,17 @@ export function EditForm({
         <Grid container spacing={3} style={{width:"100%"}}>
           <Grid item xs={12} sm={6}>
             <Card style={{marginTop: '10px', padding: '20px'}}>
-              <Typography variant="h5">
-                {form? `Edit Form${disabled? ' (not editable)' : ''}` : 'Create Form'}
-              </Typography>
+              <div style={{display:'flex', justifyContent: 'space-between', alignItems:'flex-end'}}>
+                <Typography variant="h5">
+                  {form? `Edit Form${disabled? ' (not editable)' : ''}` : 'Create Form'}
+                </Typography>
+                {onClose && (
+                  <IconButton aria-label="close" onClick={onClose}>
+                    <CloseIcon />
+                  </IconButton>
+                  )
+                }
+              </div>
               <Divider/>
   
               <TextField 

@@ -46,7 +46,13 @@ export const TestsPoolMain = () =>  {
                 const question= questions.find(question => question.id === qid);
                 setCurrentQuestion(question.data);
                 setQuestionModalOpen(true);
-             })});
+             },
+            (qid, answer) => {
+              const question= questions.find(question => question.id === qid);
+              return parseInt(question.data.correctAnswer) === parseInt(answer.ans);
+            },
+             
+             )});
     },[]);
 
     const fetchQuestions = useCallback(async(expName) => {

@@ -21,7 +21,7 @@ function EnhancedTableHead({headers, selected, sample}) {
             {headers[0].label}
           </TableCell>
         {headers.slice(1).map(header => (
-          <TableCell key={header.id + header.type ==="array" ? header.index: '' } align="right">
+          <TableCell key={header.id + header.type ==="array" ? header.index: '' }>
             {header.id === 'answers' ? header.labelFormat(sample && sample.data.answers[header.index].id) : header.label}
           </TableCell>
         ))}
@@ -140,12 +140,13 @@ export default function TableSummaries({
                         header => {
                           const type = header.type;
                           const dataEntry = data[header.id];
+                          const isArrayType = type==='array'
 
-                          return <TableCell key={`${type==='array' ? header.id + header.index :  header.id}-${index}`} align="right">{
+                          return <TableCell key={`${isArrayType ? header.id + header.index :  header.id}-${index}`} align={isArrayType ? "right"  : "left"}>{
                             type ==='date' && dataEntry ?
                               new Date(dataEntry).toLocaleDateString() :
                               type ==='array' && dataEntry[header.index]? 
-                              header.format(dataEntry[header.index]) :
+                              header.format(dataEntry[header.index], rows[0].data.answers[header.index].id) :
                               type ==='custom' && dataEntry? 
                               header.format(dataEntry) :
                               dataEntry}</TableCell>
@@ -171,7 +172,7 @@ export default function TableSummaries({
 }
 
 TableSummaries.propTypes = {
-  onChangeSelected: PropTypes.func.isRequired,
+  onChangeSelected: PropTypes.func,
   selected: PropTypes.array,
   headers: PropTypes.array.isRequired,
   rows: PropTypes.array.isRequired

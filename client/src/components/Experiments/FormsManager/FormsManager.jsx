@@ -86,6 +86,7 @@ export function FormsManager(){
         {(newForm || selectedForm) && <EditForm 
           form={selectedForm}
           onSave={() => fetchForms()}
+          onClose={newForm && (() => setNewForm(false))}
           experimentName={experimentName}
           />
         }

@@ -228,9 +228,9 @@ testOfTestPlan = async (testPlanId, csv) =>{
         const expName = form.experimentName;
         const formId = form.formId;
         const tests = await this.collectionsService.experiments().getTests(expName).getAll()
-
         for (let j = 0; j < tests.length; j++) { 
-            if(tests[j].data.testPlanId === testPlan.id && tests[j].data.formId === formId){
+            const {data} = tests[j];
+            if(data.testPlanId === testPlan.id && data.formId === formId){
                 const testToAdd = tests[j]
                 jsonAns = jsonAns.concat(testToAdd)
             }
@@ -243,14 +243,21 @@ testOfTestPlan = async (testPlanId, csv) =>{
     var csvRes
     if(csv === true){
         try{
-            var fields =[]
+      
             const samp = jsonAns[0].tests
             const testData = (entry,ind) => entry.tests[ind].data;
 
+            var fields =[{label: 'student ID' , value: (entry) => entry.testId }];
+
             samp.forEach((test, index) => {
-                fields.push({label: 'studentId' , value: (entry) => entry.testId })
-                fields.push({label: 'formId' , value: (entry) => testData(entry,index).formId })
-                if(test.data.answers){
+                fields = [...fields,
+                    {label: 'form ID' , value: (entry) => testData(entry,index).formId },
+                    {label: 'experiment ID' , value: (entry) => {
+                        const formId = testData(entry,index).formId;
+                        return testPlan.forms.find(form => form.formId ===  formId).experimentName;
+                    }}
+                ];
+                if(test.data.answers && test.data.answers.length > 0){
                     fields.push({label: 'score' , value: (entry) => testData(entry,index).score})
                     test.data.answers.forEach((ans, i) => fields = [
                         ...fields,
@@ -626,6 +633,8 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
 
     addExperiment = async (experimentName, imageName)=>{
         const paramsList= {'experimentName': experimentName, 'imageName': imageName};
+        const manuallyFormName = 'Manually';
+
         const error = this.validateIds(paramsList);
         if(error != ''){
             return response(ERROR_STATUS.NAME_NOT_VALID,{error} );
@@ -635,6 +644,13 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
         }
         await this.collectionsService.experiments().add(experimentName,{
             name: experimentName, imageName
+        });
+        await this.collectionsService.experiments().formsOf(experimentName).add(manuallyFormName,{
+            name: manuallyFormName,
+            questionIds: [],
+            withFixations : true,
+            editable : false,
+            creation_date: Date.now(),
         });
         return response(0);
     }

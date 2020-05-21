@@ -34,6 +34,7 @@ export function Question({
     <Card style={{ 
       padding:'20px',
       minWidth:'500px'}}>
+     
       <Typography style={{marginBottom:'15px'}}>{question.question}</Typography>
       {
         question.answers.map((ans,i) =>(
@@ -54,6 +55,7 @@ export function Question({
                 selected={selected === i}
               />
               <Typography>{ans}</Typography>
+      
           </Paper>
         ))
       }
@@ -64,9 +66,10 @@ export function Question({
           disabled={selected === null}>
           Next
         </Button>
+        
       </div>
       }
-      
+      {!onNext && <Typography style={{fontSize:'10px', marginBottom:'15px'}}>{question.id}</Typography>}
     </Card>
   );
 }
