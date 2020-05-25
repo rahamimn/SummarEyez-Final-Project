@@ -37,8 +37,13 @@ function Main() {
           }
           return <Redirect to={{pathname: "/"}}/>
         }}/>
+        <Route path="/tests/:testPlanId">
+          { ({match}) =>(
+            <MainTests testPlanId={match.params.testPlanId}/>
+          )}
+        </Route>
         <Route path="/tests">
-          <MainTests permit={permit}/>
+          <MainTests/>
         </Route>
         <Route path="/">
           <div style={{

@@ -11,13 +11,12 @@ const Phases = {
   Finish: 'finish',
   Success: 'success',
 }
-function MainTests() {
-  // const {experimentName} = useParams();
+function MainTests({testPlanId}) {
   const [forms,setForms] = useState([]);
   
   const [testPlans,setTestPlans] = useState([]);
   const [selectedTestPlan,setSelectedTestPlan] = useState(null);
-  const [testPlanText,setTestPlanText] = useState('');
+  const [testPlanText,setTestPlanText] = useState(testPlanId || '');
   const [currentFormIndex,setCurrentFormIndex] = useState(0);
   const [testId,setTestId] = useState('');
   const [testIdError,setTestIdError] = useState(false);
@@ -37,7 +36,19 @@ function MainTests() {
     setTestPlans(res.data);
   },[]);
 
+  const updateTestPlan = useCallback(async(selectedTestPlan) => {
+    setSelectedTestPlan(selectedTestPlan.data);
+    fetchForms(selectedTestPlan.data.forms);
+  },[testPlanId,fetchTestPlans]);
+
   useEffect(() => fetchTestPlans(),[fetchTestPlans]);
+
+  useEffect(() => {
+    if(testPlanId && testPlans.length > 0){
+      const testPlan = testPlans.find(testPlan => testPlan.id === testPlanId);
+      updateTestPlan(testPlan);
+    }
+  },[testPlanId,fetchTestPlans, testPlans]);
 
   
 
@@ -62,10 +73,14 @@ function MainTests() {
             autoHighlight
             getOptionLabel={option => option.id}
             onChange={(e,selectedTestPlan) => {
-              setSelectedTestPlan(selectedTestPlan.data);
-              fetchForms(selectedTestPlan.data.forms);
+              selectedTestPlan && updateTestPlan(selectedTestPlan);
             }}
-            onInputChange={(e, value) => e && setTestPlanText(value)}
+            onInputChange={(e, value) => {
+              if(e) { 
+                setTestPlanText(value);
+                setSelectedTestPlan(null);
+              }
+            }}
             inputValue={testPlanText || ''}
             renderInput={params => (
               <TextField  
