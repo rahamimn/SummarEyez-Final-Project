@@ -10,6 +10,7 @@ import {useParams} from 'react-router-dom'
 import MergeDialog from './MergeSummaries/MergeDialog'
 import { stringify } from 'qs'
 import {saveAs} from 'save-as';
+import { CircularProgress } from '@material-ui/core';
 const useToolbarStyles = makeStyles(theme => ({
     root: {
       paddingLeft: theme.spacing(2),
@@ -35,6 +36,7 @@ const useToolbarStyles = makeStyles(theme => ({
     const { experimentName } = useParams();
 
     const [isMergeOpen, setIsMergeOpen] = useState(false);
+    const [isLoadingRun, setIsLoadingRun] = useState(false);
 
     const allSelected = [...selected.auto, ...selected.eyes, ...selected.merged];
     const numSelected = allSelected.length;
@@ -74,14 +76,21 @@ const useToolbarStyles = makeStyles(theme => ({
             All Summaries
           </Typography>
         )}
-        {justDisabled && 
+
+        {justDisabled && (isLoadingRun ? 
+            <CircularProgress style={{marginRight: '10px'}} /> :
             <Button 
                 color="inherit"
                 onClick={ async () => {
-                    await api.runAlgs(experimentName, selected.auto.map(auto => auto.data.name));
-                    await updateList();
+                    setIsLoadingRun(true);
+                    try{
+                      await api.runAlgs(experimentName, selected.auto.map(auto => auto.data.name));
+                      await updateList();
+                    }finally{
+                      setIsLoadingRun(false);
+                    }
                 }
-            }>Run</Button> }
+            }>Run</Button> )}
        
         {oneNotDisable && [
             <Button 
