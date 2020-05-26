@@ -39,7 +39,7 @@ export function AddQuestion({
             value={question.question}
             style={{width: '100%',marginTop:'10px', marginBottom: '20px'}}
             onChange={(e) => setQuestion({...question, question:e.target.value})}
-            id="form-name"
+            id="add-question-question"
             label="Question"/>
           
           {
@@ -49,7 +49,7 @@ export function AddQuestion({
                     checked={question.correctAnswer === `${i}`}
                     onChange={() => setQuestion({...question, correctAnswer:`${i}`})}
                     value={i}
-                    inputProps={{ 'aria-label': 'A' }}
+                    inputProps={{ 'aria-label': 'A' ,id:`add-question-ans-radio-${i}`}}
                   />
                 <TextField 
                   value={ans}
@@ -58,8 +58,8 @@ export function AddQuestion({
                     const answers = question.answers;
                     answers[i] = e.target.value;
                     setQuestion({...question, answers: [...answers]});
-                  }}if
-                  id={`ans-${i}`}
+                  }}
+                  id={`add-question-ans-${i}`}
                   key={`ans-${i}`}
                 label={`Ans #${i}`}/>
               </div>
@@ -68,6 +68,7 @@ export function AddQuestion({
           
           <Button
             disabled={disabled}
+            id="add-question-create"
             style={{display: 'block' ,marginTop: '10px', float:'right'}}
             variant="contained"
             onClick={async () => {

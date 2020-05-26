@@ -82,7 +82,7 @@ function MainExperiments({permit}) {
           </ListItemIcon>
           <ListItemText primary={'Upload Algorithm'} />
         </ListItem>
-        <ListItem button key={'TestPlans'} onClick={e => history.push(experimetPage('testPlans'))}>
+        <ListItem id="main-experiments-test-plans" button key={'TestPlans'} onClick={e => history.push(experimetPage('testPlans'))}>
           <ListItemIcon>
               <AllInboxIcon />
           </ListItemIcon>

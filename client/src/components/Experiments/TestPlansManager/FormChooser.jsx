@@ -41,6 +41,7 @@ export function FormChooser({experiments, onSelectForm, dontRefresh, alreadyDone
               fullWidth
               inputProps={{
                   ...params.inputProps,
+                  id:"form-chooser-choose-experiment-input",
                   autoComplete: 'disabled', // disable autocomplete and autofill
               }}
             />
@@ -72,6 +73,7 @@ export function FormChooser({experiments, onSelectForm, dontRefresh, alreadyDone
               fullWidth
               inputProps={{
                 ...params.inputProps,
+                id:"form-chooser-choose-form-input",
                 autoComplete: 'disabled', // disable autocomplete and autofill
               }}
             />

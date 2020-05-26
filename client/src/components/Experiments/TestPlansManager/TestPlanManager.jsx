@@ -64,7 +64,9 @@ export function TestPlanManager(){
               />
             )}
           /> 
-          {!isCreating && <Button onClick={() => {
+          {!isCreating && <Button 
+            id="test-plan-manaer-create-button"
+            onClick={() => {
             setIsCreating(true);
             setSelectedTestPlan(null);
             setTestPlanText('');

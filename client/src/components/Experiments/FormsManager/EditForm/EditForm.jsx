@@ -357,7 +357,7 @@ export function EditForm({
             {questionsError && <Typography>ERROR</Typography>}
             <Select
               labelId="select-questions"
-              id="select-questions"
+              id="edit-form-select-questions"
               multiple
               value={formDTO.questionIds}
               onChange={(event) => {
@@ -403,6 +403,7 @@ export function EditForm({
                 disabled={disabled}
                 style={{display: 'block'}}
                 color="primary"
+                id="edit-form-add-question-button"
                 onClick={() => {
                   setAddQuestion(true)
                 }}

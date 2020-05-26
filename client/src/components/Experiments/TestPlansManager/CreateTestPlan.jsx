@@ -63,7 +63,7 @@ export function CreateTestPlan({ setSelectedForm, onCreate, onClose}){
             setTestPlanNameError(false);
             setTestPlanName(e.target.value);
           }}
-          id="test-plan-name"
+          id="create-test-plan-name"
           label="name"/>
         {formsDetails.map(detail => (
           <Paper style={{padding:'10px', width:'500px', marginTop:'10px', display:'flex'}} variant="outlined">
@@ -74,11 +74,11 @@ export function CreateTestPlan({ setSelectedForm, onCreate, onClose}){
         <Paper style={{padding:'15px', width:'500px', marginTop:'10px'}} variant="outlined">
           { addIsOpen ? 
               <FormChooser experiments={experiments.filter(e => !usedExperiments.includes(e))} onSelectForm={onSelectForm} /> :
-              <Button onClick={() => setAddIsOpen(true)}>Add Form</Button>
+              <Button id="create-test-plan-add-more" onClick={() => setAddIsOpen(true)}>Add Form</Button>
           }
         </Paper>
         <div style={{display: 'flex', justifyContent: 'flex-end'}}>
-          <Button disabled={!testPlanName} style={{marginTop:'10px'}} onClick={addTestPlan}>Create Test Plan</Button>
+          <Button id="create-test-plan-submit" disabled={!testPlanName} style={{marginTop:'10px'}} onClick={addTestPlan}>Create Test Plan</Button>
         </div>
       </Paper>
 
