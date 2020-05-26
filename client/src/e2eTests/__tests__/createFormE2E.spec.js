@@ -48,7 +48,14 @@ describe('Manage Form', () => {
         await createFormSubmitBtn.click();
         
         await browser.pause(1000);
+        
+        const formsDropdown = await browser.$('#forms-manager-choose-form');
+        await formsDropdown.click();
 
+        const options = await browser.$$(`[id^=forms-manager-choose-form-option-]`);
+    
+        const exists = options.some(async op => await op.getText() === newFormName)
+        expect(exists).toBe(true)
     });
 
     it('fail - form name exists',async () => {
@@ -75,4 +82,12 @@ describe('Manage Form', () => {
         expect(await ErrorText.getText()).toBe('Name empty, or already exsits')
     });
 
+
+    const chooseForm = async (index) => {
+        const imageDropdown = await browser.$('#forms-manager-choose-form');
+        await imageDropdown.click();
+
+        const option = await browser.$(`#forms-manager-choose-form-option-${index}`);
+        await option.click();
+    };
 })
