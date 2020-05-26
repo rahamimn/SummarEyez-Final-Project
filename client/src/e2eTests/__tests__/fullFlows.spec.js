@@ -91,7 +91,7 @@ describe('Manage Form', () => {
         await browser.pause(1000);
     }
 
-    const viewTests = async (questions, newFormName) => {
+    const viewTestPool = async (questions, newFormName) => {
         await browser.url('localhost:3000')
         await enterExp(0,browser);
 
@@ -123,17 +123,14 @@ describe('Manage Form', () => {
             ans: chance.integer({min:0,max:3})
         }));
 
-        //createForm
         await createForm(newFormName, questions);
 
-        //craeteTestPlan
         await handleCreateTestPlan(newFormName, newTestPlanName)
 
-        //answer test as user
         await performTest(studentId, newTestPlanName, questions);
 
-        //see answers in test poll
-        const [ans0,ans1] = await viewTests(questions, newFormName);
+
+        const [ans0,ans1] = await viewTestPool(questions, newFormName);
         
         expect(ans0).toBe(true);
         expect(ans1).toBe(true);
