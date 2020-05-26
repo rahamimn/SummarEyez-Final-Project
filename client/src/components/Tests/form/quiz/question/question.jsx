@@ -39,6 +39,7 @@ export function Question({
       {
         question.answers.map((ans,i) =>(
           <Paper
+            id={`question-ans-${i}`}
             key={`ans-${i}`} 
             style={{
               minHeight:'55px',
@@ -61,6 +62,7 @@ export function Question({
       }
       {onNext && <div style={{float:'right'}}>
         <Button 
+          id="question-next"
           variant="contained"
           onClick={onNextQuestion}
           disabled={selected === null}>

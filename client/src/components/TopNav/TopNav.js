@@ -54,7 +54,7 @@ export const TopNav = ({
           {isExperimentMode && <Button style={{marginRight: '8px'}} endIcon={<LibraryAddIcon/>} color="inherit" onClick={() => history.push(
             experimentName ? `/experiments/${experimentName}/new` : '/experiments-new/new'
             )}>New Experiment</Button>}
-          <Button endIcon={<OpenInBrowserIcon/>} color="inherit" onClick={() => setShowModeSelection(true)}>Mode</Button>
+          <Button id="top-nav-mode" endIcon={<OpenInBrowserIcon/>} color="inherit" onClick={() => setShowModeSelection(true)}>Mode</Button>
         </div>
         </div>
       </Toolbar>

@@ -142,7 +142,10 @@ export default function TableSummaries({
                           const dataEntry = data[header.id];
                           const isArrayType = type==='array'
 
-                          return <TableCell key={`${isArrayType ? header.id + header.index :  header.id}-${index}`} align={isArrayType ? "right"  : "left"}>{
+                          return <TableCell 
+                            id={`cell-${isArrayType ? header.id + header.index :  header.id}-${index}`} 
+                            key={`cell-${isArrayType ? header.id + header.index :  header.id}-${index}`} 
+                            align={isArrayType ? "right"  : "left"}>{
                             type ==='date' && dataEntry ?
                               new Date(dataEntry).toLocaleDateString() :
                               type ==='array' && dataEntry[header.index]? 

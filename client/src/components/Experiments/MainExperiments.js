@@ -88,7 +88,7 @@ function MainExperiments({permit}) {
           </ListItemIcon>
           <ListItemText primary={'Test Plans Manager'} />
         </ListItem>
-        <ListItem button onClick={e => history.push(experimetPage('testPool'))}>
+        <ListItem id='main-experiments-test-pool' button onClick={e => history.push(experimetPage('testPool'))}>
           <ListItemIcon>
             <AssessmentIcon />
           </ListItemIcon>   

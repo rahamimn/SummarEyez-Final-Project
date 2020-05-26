@@ -78,6 +78,15 @@ export const createQuestion = async(browser,{question,answers,ans}) => {
     await submit.click();
 }
 
+export const selectForm = async(browser,{experimentIndex,formName}) => {
+    await selectFromDropdown(experimentIndex,'form-chooser-choose-experiment',browser);
+
+    const formInput = await browser.$('#form-chooser-choose-form-input');
+    await formInput.setValue(formName);
+
+    await selectFromDropdown(0,'form-chooser-choose-form',browser);
+}
+
 export const createTestPlan = async(browser,{testPlanName,experimentIndex,formName}) => {
 
     const testPlanInput = await browser.$('#create-test-plan-name');
@@ -86,15 +95,22 @@ export const createTestPlan = async(browser,{testPlanName,experimentIndex,formNa
     const addMoreBtn = await browser.$('#create-test-plan-add-more');
     await addMoreBtn.click();
 
-    await browser.pause(2000);
-    await selectFromDropdown(experimentIndex,'form-chooser-choose-experiment',browser);
-
-    const formInput = await browser.$('#form-chooser-choose-form-input');
-    await formInput.setValue(formName);
-
-    await browser.pause(2000);
-    await selectFromDropdown(0,'form-chooser-choose-form',browser);
-
+    await selectForm(browser,{experimentIndex,formName});
+   
     const submitBtn = await browser.$('#create-test-plan-submit');
     await submitBtn.click();
+}
+
+export const answerQuestion = async (browser,ans) => {
+    const answer = await browser.$(`#question-ans-${ans}`);
+    await answer.click();
+
+    const nextBtn = await browser.$('#question-next');
+    await nextBtn.click();
+}
+
+
+export const modeClick = async () => {
+    const element = await browser.$("#top-nav-mode");
+    await element.click();
 }
