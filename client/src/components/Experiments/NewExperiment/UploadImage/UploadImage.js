@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {DropzoneArea} from 'material-ui-dropzone'
 import TextField from '@material-ui/core/TextField'
+import CardContent from '@material-ui/core/CardContent'
 import Snackbar from '@material-ui/core/Snackbar'
 import Alert from '@material-ui/lab/Alert'
 import Button from '@material-ui/core/Button'
@@ -53,6 +54,7 @@ export class UploadImage extends Component{
 
   render(){
     return (
+      <div>
       <Card style={{width: '100%',margin:'20px 0 40px', padding:'20px'}}>
         <Typography variant="h5">
           Upload new Image
@@ -74,18 +76,33 @@ export class UploadImage extends Component{
                 id="upload-image-image-name"
                 label="Image Name" />
             <DropzoneArea 
+                acceptedFiles={["images/*",".jpeg"]}
                 filesLimit={1}
                 onChange={this.handleChangeFile}/>
-            <Button 
-                id="upload-image-submit-button"
-                style={{display: 'block', marginTop: '15px', float: 'right'}}
-                disabled={this.state.files.length === 0 || !this.state.imageName}
-                variant="contained"
-                color="primary"
-                onClick={this.handleAddImage}>
-                    Upload
-            </Button>
+            <div style={{width:'100%', display:'flex', justifyContent:'flex-end'}}>
+              <Button 
+                  id="upload-image-submit-button"
+                  style={{display: 'block', marginTop: '15px'}}
+                  disabled={this.state.files.length === 0 || !this.state.imageName}
+                  variant="contained"
+                  color="primary"
+                  onClick={this.handleAddImage}>
+                      Upload
+              </Button>
+            </div>
+            <Card style={{backgroundColor:'#eeeeee', marginTop:'40px'}}>
+              <CardContent>
+                <Typography style={{display:'block'}}>Instructions & Constraints</Typography>
+                <Typography style={{display:'block'}} >
+                  1. upload jpeg format, for pdf you have to convert it to jpeg.<br/>
+                  2. max size 2MB. <br/>
+                  3. your image text should include '.' only as sentence seperator.<br/>
+                </Typography>
+              </CardContent>
+            </Card>
+
           </div>}
+          
         </div> 
         <Snackbar 
           anchorOrigin={{ vertical:'top', horizontal:'center' }}
@@ -95,7 +112,10 @@ export class UploadImage extends Component{
             Error has occured in system
           </Alert>
         </Snackbar>
+
       </Card>
+     
+      </div>
     )  
   }
 } 

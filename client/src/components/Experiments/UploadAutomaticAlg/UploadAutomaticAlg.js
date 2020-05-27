@@ -10,6 +10,7 @@ import Alert from '@material-ui/lab/Alert'
 import Divider from '@material-ui/core/Divider'
 import Typography from '@material-ui/core/Typography'
 import { ERROR_STATUS } from '../../ERRORS';
+import { CardContent } from '@material-ui/core'
 
 
 export class UploadAlgorithm extends Component {
@@ -87,16 +88,28 @@ export class UploadAlgorithm extends Component {
                 acceptedFiles={["text/py/*"]}
                 dropzoneText={"Upload your python script here"}
               />
-
-              <Button
-                style={{ display: 'block', marginTop: '15px', float: 'right' }}
+              <Button style={{marginTop: '15px'}}
                 disabled={this.state.files.length === 0 || !this.state.algorithmName}
                 variant="contained"
                 color="primary"
                 id="upload-algorithm-button"
                 onClick={this.handleAddAlg}>
                 Upload algorithm
-          </Button>
+              </Button>
+
+              <Card style={{backgroundColor:'#eeeeee', marginTop:'40px'}}>
+                <CardContent>
+                  <Typography style={{display:'block'}}>Instructions & Constraints</Typography>
+                  <Typography style={{display:'block'}} >
+                    1. upload python file (.py). <br/>
+                    2. your 'run' function should return {'{'}'text':{'<sentenceText>'} , 'weight': {'<someValue>}'}[]. <br/>
+                    3. your python script should run under the 'run' function inside the file. <br/>
+                    4. if you want to add external libray besdies (nltk, numpy, sklearn, pandas ) you install on server manually. <br/>
+                    5. in your script you must tokenzie the text by sent_tokenzie from nltk. <br/>
+                    6. max size 2MB. <br/>
+                  </Typography>
+                </CardContent>
+              </Card>
             </div>}
         </div>
 

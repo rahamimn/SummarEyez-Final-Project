@@ -10,6 +10,7 @@ import Alert from '@material-ui/lab/Alert'
 import Divider from '@material-ui/core/Divider'
 import Typography from '@material-ui/core/Typography'
 import { ERROR_STATUS } from '../../ERRORS';
+import { CardContent } from '@material-ui/core'
 
 
 export class UploadFixations extends Component {
@@ -89,7 +90,7 @@ export class UploadFixations extends Component {
                 acceptedFiles={[".csv", "text/csv"]}
                 dropzoneText={"Upload your fixation file here"}
               />
-
+              
               <Button
                 style={{ marginTop: '20px' }}
                 disabled={this.state.files.length === 0 || !this.state.fixationName}
@@ -97,7 +98,18 @@ export class UploadFixations extends Component {
                 color="primary"
                 onClick={this.handleAddFixation}>
                 Upload fixation
-            </Button>
+              </Button>
+
+              <Card style={{backgroundColor:'#eeeeee', marginTop:'40px'}}>
+                <CardContent>
+                  <Typography style={{display:'block'}}>Instructions & Constraints</Typography>
+                  <Typography style={{display:'block'}} >
+                    1. upload csv file, as output from the begaze system(.csv). <br/>
+                    2. required fields "Event Duration [ms]","Fixation Position X [px]","Fixation Position Y [px]" <br/>
+                    3. max size 2MB. <br/>
+                  </Typography>
+                </CardContent>
+              </Card>
             </div>}
         </div>
 
