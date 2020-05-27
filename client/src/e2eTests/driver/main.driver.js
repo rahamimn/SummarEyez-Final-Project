@@ -1,8 +1,11 @@
 
 
+export const DEFAULT_EXP_NAME = "exp1";
+export const PASSWORD = "1234"
+
 export const enterNewExperimentPage = async (browser) => {
     const inputElem = await browser.$('#welcome-dialog-permission-input');
-    await inputElem.setValue('1234');
+    await inputElem.setValue(PASSWORD);
 
     const submitBtn = await browser.$('#welcome-dialog-new-experiment');
     await submitBtn.click();
@@ -30,7 +33,7 @@ const chooseExperiment = async (index, browser) => {
     await option.click();
 };
 
-const selectFromDropdown = async (index,autoCompleteId,browser) => {
+const selectFromDropdownByIndex = async (index,autoCompleteId,browser) => {
     
     const dropdown = await browser.$(`#${autoCompleteId}-input`);
     await dropdown.click();
@@ -38,6 +41,8 @@ const selectFromDropdown = async (index,autoCompleteId,browser) => {
     const option = await browser.$(`#${autoCompleteId}-option-${index}`);
     await option.click();
 };
+
+
 
 const fillPasswordAndGo = async (password) => {
     const inputElem = await browser.$('#welcome-dialog-permission-input');
@@ -48,57 +53,14 @@ const fillPasswordAndGo = async (password) => {
 } 
 
 
-export const createQuestion = async(browser,{question,answers,ans}) => {
-
-    const addQuestionButton = await browser.$('#edit-form-add-question-button');
-    await addQuestionButton.click();
-
-    const questionInput = await browser.$('#add-question-question');
-    await questionInput.setValue(question);
-
-    let ansInput;
-    ansInput = await browser.$('#add-question-ans-0');
-    await ansInput.setValue(answers[0]);
-
-    ansInput = await browser.$('#add-question-ans-1');
-    await ansInput.setValue(answers[1]);
-
-    ansInput = await browser.$('#add-question-ans-2');
-    await ansInput.setValue(answers[2]);
-
-    ansInput = await browser.$('#add-question-ans-3');
-    await ansInput.setValue(answers[3]);
-
-    const selectedRadioBtn = await browser.$(`#add-question-ans-radio-${ans}`);
-    await selectedRadioBtn.click();
-
-    await browser.pause(2000);
-
-    const submit = await browser.$('#add-question-create');
-    await submit.click();
-}
 
 export const selectForm = async(browser,{experimentIndex,formName}) => {
-    await selectFromDropdown(experimentIndex,'form-chooser-choose-experiment',browser);
+    await selectFromDropdownByIndex(experimentIndex,'form-chooser-choose-experiment',browser);
 
     const formInput = await browser.$('#form-chooser-choose-form-input');
     await formInput.setValue(formName);
 
     await selectFromDropdown(0,'form-chooser-choose-form',browser);
-}
-
-export const createTestPlan = async(browser,{testPlanName,experimentIndex,formName}) => {
-
-    const testPlanInput = await browser.$('#create-test-plan-name');
-    await testPlanInput.setValue(testPlanName);
-
-    const addMoreBtn = await browser.$('#create-test-plan-add-more');
-    await addMoreBtn.click();
-
-    await selectForm(browser,{experimentIndex,formName});
-   
-    const submitBtn = await browser.$('#create-test-plan-submit');
-    await submitBtn.click();
 }
 
 export const answerQuestion = async (browser,ans) => {
@@ -109,8 +71,91 @@ export const answerQuestion = async (browser,ans) => {
     await nextBtn.click();
 }
 
+export class Driver {
+    constructor(browser){
+        this.browser = browser;
+    }
 
-export const modeClick = async () => {
-    const element = await browser.$("#top-nav-mode");
-    await element.click();
-}
+    click = async (id) => {
+        const ele = await this.browser.$(`#${id}`);
+        await ele.click();
+        return ele;
+    };
+
+    setValue = async (id, value) => {
+        const ele = await this.browser.$(`#${id}`);
+        await ele.setValue(value);
+        return ele;
+    };
+
+    selectFromDropdownByName = async (name,autoCompleteId) => {
+        const input = await this.setValue(autoCompleteId,name)
+        await input.click();
+
+        await this.click(`${autoCompleteId}-option-0`);
+    };
+
+    expPageDriver = {
+        navigateToExperimentPage: async (experimentName) => {
+            await this.browser.url('localhost:3000');
+            await this.click("tabPanel-1");
+    
+            await this.selectFromDropdownByName(experimentName,'choose-from-existing-experiment-select');
+        
+            await this.setValue("welcome-dialog-permission-input",PASSWORD);
+        
+            await this.click("existing-experiment-submit");
+        },
+    
+    
+        navigateTo: {
+            testManager: async () => 
+                await this.click("test-form-manager-side-button"),
+            testPlan: async () => 
+                await this.click("main-experiments-test-plans"),
+            testPool: async () => 
+                await this.click("main-experiments-test-pool")
+        }
+    };
+
+    FormChooserDriver = {
+        selectForm: async (experimentName,formName) => {
+            await this.selectFromDropdownByName(experimentName,'form-chooser-choose-experiment');
+            await this.selectFromDropdownByName(formName,'form-chooser-choose-form');
+        }
+    };
+
+    TestPlanDriver = {
+        createTestPlan: async(testPlanName,experimentName,formName) => {
+            await this.setValue('create-test-plan-name',testPlanName )
+            await this.click('create-test-plan-add-more');
+            await this.FormChooserDriver.selectForm(experimentName,formName);
+            await this.click('create-test-plan-submit');
+        }
+    };
+
+    EditFormDriver = {
+        clickSwitch: {
+            questions: async() => this.click('questions-switch'),
+            uploadFixations: async() => this.click('upload-fixations-switch'),
+            rankSentences: async() => this.click('rank-sentences-switch'),
+        },
+        createQuestion: async ({question,answers,ans}) => {
+
+            await this.click('edit-form-add-question-button');
+
+            await this.setValue('add-question-question',question);
+
+            await this.setValue('add-question-ans-0',answers[0]);
+            await this.setValue('add-question-ans-1',answers[1]);
+            await this.setValue('add-question-ans-2',answers[2]);
+            await this.setValue('add-question-ans-3',answers[3]);
+
+            await this.click(`add-question-ans-radio-${ans}`);
+
+            await this.browser.pause(2000);
+
+            await this.click(`add-question-create`);
+        }
+    }
+};

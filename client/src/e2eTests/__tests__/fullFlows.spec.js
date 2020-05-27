@@ -1,12 +1,13 @@
 
 const { remote } = require('webdriverio');
-import {enterExp, createQuestion, createTestPlan, answerQuestion, selectForm} from '../driver/main.driver';
+import {answerQuestion, DEFAULT_EXP_NAME, Driver} from '../driver/main.driver';
 import Chance from 'chance';
 const chance = new Chance();
 
 jest.setTimeout(100000);
 describe('Manage Form', () => {
     let browser;
+    let driver,experimentDriver;
     beforeAll(async ()=>{
         browser = await remote({
             logLevel: 'debug',
@@ -14,91 +15,73 @@ describe('Manage Form', () => {
                 browserName: 'chrome'
             }
         })
+        driver = new Driver(browser);
+        experimentDriver = driver.expPageDriver;
 
     })
 
     beforeEach(async () => {
-        await browser.url('localhost:3000')
-        await enterExp(0,browser);
+        await experimentDriver.navigateToExperimentPage(DEFAULT_EXP_NAME);
     });
 
     afterAll(async () => {
         await browser.deleteSession()
     });
 
-    const navigateToCreateForm = async () => {
-        const testFormManagerButton = await browser.$('#test-form-manager-side-button');
-        await testFormManagerButton.click();
 
-        const createNewFormButton = await browser.$('#create-new-form-btn');
-        await createNewFormButton.click();
-    }
-
-    const navigateToCreateTestPlan = async () => {
-        const testFormManagerButton = await browser.$('#main-experiments-test-plans');
-        await testFormManagerButton.click();
-
-        const createNewFormButton = await browser.$('#test-plan-manaer-create-button');
-        await createNewFormButton.click();
-    }
 
     const createForm = async (newFormName,questions)=>{
-        await navigateToCreateForm();
+        await experimentDriver.navigateTo.testManager();
+        await driver.click("create-new-form-btn");
+        await driver.setValue("form-name",newFormName);
 
-        const formNameBox = await browser.$('#form-name');
-        await formNameBox.setValue(newFormName);
 
-        const questionsSwitch = await browser.$('#questions-switch');
-        await questionsSwitch.click();    
-        await createQuestion(browser,questions[0]);
-        await createQuestion(browser,questions[1]);
+        await driver.EditFormDriver.clickSwitch.questions();
+
+        await driver.EditFormDriver.createQuestion(questions[0]);
+        await driver.EditFormDriver.createQuestion(questions[1]);
         
         await browser.pause(1000);
         
-        const createFormSubmitBtn = await browser.$('#create-form-submit-btn');
-        await createFormSubmitBtn.click();
+        await driver.click("create-form-submit-btn"); 
 
         await browser.pause(1000);
     }
 
     const handleCreateTestPlan = async (newFormName,newTestPlanName)=>{
-        await navigateToCreateTestPlan();
-        await createTestPlan(browser,{
-            experimentIndex: 0,
-            formName: newFormName,
-            testPlanName: newTestPlanName
-        });
+        await experimentDriver.navigateTo.testPlan();
+        await driver.click("test-plan-manaer-create-button");
+        await driver.TestPlanDriver.createTestPlan(
+            newTestPlanName,
+            DEFAULT_EXP_NAME,
+            newFormName,
+        );
 
         await browser.pause(1000);
     }
 
     const performTest = async (studentId,newTestPlanName,questions)=>{
         await browser.url(`localhost:3000/tests/${newTestPlanName}`);
-        const studentIdInput = await browser.$('#main-tests-student-id');
-        await studentIdInput.setValue(studentId);
-
-        const registerTest = await browser.$('#main-tests-register');
-        await registerTest.click();
+        await driver.setValue('main-tests-student-id', studentId);
+        await driver.click('main-tests-register');
 
         await browser.pause(1000);
 
         await answerQuestion(browser,questions[0].ans);
         await answerQuestion(browser,questions[1].ans);
 
-        const submitTest = await browser.$('#main-tests-submit');
-        await submitTest.click();
+        await driver.click('main-tests-submit');
 
         await browser.pause(1000);
     }
 
     const viewTestPool = async (questions, newFormName) => {
-        await browser.url('localhost:3000')
-        await enterExp(0,browser);
+        await experimentDriver.navigateToExperimentPage(DEFAULT_EXP_NAME);
+        experimentDriver.navigateTo.testPool();
 
-        const testPoolBtn = await browser.$('#main-experiments-test-pool');
-        await testPoolBtn.click();
+        driver.click('main-experiments-test-pool');
 
-        await selectForm(browser,{experimentIndex:0, formName: newFormName});
+        await driver.FormChooserDriver.selectForm(DEFAULT_EXP_NAME, newFormName);
 
         await browser.pause(1000);
 
@@ -128,7 +111,6 @@ describe('Manage Form', () => {
         await handleCreateTestPlan(newFormName, newTestPlanName)
 
         await performTest(studentId, newTestPlanName, questions);
-
 
         const [ans0,ans1] = await viewTestPool(questions, newFormName);
         
