@@ -6,7 +6,7 @@ import Button from '@material-ui/core/Button'
 import Card from '@material-ui/core/Card'
 import Typography from '@material-ui/core/Typography'
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { UploadImage } from '../UploadImage/UploadImage';
+import { UploadImage } from './UploadImage/UploadImage';
 import api from '../../../apiService';
 import { withRouter } from "react-router-dom";
 

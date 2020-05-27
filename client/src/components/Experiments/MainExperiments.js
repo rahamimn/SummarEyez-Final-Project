@@ -22,7 +22,7 @@ import {
   Redirect
 } from "react-router-dom";
 import { NewExperiment } from './NewExperiment/NewExperiment';
-import TopNav from '../TopNav/TopNav';
+import TopNav from './TopNav/TopNav';
 import {Summaries} from './Summaries/Summaries';
 import {UploadAlgorithm} from './UploadAutomaticAlg/UploadAutomaticAlg';
 import {UploadFixations} from './UploadFixations/UploadFixations';

@@ -6,7 +6,7 @@ import LibraryAddIcon from '@material-ui/icons/LibraryAdd';
 import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import WelcomeDialog from '../WelcomeDialog/WelcomeDialog';
+import WelcomeDialog from '../../WelcomeDialog/WelcomeDialog';
 import {
   useHistory,
 } from "react-router-dom";
