@@ -45,11 +45,11 @@ export default function WelcomeDialog({
 
         <div style={{minHeight:'250px', maxWidth:'470px'}}>
           <TabPanel  value={value} index={0}>
-            <CreateNewExpTabPanel permit={permit}/>
+            <CreateNewExpTabPanel permit={permit} onClose={onClose}/>
           </TabPanel>
 
           <TabPanel value={value} index={1}>
-            <ChooseFromExistingTabPanel permit={permit}/>
+            <ChooseFromExistingTabPanel permit={permit} onClose={onClose}/>
           </TabPanel>
 
           <TabPanel  value={value} index={2}>
