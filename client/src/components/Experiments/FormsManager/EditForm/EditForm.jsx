@@ -2,7 +2,7 @@ import React,{useState,useEffect, useCallback, useMemo} from 'react';
 import { Typography, Grid, Card, TextField, Button, Divider, Select, MenuItem, Checkbox, ListItemText, Input, Switch, Paper, IconButton } from '@material-ui/core';
 import { QuizViewer } from '../../../Viewers/quizViewer/quizViewer';
 import api from '../../../../apiService';
-import { Question } from '../../../Tests/Form/Quiz/Question/Question';
+import { Question } from '../../../Tests/FormView/QuizView/QuestionView/Question';
 import { ERROR_STATUS } from '../../../ERRORS';
 import { AddQuestion } from '../AddQuestion/AddQuestion';
 import Autocomplete from '@material-ui/lab/Autocomplete';

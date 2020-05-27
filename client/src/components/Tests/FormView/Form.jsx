@@ -1,7 +1,7 @@
   
 import React, {useState, useEffect} from 'react';
 import { QuizViewer } from '../../Viewers/quizViewer/quizViewer';
-import { Quiz } from './Quiz/Quiz';
+import { Quiz } from './QuizView/Quiz';
 import { Card, Container, Button } from '@material-ui/core';
 import { RankSentences } from '../../Viewers/RankViewer/RankViewer';
 import { DropzoneArea } from 'material-ui-dropzone';

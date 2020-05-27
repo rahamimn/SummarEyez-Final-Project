@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Form } from './Form/Form';
+import { Form } from './FormView/Form';
 import api from '../../apiService';
 import { Typography, Button, Container, Card, TextField } from '@material-ui/core';
 import { ERROR_STATUS } from '../ERRORS';

@@ -4,7 +4,7 @@ import { Card, Typography, Divider, Dialog, DialogContent, TextField, Button } f
 import api from '../../../apiService';
 import TableSummaries from '../Summaries/TableSummaries';
 import {  createHeadersFromForm } from './TestHeaders';
-import { Question } from '../../Tests/Form/Quiz/Question/Question';
+import { Question } from '../../Tests/FormView/QuizView/QuestionView/Question';
 import {saveAs} from 'save-as';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
