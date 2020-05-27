@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Form } from './FormView/Form';
 import api from '../../apiService';
-import { Typography, Button, Container, Card, TextField } from '@material-ui/core';
+import { Typography, Button, Container, Card, TextField, CircularProgress } from '@material-ui/core';
 import { ERROR_STATUS } from '../ERRORS';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
@@ -21,7 +21,7 @@ function MainTests({testPlanId}) {
   const [testId,setTestId] = useState('');
   const [testIdError,setTestIdError] = useState(false);
   const [tests,setTests] = useState([]);
-
+  const [loadingSubmition,setLoadingSubmition] = useState(false);
   const [phase, setPhase] = useState(Phases.Start);
 
 
@@ -122,29 +122,33 @@ function MainTests({testPlanId}) {
             id="main-tests-student-id"
             label="Student ID" />
         
-          <div>
-            <Button  
-              id="main-tests-submit"
-              disabled={!testId}
-              style={{float:'right'}} 
-              onClick={async () => {
-                const responses = await Promise.all(tests.map(
-                  async testInput => await api.addTest({
-                    ...testInput,
-                    testPlanId: selectedTestPlan.id
-                  }))
-                );
-                
-                if(responses.some(res => res.status === ERROR_STATUS.NAME_NOT_VALID)){
-                  setTestIdError(true);
-                }
-                setTestId('')
-                setTestIdError(null)
-                setTests([]);
-                setCurrentFormIndex(0);
-                setPhase(Phases.Success);
-              }}
-              > Submit </Button>
+          <div style={{display:'flex',justifyContent: ' flex-end'}}>
+            {loadingSubmition ? 
+              <CircularProgress style={{marginRight:'10px'}}/> :
+              <Button  
+                id="main-tests-submit"
+                disabled={!testId}
+                style={{float:'right'}} 
+                onClick={async () => {
+                  setLoadingSubmition(true);
+                  const responses = await Promise.all(tests.map(
+                    async testInput => await api.addTest({
+                      ...testInput,
+                      testPlanId: selectedTestPlan.id
+                    }))
+                  );
+                  setLoadingSubmition(false);
+                  if(responses.some(res => res.status === ERROR_STATUS.NAME_NOT_VALID)){
+                    setTestIdError(true);
+                  }
+                  setTestId('')
+                  setTestIdError(null)
+                  setTests([]);
+                  setCurrentFormIndex(0);
+                  setPhase(Phases.Success);
+                }}
+                > Submit </Button>
+            }
           </div>
         </div>
       </div>
