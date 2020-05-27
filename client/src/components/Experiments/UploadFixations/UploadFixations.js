@@ -100,7 +100,7 @@ export class UploadFixations extends Component {
                 Upload fixation
               </Button>
 
-              <Card style={{backgroundColor:'#eeeeee', marginTop:'40px'}}>
+              <Card variant="outlined" style={{backgroundColor:'#eeeeee', marginTop:'40px'}}>
                 <CardContent>
                   <Typography style={{display:'block'}}>Instructions & Constraints</Typography>
                   <Typography style={{display:'block'}} >
