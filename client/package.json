@@ -2,7 +2,6 @@
   "name": "summarization-web-client",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://127.0.0.1:4000/",
   "dependencies": {
     "@material-ui/core": "^4.8.3",
     "@material-ui/icons": "^4.9.1",
@@ -11,6 +10,7 @@
     "@testing-library/react": "^9.4.0",
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.19.1",
+    "http-proxy-middleware": "^1.0.4",
     "material-ui-dropzone": "^2.4.7",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
@@ -22,6 +22,7 @@
     "server": "cd ../server && npm run start",
     "server-local": "cd ../server && npm run start-local ",
     "serverClient": "npm-run-all -p server client",
+    "prod": "PROD=true npm-run-all -p server client",
     "serverClient-local": "npm-run-all -p server-local client",
     "client": "react-scripts start",
     "start": "npm run client",
