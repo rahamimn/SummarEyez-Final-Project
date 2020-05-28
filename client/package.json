@@ -27,7 +27,7 @@
     "client": "react-scripts start",
     "start": "npm run client",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --runInBand",
     "eject": "react-scripts eject",
     "e2eNoBuild": "react-scripts test e2e",
     "test:e2e": "npm-run-all -p -r serverClient-local e2eNoBuild"

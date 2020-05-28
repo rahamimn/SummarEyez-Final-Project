@@ -75,8 +75,9 @@ export class UploadImage extends Component{
                 onChange={this.handleChangeName}
                 id="upload-image-image-name"
                 label="Image Name" />
-            <DropzoneArea 
-                acceptedFiles={["images/*",".jpeg"]}
+            <DropzoneArea
+                
+                acceptedFiles={["images/*",".jpeg",".jpg"]}
                 filesLimit={1}
                 onChange={this.handleChangeFile}/>
             <div style={{width:'100%', display:'flex', justifyContent:'flex-end'}}>

@@ -99,7 +99,7 @@ function MainExperiments({permit}) {
         {experimentName &&
           <List component="div" disablePadding>
             <Typography style={{paddingLeft:'10px'}} variant="h5" >{experimentName}</Typography>
-            <ListItem button onClick={e => history.push(experimetPage('summaries'))}>
+            <ListItem id='main-experiments-summaries' button onClick={e => history.push(experimetPage('summaries'))}>
               <ListItemIcon>
                 <LibraryBooksIcon />
               </ListItemIcon>

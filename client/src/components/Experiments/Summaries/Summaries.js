@@ -75,7 +75,7 @@ export function Summaries({
         <ExpansionPanelSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
-          id="panel1a-header"
+          id="summaries-auto-switch"
         >
           <Typography className={classes.heading}>Automatic Summaries</Typography>
         </ExpansionPanelSummary >
@@ -91,7 +91,7 @@ export function Summaries({
         <ExpansionPanelSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel2a-content"
-          id="panel2a-header"
+          id="summaries-eyes-switch"
         >
           <Typography className={classes.heading}>Tests Summaries</Typography>
         </ExpansionPanelSummary>
@@ -107,7 +107,7 @@ export function Summaries({
         <ExpansionPanelSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel2a-content"
-          id="panel2a-header"
+          id="summaries-merge-switch"
         >
           <Typography className={classes.heading}>Merged Summaries</Typography>
         </ExpansionPanelSummary>

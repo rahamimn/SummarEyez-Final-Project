@@ -80,6 +80,7 @@ const useToolbarStyles = makeStyles(theme => ({
         {justDisabled && (isLoadingRun ? 
             <CircularProgress style={{marginRight: '10px'}} /> :
             <Button 
+                id="main-toolbar-run-alg"
                 color="inherit"
                 onClick={ async () => {
                     setIsLoadingRun(true);
@@ -94,6 +95,7 @@ const useToolbarStyles = makeStyles(theme => ({
        
         {oneNotDisable && [
             <Button 
+                id="main-toolbar-view"
                 key="1"
                 onClick={() => window.open(`/article/${experimentName}/${oneNotDisable.data.type}/${oneNotDisable.data.name}`,'_blank')}
                 color="inherit">View</Button>,

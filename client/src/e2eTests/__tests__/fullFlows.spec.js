@@ -2,6 +2,7 @@
 const { remote } = require('webdriverio');
 import {answerQuestion, DEFAULT_EXP_NAME, Driver} from '../driver/main.driver';
 import Chance from 'chance';
+import path from 'path';
 const chance = new Chance();
 
 jest.setTimeout(100000);
@@ -116,5 +117,45 @@ describe('Manage Form', () => {
         
         expect(ans0).toBe(true);
         expect(ans1).toBe(true);
+    });
+
+
+    it('success - upload automatic alg and see results', async () => {
+        const newAlgoName = chance.word();
+        const UploadAlgDriver = driver.UploadAlgDriver;
+        const filePath = path.join(__dirname, '../../../../server/automatic-algorithms/algo1.py');
+
+        await experimentDriver.navigateTo.uploadAlg();
+
+        await UploadAlgDriver.insertName(newAlgoName);
+
+        await browser.pause(2000);
+        await UploadAlgDriver.upload(filePath);
+        await UploadAlgDriver.submit();
+
+        await browser.pause(2000);
+
+        await experimentDriver.navigateTo.summaries();
+        
+        const SummariesDriver = driver.SummariesDriver;
+
+        await SummariesDriver.switchTable.auto();
+
+        for(let i = 0; i < 10; i++){
+            await SummariesDriver.nextPage();
+        }
+
+        await SummariesDriver.clickOnRowWithName(newAlgoName+'.py');
+        await SummariesDriver.toolbarActions.run();
+
+        await browser.pause(5000);
+
+        await SummariesDriver.clickOnRowWithName(newAlgoName+'.py');
+        await SummariesDriver.toolbarActions.view();
+
+        await browser.pause(1000);
+
+        await browser.url(`http://localhost:3000/article/${DEFAULT_EXP_NAME}/auto/${newAlgoName}.py`);
+        await browser.pause(2000);
     });
 })

@@ -1,6 +1,6 @@
 
 
-export const DEFAULT_EXP_NAME = "exp1";
+export const DEFAULT_EXP_NAME = "expA";
 export const PASSWORD = "1234"
 
 export const enterNewExperimentPage = async (browser) => {
@@ -53,16 +53,6 @@ const fillPasswordAndGo = async (password) => {
 } 
 
 
-
-export const selectForm = async(browser,{experimentIndex,formName}) => {
-    await selectFromDropdownByIndex(experimentIndex,'form-chooser-choose-experiment',browser);
-
-    const formInput = await browser.$('#form-chooser-choose-form-input');
-    await formInput.setValue(formName);
-
-    await selectFromDropdown(0,'form-chooser-choose-form',browser);
-}
-
 export const answerQuestion = async (browser,ans) => {
     const answer = await browser.$(`#question-ans-${ans}`);
     await answer.click();
@@ -109,6 +99,10 @@ export class Driver {
     
     
         navigateTo: {
+            summaries: async () => 
+                await this.click("main-experiments-summaries"),
+            uploadAlg: async () => 
+                await this.click("upload-algorithm-side-button"),
             testManager: async () => 
                 await this.click("test-form-manager-side-button"),
             testPlan: async () => 
@@ -133,6 +127,15 @@ export class Driver {
             await this.click('create-test-plan-submit');
         }
     };
+    
+    UploadAlgDriver = {
+        insertName: async (name) => this.setValue('insert-algorithm-name',name),
+        upload: async (filePath) => {
+            const uploadInput = await this.browser.$(`input[type="file"]`);
+            await uploadInput.setValue(filePath);
+        },
+        submit: async () => this.click("upload-algorithm-button")
+    }
 
     EditFormDriver = {
         clickSwitch: {
@@ -157,5 +160,22 @@ export class Driver {
 
             await this.click(`add-question-create`);
         }
+    };
+
+    SummariesDriver = {
+        switchTable: {
+            auto: async () => this.click('summaries-auto-switch'),
+            eyes: async () => this.click('summaries-eyes-switch'),
+            merge: async () => this.click('summaries-merge-switch'),
+        },
+        nextPage: async () => (await this.browser.$('[aria-label="Next page"]')).click(),
+        clickOnRowWithName: async (name) => 
+            (await this.browser.$(`[id$="${name}-row"]`)).click(),
+
+        toolbarActions: {
+            run: async () => this.click("main-toolbar-run-alg"),
+            view: async () => this.click("main-toolbar-view")
+        }
+        
     }
 };

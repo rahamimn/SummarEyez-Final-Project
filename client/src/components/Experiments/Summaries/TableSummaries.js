@@ -125,6 +125,7 @@ export default function TableSummaries({
                       aria-checked={isItemSelected}
                       tabIndex={-1}
                       key={data.name}
+                      id={`table-summaries-row-${index}-${data.name ? data.name :''}-row`}
                       selected={isItemSelected}
                     >
                       {selected && <TableCell padding="checkbox">
@@ -162,6 +163,7 @@ export default function TableSummaries({
           </Table>
         </TableContainer>
         <TablePagination
+          id="table-pagination"
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
           count={rows.length}
