@@ -13,6 +13,7 @@ import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import DeveloperBoardIcon from '@material-ui/icons/DeveloperBoard';
+import MenuBookIcon from '@material-ui/icons/MenuBook';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   Switch,
@@ -30,6 +31,7 @@ import { FormsManager } from './FormsManager/FormsManager';
 import { TestPlanManager } from './TestPlansManager/TestPlanManager';
 import { Typography } from '@material-ui/core';
 import { TestsPoolMain } from './TestPool/TestPoolMain';
+import {ExperimentInfo} from './ExperimentInfo/ExperimentInfo';
 
 
 const drawerWidth = 240;
@@ -99,6 +101,14 @@ function MainExperiments({permit}) {
         {experimentName &&
           <List component="div" disablePadding>
             <Typography style={{paddingLeft:'10px'}} variant="h5" >{experimentName}</Typography>
+
+            <ListItem id='main-experiments-info' button onClick={e => history.push(experimetPage('info'))}>
+              <ListItemIcon>
+                <MenuBookIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Info'} />
+            </ListItem>
+
             <ListItem id='main-experiments-summaries' button onClick={e => history.push(experimetPage('summaries'))}>
               <ListItemIcon>
                 <LibraryBooksIcon />
@@ -112,13 +122,6 @@ function MainExperiments({permit}) {
             </ListItemIcon>
               <ListItemText primary={'Test Forms Manager'} />
             </ListItem>
-
-            {/* <ListItem button onClick={e => history.push(experimetPage('tests'))}>
-              <ListItemIcon>
-                <AssessmentIcon />
-              </ListItemIcon>   
-              <ListItemText primary={'Test pool'} />
-            </ListItem> */}
 
             <ListItem button onClick={e => history.push(experimetPage('uploadFixations'))}>
               <ListItemIcon>
@@ -171,6 +174,10 @@ function MainExperiments({permit}) {
             <Route path={experimetRoutePage('summaries')}>
               <Summaries/>
             </Route>
+
+            <Route path={experimetRoutePage('info')}>
+              <ExperimentInfo/>
+            </Route>
  
             <Route path={experimetRoutePage('forms')}>
               <FormsManager/>
@@ -182,7 +189,7 @@ function MainExperiments({permit}) {
                 experimentName={experimentName}/>
             </Route>
             <Route path={experimetRoutePage('')}>
-              <Redirect to={experimetPage('summaries')}/>
+              <Redirect to={experimetPage('info')}/>
             </Route>
             {/* here we add all sub pages : (may be inners goes in sub component)
               *   forms:

@@ -492,6 +492,28 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
         return response(0, {data: experiments});
     }
 
+    getExperimentInfo = async (experimentName: any) => {
+        const experiment = await this.collectionsService.experiments().get(experimentName);
+        if(!experiment){
+            return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
+        }
+        const image = await this.collectionsService.images().get(experiment.imageName);
+        const questionsOfImage = await this.collectionsService.images().questionsOf(experiment.imageName).getAll();
+        const forms = await this.collectionsService.experiments().formsOf(experimentName).getAll();
+        const tests = await this.collectionsService.experiments().getTests(experimentName).getAll();
+        const base_sent_table = await this.storageService.downloadToBuffer(image.base_sent_table_path);
+
+        experiment.questionsCounter = questionsOfImage.length;
+        experiment.formsCounter = forms.filter(form => form.id !== 'Manually').length;
+        experiment.testsCounter = tests.filter(test => test.data.formId !== 'Manually').length;
+        experiment.fixationsUploadedCounter = tests.filter(test => test.data.sent_table_path).length;
+        experiment.image_path = image.image_path;
+        experiment.base_sent_table = await csvToJson({delimiter:'auto'}).fromString(base_sent_table.toString('utf16le'));
+
+
+        return response(0, {data: experiment});
+    }
+
     getAllQuestions= async(experimentName: any) => {
         const experiment = await this.collectionsService.experiments().get(experimentName);
         if(!experiment){

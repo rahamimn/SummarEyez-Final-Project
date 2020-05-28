@@ -58,6 +58,11 @@ app.get('/api/experiments', (req, res) => errorHandling(res, async () => {
     res.send(response);
 }));
 
+app.get('/api/experiments/:experimentName', (req, res) => errorHandling(res, async () => {  
+    const response = await experimentService.getExperimentInfo(req.params.experimentName)
+    res.send(response);
+}));
+
 //returns all the questions of the experiment
 app.get('/api/experiments/:experimentName/questions', (req, res) => errorHandling(res, async () => {  
     const response = await experimentService.getAllQuestions(req.params.experimentName)

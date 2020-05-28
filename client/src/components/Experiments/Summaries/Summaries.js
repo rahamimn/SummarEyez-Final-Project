@@ -25,9 +25,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export function Summaries({
-  experimentId
-}) {
+export function Summaries() {
   const {experimentName} = useParams()
   const classes = useStyles();
   const [summaries,setSummaries] = useState({
@@ -60,7 +58,7 @@ export function Summaries({
 
   useEffect(() => {
     fetchSummaries();
-  }, [experimentId, fetchSummaries])
+  }, [fetchSummaries])
 
   return (
     <div className={classes.root}>
