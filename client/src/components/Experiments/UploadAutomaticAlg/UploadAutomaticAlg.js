@@ -102,6 +102,7 @@ export class UploadAlgorithm extends Component {
                   <Typography style={{display:'block'}}>Instructions & Constraints</Typography>
                   <Typography style={{display:'block'}} >
                     1. upload python file (.py). <br/>
+                    2. see example <a target="_blank" href="https://storage.cloud.google.com/summareyez-6b61e.appspot.com/AutomaticAlgoSample.py?authuser=1&folder&organizationId">python file</a><br/>
                     2. your 'run' function should return {'{'}'text':{'<sentenceText>'} , 'weight': {'<someValue>}'}[]. <br/>
                     3. your python script should run under the 'run' function inside the file. <br/>
                     4. if you want to add external libray besdies (nltk, numpy, sklearn, pandas ) you install on server manually. <br/>
