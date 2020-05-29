@@ -1351,4 +1351,57 @@ describe('ExperimentService Tests',() =>{
     });
 
 
+    describe('getExperimentInfo test' , () => {
+
+        const expName = 'exp1';
+        const expNameNotExists = 'exp1-notExists';
+        const imageName = 'img1';
+        const testId1 = 'testId1';
+        const testId2 = 'testId2';
+        const testId3 = 'testId3';
+        const test2 = 'testId3';
+        const form2 = 'form2';
+        const form3 = 'form3';
+        const question1 = 'question1';
+        const image_path = 'image_path';
+
+        const base_sent_table_path = 'base_sent_table_path/path';
+        const sentTableBuffer = new Buffer("sent_table");
+
+        beforeEach( async () => {
+      
+            await collectionsService.images().add(imageName, {name: imageName ,base_sent_table_path, image_path});
+            await collectionsService.experiments().add(expName, {imageName});
+
+            await collectionsService.images().questionsOf(imageName).add(question1,{});
+
+            await collectionsService.experiments().formsOf(expName).add('Manually', {id:'Manually'});
+            await collectionsService.experiments().formsOf(expName).add(form2, {});
+            await collectionsService.experiments().formsOf(expName).add(form3, {});
+
+            await collectionsService.experiments().getTests(expName).add(testId1,{sent_table_path:'path'});
+            await collectionsService.experiments().getTests(expName).add(testId2,{});
+            await collectionsService.experiments().getTests(expName).add(testId3,{});
+
+            await storageService.uploadBuffer(base_sent_table_path,sentTableBuffer,fileTypes.Csv);
+        });
+
+        it('success- getExperimentInfo with counters', async () => {
+            const  {status, data} = await experimentService.getExperimentInfo(expName);
+            expect(data.questionsCounter).toEqual(1);
+            expect(data.formsCounter).toEqual(2);
+            expect(data.testsCounter).toEqual(3);
+            expect(data.fixationsUploadedCounter).toEqual(1);
+            expect(data.image_path).toEqual(image_path);
+            expect(data.base_sent_table).toEqual(await csvToJson({delimiter:'auto'}).fromString(sentTableBuffer.toString('utf16le')));
+            expect(status).toEqual(0);     
+        });
+
+        it('fail- testPlan not exist', async () => {
+            const  {status, error} = await experimentService.getExperimentInfo(expNameNotExists)   ;
+            expect(status).toEqual (ERROR_STATUS.OBJECT_NOT_EXISTS);
+            expect(error).toEqual (ERRORS.EXP_NOT_EXISTS);
+
+        });
+    });
 });
