@@ -449,24 +449,30 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
         try{
 
             const automaticAlgsSavedLocally = await this.getAutoAlgsSavedLocally();
+
             //we should fetch newly algorithms 
             const allAutomaticAlgs: string[] = await this.collectionsService.automaticAlgos().getAll();
+            const existingShouldRunAlgs = [];
             if(allAutomaticAlgs.length > 0){
                 await forEP(allAutomaticAlgs, async (metaAuto) => {
                     const autoName = metaAuto.data.name;
-                    if(allAutomaticAlgs.includes(autoName)){
-                        return;
+                    try{
+                        if(!automaticAlgsSavedLocally.includes(autoName)){
+                            await this.storageService.downloadToPath(
+                                metaAuto.data.path,
+                                `./automatic-algorithms/${autoName}`
+                            )
+                        }
+                        existingShouldRunAlgs.push(autoName);
                     }
-                    await this.storageService.downloadToPath(
-                        metaAuto.data.path,
-                        `./automatic-algorithms/${autoName}`
-                    )
-                    automaticAlgsSavedLocally.push(autoName)
+                    catch(e){
+                      console.error(`${autoName} not exists in server`);
+                    }
                 });
             }
         
             const {tables} = await this.pythonService.runAutomaticAlgs(
-                automaticAlgsSavedLocally,
+                existingShouldRunAlgs,
                 files.text,
                 files.base_sent_table);
             if(tables.length> 0){
