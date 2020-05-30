@@ -47,44 +47,48 @@ export function ExperimentInfo() {
 						</Button>
 					</div>
 					<Divider/>
-					{experimentInfo ? 
-							<List>
-                <ListItem>
-									<ListItemIcon>
-                    <DoubleArrowRoundedIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={`Questions: ${experimentInfo.questionsCounter}`}
-                  />
-                </ListItem>
-								<ListItem>
-									<ListItemIcon>
-                    <DoubleArrowRoundedIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={`Forms: ${experimentInfo.formsCounter}`}
-                  />
-                </ListItem>
-								<ListItem>
-									<ListItemIcon>
-                    <DoubleArrowRoundedIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={`Test: ${experimentInfo.testsCounter}`}
-                  />
-                </ListItem>
-								<ListItem>
-									<ListItemIcon>
-                    <DoubleArrowRoundedIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={`Fixations Uploaded: ${experimentInfo.fixationsUploadedCounter}`}
-                  />
-                </ListItem>
-            	</List> :
-						<div style={{padding:'40px'}}>
-							<CircularProgress/>
-						</div>
+         
+          {experimentInfo ? 
+              <div>
+                <Typography>{experimentInfo.description}</Typography>
+                <List>
+                  <ListItem>
+                    <ListItemIcon>
+                      <DoubleArrowRoundedIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={`Questions: ${experimentInfo.questionsCounter}`}
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemIcon>
+                      <DoubleArrowRoundedIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={`Forms: ${experimentInfo.formsCounter}`}
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemIcon>
+                      <DoubleArrowRoundedIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={`Test: ${experimentInfo.testsCounter}`}
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemIcon>
+                      <DoubleArrowRoundedIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={`Fixations Uploaded: ${experimentInfo.fixationsUploadedCounter}`}
+                    />
+                  </ListItem>
+                </List>
+              </div> :
+              <div style={{padding:'40px'}}>
+                <CircularProgress/>
+              </div>
 					}
         </Card>
       </Grid>

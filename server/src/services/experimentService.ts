@@ -659,7 +659,7 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
         }
     };
 
-    addExperiment = async (experimentName, imageName)=>{
+    addExperiment = async (experimentName, imageName, description)=>{
         const paramsList= {'experimentName': experimentName, 'imageName': imageName};
         const manuallyFormName = 'Manually';
 
@@ -671,7 +671,9 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
             return response(ERROR_STATUS.NAME_NOT_VALID,{ error: ERRORS.EXP_EXISTS});
         }
         await this.collectionsService.experiments().add(experimentName,{
-            name: experimentName, imageName
+            name: experimentName, 
+            imageName,
+            description
         });
         await this.collectionsService.experiments().formsOf(experimentName).add(manuallyFormName,{
             name: manuallyFormName,

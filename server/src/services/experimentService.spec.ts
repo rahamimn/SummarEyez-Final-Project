@@ -161,7 +161,8 @@ describe('ExperimentService Tests',() =>{
         it('success', async () => {
             const expName= "exp_1";
             const imageName= "img_1";
-            const res = await experimentService.addExperiment(expName, imageName);
+            const description= "description";
+            const res = await experimentService.addExperiment(expName, imageName, description);
             expect(res.status).toEqual(0);
             
             expect(await collectionsService.experiments().get(expName)).toEqual(expect.objectContaining({
@@ -173,9 +174,10 @@ describe('ExperimentService Tests',() =>{
         it('fail name exists', async () => {
             const expName= "exp_1";
             const imageName= "img_1";
+            const description= "description";
 
             await collectionsService.experiments().add(expName, {});
-            const {status, error} = await experimentService.addExperiment(expName, imageName);
+            const {status, error} = await experimentService.addExperiment(expName, imageName,description);
             expect(status).toBe(ERROR_STATUS.NAME_NOT_VALID);
             expect(error).toBe(ERRORS.EXP_EXISTS);
         });

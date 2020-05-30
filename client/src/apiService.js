@@ -66,9 +66,10 @@ const api = {
 
     },
 
-    addExperiment: async (experimentName,imageName) => {
+    addExperiment: async (experimentName,description,imageName) => {
         const res = await axios.post('/api/experiments',{
             experimentName,
+            description,
             imageName,
         });
         return res.data;

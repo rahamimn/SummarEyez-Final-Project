@@ -9,6 +9,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { UploadImage } from './UploadImage/UploadImage';
 import api from '../../../apiService';
 import { withRouter } from "react-router-dom";
+import { TextareaAutosize } from '@material-ui/core'
 
 const ArticleImage = (imagePath) =>
   <Card>  
@@ -32,6 +33,7 @@ class NewExperimentComponent extends Component{
       images: [],
       image: null,
       imageName: '',
+      descriptionText: '',
       experimentName: '',
       uploadingNewImage: false,
     };
@@ -47,7 +49,7 @@ class NewExperimentComponent extends Component{
   }
 
   handleAddExperiment = async () => {
-    const res = await api.addExperiment(this.state.experimentName, this.state.imageName);
+    const res = await api.addExperiment(this.state.experimentName,this.state.description, this.state.imageName);
     if(res.status !== 0){
       this.setState({
         isNameExists: true
@@ -82,6 +84,9 @@ class NewExperimentComponent extends Component{
                   onChange={this.handleChangeExperimentName}
                   id="new-experiment-experiment-name"
                   label="Experiment Name" />
+
+                <TextareaAutosize style={{width:'100%', height:'60px'}} placeholder="describe your experiment" value={this.state.descriptionText} onChange={(e) => this.setState({descriptionText: e.target.value }) } />
+
 
                 <Autocomplete
                   id="new-experiment-experiment-image"
@@ -120,6 +125,8 @@ class NewExperimentComponent extends Component{
                       })}>
                           Upload new Image
                     </Button> }
+
+
                 <Button 
                   id="new-experiment-submit"
                   style={{marginTop: '20px', float:'right'}}

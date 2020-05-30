@@ -10,7 +10,7 @@ export const dataCreation = async (experimetService: ExperimentService) => {
     const alg = await fsPromises.readFile('./automatic-algorithms-locally/Alg1.py');
     await experimetService.addAutomaticAlgorithms('algo1.py', alg);
     await experimetService.addImage('img1', img);
-    await experimetService.addExperiment('expA', 'img1');
+    await experimetService.addExperiment('expA', 'img1','img1-desc');
     console.log('expA: Done!');
 
     // expB (Optional, takes time to create)
@@ -19,7 +19,7 @@ export const dataCreation = async (experimetService: ExperimentService) => {
     const alg2 = await fsPromises.readFile('./automatic-algorithms-locally/Alg2.py');
     await experimetService.addAutomaticAlgorithms('algo2.py', alg2);
     await experimetService.addImage('img2', img2);
-    await experimetService.addExperiment('expB', 'img2');
+    await experimetService.addExperiment('expB', 'img2','img2-desc');
     console.log('expB: Done!');
 
     // expC (Optional, takes time to create)
@@ -28,7 +28,7 @@ export const dataCreation = async (experimetService: ExperimentService) => {
     const alg3 = await fsPromises.readFile('./automatic-algorithms-locally/Alg2.py');
     await experimetService.addAutomaticAlgorithms('algo3.py', alg3);
     await experimetService.addImage('img3', img3);
-    await experimetService.addExperiment('expC', 'img3');
+    await experimetService.addExperiment('expC', 'img3','img3-desc');
     console.log('expC: Done!');
 
     //QUESTIONS:

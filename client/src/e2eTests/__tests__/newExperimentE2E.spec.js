@@ -39,7 +39,7 @@ describe('new Experiment', () => {
 
         // await browser.pause(5000);
 
-        expect(await browser.getUrl()).toBe(`http://localhost:3000/experiments/${newExperimentName}/summaries`);
+        expect(await browser.getUrl()).toBe(`http://localhost:3000/experiments/${newExperimentName}/info`);
     });
 
     it('fail - experimentNameExists',async () => {
@@ -80,7 +80,7 @@ describe('new Experiment', () => {
         await submit.click();
 
         await browser.pause(1000);
-        expect(await browser.getUrl()).toBe(`http://localhost:3000/experiments/${newExperimentName}/summaries`);
+        expect(await browser.getUrl()).toBe(`http://localhost:3000/experiments/${newExperimentName}/info`);
     });
 
     it('fail upload image - name exists',async () => {
