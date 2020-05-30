@@ -1,12 +1,14 @@
 import React,{useState,  useCallback, useEffect} from 'react';
 import { FormChooser } from "../TestPlansManager/FormChooser";
-import { Card, Typography, Divider, Dialog, DialogContent, TextField, Button } from "@material-ui/core";
+import { Card, Typography, Divider, Dialog, TextField, Button, Snackbar } from "@material-ui/core";
 import api from '../../../apiService';
 import TableSummaries from '../Summaries/TableSummaries';
 import {  createHeadersFromForm } from './TestHeaders';
 import { Question } from '../../Tests/FormView/QuizView/QuestionView/Question';
 import {saveAs} from 'save-as';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import Alert from '@material-ui/lab/Alert';
+import { ERROR_STATUS } from '../../ERRORS';
 
 export const TestsPoolMain = () =>  {
     const [tests,setTests] = useState({rows:[], headers:[]});
@@ -16,6 +18,8 @@ export const TestsPoolMain = () =>  {
     const [selectedTestPlan,setSelectedTestPlan] = useState(null);
     const [testPlanText,setTestPlanText] = useState('');
     const [testPlans,setTestPlans] = useState([]);
+    const [alertError,setAlertError] = useState(null);
+
 
     const fetchExperiments = useCallback(async() => {
         const experiments = await api.getExperiments();
@@ -65,8 +69,17 @@ export const TestsPoolMain = () =>  {
     },[fetchExperiments]);
 
     const exportAnswers = async () => {
-        const file = await api.exportAnswersByTestPlanCsv(selectedTestPlan.id)
-        saveAs(file, `answers-${selectedTestPlan.id}-${new Date().toISOString()}.csv`);
+
+        const {file,status, error} = await api.exportAnswersByTestPlanCsv(selectedTestPlan.id);
+        if(status === ERROR_STATUS.OBJECT_NOT_EXISTS){
+            setAlertError("No tests conducted");
+        }
+        else if(status < 0){
+            setAlertError(`Server Error: ${error}`);
+        }
+        else{
+            saveAs(file, `answers-${selectedTestPlan.id}-${new Date().toISOString()}.csv`);
+        }
     }
 
     return (
@@ -137,6 +150,14 @@ export const TestsPoolMain = () =>  {
         <Dialog open={questionModalOpen} onClose={() => setQuestionModalOpen(false)}>
             <Question question={currentQuestion}/>
         </Dialog>
+        <Snackbar   
+            anchorOrigin={{ vertical:'top', horizontal:'center' }}
+            open={alertError}
+            onClose={() => setAlertError(null)}>
+            <Alert elevation={6} variant="filled" onClose={() => setAlertError(null)} severity="error">
+                {alertError}
+            </Alert> 
+        </Snackbar>
         </div>
         
     );

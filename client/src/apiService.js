@@ -206,8 +206,8 @@ const api = {
     },
 
     exportAnswersByTestPlanCsv: async (testPlanId) => {
-        const res = await axios.get(`/api/testPlans/${testPlanId}/tests?csv=true`);
-        return new Blob([res.data.data.csv]);
+        const res = await axios.get(`/api/testPlans/${testPlanId}/tests?csv=true`);  
+        return {...res.data, file: res.data.data && new Blob([res.data.data.csv])};
     },
 }
 

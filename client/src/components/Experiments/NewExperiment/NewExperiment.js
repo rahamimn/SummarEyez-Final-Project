@@ -49,7 +49,7 @@ class NewExperimentComponent extends Component{
   }
 
   handleAddExperiment = async () => {
-    const res = await api.addExperiment(this.state.experimentName,this.state.description, this.state.imageName);
+    const res = await api.addExperiment(this.state.experimentName,this.state.descriptionText, this.state.imageName);
     if(res.status !== 0){
       this.setState({
         isNameExists: true

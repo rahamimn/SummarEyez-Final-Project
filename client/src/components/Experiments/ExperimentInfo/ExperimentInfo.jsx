@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback} from 'react'
 import Typography from '@material-ui/core/Typography'
 import api from '../../../apiService';
 import {useParams} from 'react-router-dom'
-import { Grid, Card, Divider, CircularProgress, Modal, Dialog, Button, List, ListItem, ListItemText, ListItemIcon } from '@material-ui/core';
+import { Grid, Card, Divider, CircularProgress, Dialog, Button, List, ListItem, ListItemText, ListItemIcon, Paper } from '@material-ui/core';
 import { BaseViewer } from '../../Viewers/BaseViewer/BaseViewer';
 import DoubleArrowRoundedIcon from '@material-ui/icons/DoubleArrowRounded';
 const ArticleImage = (imagePath) =>
@@ -50,7 +50,9 @@ export function ExperimentInfo() {
          
           {experimentInfo ? 
               <div>
-                <Typography>{experimentInfo.description}</Typography>
+                <Paper variant="outlined" style={{margin:'15px 5px 0px', padding:'10px'}}>
+                  <Typography>{experimentInfo.description}</Typography>
+                </Paper>
                 <List>
                   <ListItem>
                     <ListItemIcon>

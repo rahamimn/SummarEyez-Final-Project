@@ -38,7 +38,8 @@ export class UploadFixations extends Component {
       this.setState({ apiAlertShows: true, uploading: false, files: [] })
     }
     else {
-      this.setState({ uploading: false, isNameExists: status === -1, successShows: true });
+      //success
+      this.setState({ uploading: false,fixationName:'',files: [], isNameExists: false, successShows: true });
     }
 
   }
@@ -126,7 +127,6 @@ export class UploadFixations extends Component {
           onClose={this.handleSuccessAlert}>
           <Alert variant="filled" severity="success" onClose={this.handleSuccessAlert}> Uploaded Successfully </Alert>
         </Snackbar>
-
       </Card>
 
     )

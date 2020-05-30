@@ -243,7 +243,9 @@ testOfTestPlan = async (testPlanId, csv) =>{
     var csvRes
     if(csv === true){
         try{
-      
+            if(jsonAns.length === 0){
+                return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{ error:ERRORS.TEST_NOT_EXISTS});
+            }
             const samp = jsonAns[0].tests
             const testData = (entry,ind) => entry.tests[ind].data;
 
@@ -673,7 +675,7 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
         await this.collectionsService.experiments().add(experimentName,{
             name: experimentName, 
             imageName,
-            description
+            description: description || ''
         });
         await this.collectionsService.experiments().formsOf(experimentName).add(manuallyFormName,{
             name: manuallyFormName,
