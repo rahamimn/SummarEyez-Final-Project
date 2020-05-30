@@ -59,13 +59,13 @@ export function Form({
 
     const renderByStage = [
         form.isReadSummary && <Summary/>,
+        form.isRankSentences && <RankSentencesComp/>,
         form.isFillAnswers && <Quiz 
             questions={form.questions}
             onFinish={ answers => {
                 setAnswers(answers)
                 nextStep(answers)
             }}    />,
-        form.isRankSentences && <RankSentencesComp/>,
         form.withFixations && <UploadFixations/>
 
     ].filter(x => x);
