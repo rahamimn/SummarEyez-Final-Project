@@ -96,8 +96,9 @@ export class UploadImage extends Component{
                 <Typography style={{display:'block'}}>Instructions & Constraints</Typography>
                 <Typography style={{display:'block'}} >
                   1. upload jpeg format, for pdf you have to convert it to jpeg.<br/>
-                  2. max size 2MB. <br/>
-                  3. your image text should include '.' only as sentence seperator.<br/>
+                  2. content of the jpeg file shouldn't include any inner image.<br/>
+                  3. max size 2MB. <br/>
+                  4. your image text should include '.' only as sentence seperator.<br/>
                 </Typography>
               </CardContent>
             </Card>

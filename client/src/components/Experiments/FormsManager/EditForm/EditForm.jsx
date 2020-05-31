@@ -249,6 +249,17 @@ export function EditForm({
                 </Select>
               </FilterTag> 
 
+              <FilterTag>
+                <FilterWeightSetter 
+                  disabled={disabled}
+                  weight={minWeight}
+                  updateWeight={(val) => {
+                    filters.minWeight = val;
+                    updateField('summary',{...summary, filters })
+                  }}
+                />
+              </FilterTag>
+              
               <FilterTag style={{width:'150px'}}>
                 <Typography color="textSecondary">Hide Sentences</Typography>
                 <ToggleButton
@@ -262,17 +273,6 @@ export function EditForm({
                     >
                     <CheckIcon />
                 </ToggleButton> 
-              </FilterTag>
-
-              <FilterTag>
-                <FilterWeightSetter 
-                  disabled={disabled}
-                  weight={minWeight}
-                  updateWeight={(val) => {
-                    filters.minWeight = val;
-                    updateField('summary',{...summary, filters })
-                  }}
-                />
               </FilterTag>
             </div>
           </div>
