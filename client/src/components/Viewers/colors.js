@@ -1,5 +1,9 @@
 
 export const COLORS = {
+    '1':{
+        yellow:['#c1ff01'],
+        green:['#00fb00']
+    },
     '3':{
         op_1:['#f7fcb9','#addd8e','#31a354'],
         op_2:['#fff7bc','#fec44f','#d95f0e']
@@ -26,5 +30,5 @@ export const COLORS = {
     },
 }
 
-export const COLORS_SIZES = ['3','4','5','6','7','8'];
+export const COLORS_SIZES = ['1','3','4','5','6','7','8'];
 

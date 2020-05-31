@@ -34,8 +34,12 @@ const paleteColors = (colors) => <div style={{display:'flex',justifyContent: 'ce
 </div>
 
 export const ArticleViewer = ({summary, title}) => {
-    let [colorSize, setColorSize] = useState('5');
-    let [colorPalete, setColorPalete] = useState('op_1');
+
+    let [color, setColor] = useState({
+        colorSize: '5',
+        colorPalete:'op_1'
+    });
+
     let [isGradient, setIsGradient] = useState(true);
     let [minWeight, setMinWeight] = useState(0);
     let [topSentencesCount, setTopSentencesCount ] = useState(summary.length);
@@ -67,8 +71,15 @@ export const ArticleViewer = ({summary, title}) => {
                             labelId="select-color-sizes"
                             id="select-#colors"
 
-                            value={colorSize}
-                            onChange={(event) => setColorSize(event.target.value)}
+                            value={color.colorSize}
+                            onChange={(event) => {
+                                const colorSizeVal = event.target.value;
+                                setColor({
+                                    colorSize: colorSizeVal,
+                                    colorPalete: Object.keys(COLORS[colorSizeVal])[0]
+                                });
+                                console.log(COLORS[colorSizeVal][Object.keys(COLORS[colorSizeVal])[0]]);
+                            }}
                             input={<Input style={{display:'block', width:'100px'}}/>}
                             renderValue={(selected) => selected}
                             MenuProps={MenuProps}
@@ -85,16 +96,21 @@ export const ArticleViewer = ({summary, title}) => {
                             labelId="select-color-sizes"
                             id="select-#colors"
 
-                            value={colorPalete}
-                            onChange={(event) => setColorPalete(event.target.value)}
+                            value={color.colorPalete}
+                            onChange={(event) => 
+                                setColor({
+                                    colorSize: color.colorSize,
+                                    colorPalete: event.target.value
+                                })
+                            }
                             input={<Input style={{display:'block', width:'100px'}}/>}
                             renderValue={(selected) => selected}
                             MenuProps={MenuProps}
                         >
-                            { Object.keys(COLORS[colorSize]).map((palete) => (
+                            { Object.keys(COLORS[color.colorSize]).map((palete) => (
                                 <MenuItem key={palete} value={palete}>
                                     <ListItemText primary={palete} />
-                                    {paleteColors(COLORS[colorSize][palete])}
+                                    {paleteColors(COLORS[color.colorSize][palete])}
                                 </MenuItem>
                             ))}
                         </Select>
@@ -111,7 +127,7 @@ export const ArticleViewer = ({summary, title}) => {
                         </ToggleButton>
                     </FilterRow>
                     <div style={{marginTop:'10px', marginBottom:'20px'}}>
-                        {paleteColors(COLORS[colorSize][colorPalete])}
+                        {paleteColors(COLORS[color.colorSize][color.colorPalete])}
                     </div>
                     <TextField 
                         style={{width:'180px', marginBottom:'15px'}}
@@ -149,7 +165,7 @@ export const ArticleViewer = ({summary, title}) => {
                         summary={summary}
                         title={title}
                         filters={{
-                            color: {size:colorSize, palete: colorPalete},
+                            color: color && {size: color.colorSize, palete: color.colorPalete},
                             isGradient,
                             minWeight,
                             topSentencesCount

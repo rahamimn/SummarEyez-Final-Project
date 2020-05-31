@@ -18,8 +18,9 @@ export const BaseViewer = ({
     const [selectedSent,setSelectedSent] = useState(null); 
     const [anchorEl,setAnchorEl] = useState(null);
     
-    const colorSize = parseInt(color.size);
-    const colorsArray = COLORS[color.size][color.palete];
+
+    const colorSize = color && parseInt(color.size);
+    const colorsArray = color && COLORS[color.size][color.palete];
 
 
     const sortedSentences = [...summary].sort((a,b) => b.normalized_weight - a.normalized_weight);
@@ -60,7 +61,7 @@ export const BaseViewer = ({
                     }}
                     key={'sent'+i}
                     style={{
-                        backgroundColor: backgroundColor(summary[i]),
+                        backgroundColor: color && backgroundColor(summary[i]),
                         textDecoration: i === selectedSent && 'underline'}}>
                         {isSamePar && <span>&nbsp;</span>}
                         {summary[i].text}
