@@ -259,7 +259,7 @@ export function EditForm({
                   }}
                 />
               </FilterTag>
-              
+
               <FilterTag style={{width:'150px'}}>
                 <Typography color="textSecondary">Hide Sentences</Typography>
                 <ToggleButton
@@ -362,7 +362,6 @@ export function EditForm({
               multiple
               value={formDTO.questionIds}
               onChange={(event) => {
-                console.log(event.target.value)
                 if(event.target.value[0] === 'empty'){
                   !disabled && setAddQuestion(true)
                 } else if(!form || form.editable){

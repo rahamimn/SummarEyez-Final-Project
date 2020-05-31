@@ -78,7 +78,6 @@ export const ArticleViewer = ({summary, title}) => {
                                     colorSize: colorSizeVal,
                                     colorPalete: Object.keys(COLORS[colorSizeVal])[0]
                                 });
-                                console.log(COLORS[colorSizeVal][Object.keys(COLORS[colorSizeVal])[0]]);
                             }}
                             input={<Input style={{display:'block', width:'100px'}}/>}
                             renderValue={(selected) => selected}
@@ -147,7 +146,7 @@ export const ArticleViewer = ({summary, title}) => {
                         }}
                         id="minimumWeight"
                         label="Top Sentences"/>
-                        
+
                     <FilterRow text="Hide Sentence">
                         <ToggleButton
                             value="check"

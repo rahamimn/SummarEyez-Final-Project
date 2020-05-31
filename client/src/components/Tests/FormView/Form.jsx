@@ -2,7 +2,7 @@
 import React, {useState, useEffect} from 'react';
 import { QuizViewer } from '../../Viewers/quizViewer/quizViewer';
 import { Quiz } from './QuizView/Quiz';
-import { Card, Container, Button } from '@material-ui/core';
+import { Card, Container, Button, Typography } from '@material-ui/core';
 import { RankSentences } from '../../Viewers/RankViewer/RankViewer';
 import { DropzoneArea } from 'material-ui-dropzone';
 
@@ -21,6 +21,14 @@ export function Form({
         setFixations(null);
         setRankSentences(form.isRankSentences && addWeight(form.base_sentences_table));
     },[form]);
+
+    const StartForm = () => {
+        return (
+        <StepPage onClick={() => nextStep()}>
+            <Typography variant="h4">New Task ahead</Typography>
+            <Typography variant="h5">press next to start</Typography>
+        </StepPage>
+    )};
 
     const Summary = () => (
         <StepPage onClick={() => nextStep()}>
@@ -58,6 +66,7 @@ export function Form({
 
 
     const renderByStage = [
+        <StartForm/>,
         form.isReadSummary && <Summary/>,
         form.isRankSentences && <RankSentencesComp/>,
         form.isFillAnswers && <Quiz 

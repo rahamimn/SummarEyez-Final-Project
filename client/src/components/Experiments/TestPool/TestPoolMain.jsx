@@ -95,7 +95,6 @@ export const TestsPoolMain = () =>  {
                     alreadyDone
                     experiments={experiments} 
                     onSelectForm={(expName,form) => {
-                        console.log(expName,form.name)  
                         fetchTests(expName,form);
                 }}/>
             </div>
