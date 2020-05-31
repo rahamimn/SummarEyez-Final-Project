@@ -293,7 +293,7 @@ export function EditForm({
                   id="edit-form-summary-type"
                   disabled={disabled}
                   style={{ width: '200px', marginRight:10 }}
-                  options={['auto','eyes','merged']}
+                  options={['auto','eyes','merged','custom']}
                   autoHighlight
                   getOptionLabel={option => option}
                   renderInput={params => (

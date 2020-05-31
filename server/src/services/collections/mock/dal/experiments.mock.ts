@@ -23,6 +23,8 @@ export class ExperimentsMock extends BaseCollectionMock implements Experiments {
     }
     formsOf(experimentId: string){
         return this.getSubCollectionOf(experimentId, 'forms', FormsMock)
-        
+    } 
+    customSummariesOf(experimentId: string){
+        return this.getSubCollectionOf(experimentId, 'custom-summaries', SentTableMock)
     } 
 }

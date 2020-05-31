@@ -551,6 +551,14 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
             path = mergedSentTable.path;
         }
 
+        if(type === 'custom'){
+            const customSentTable = await this.collectionsService.experiments().customSummariesOf(experiment.name).get(name);
+            if(!customSentTable){
+                return null;
+            }
+            path = customSentTable.path;
+        }
+
         if(type === 'eyes'){
             const testSentTable = await this.collectionsService.experiments().getTests(experiment.name).get(name);
             if(!testSentTable){
@@ -569,6 +577,7 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
         }
 
         const csvFile = await this.getSentTableFile(experiment, type, name);
+        console.log(csvFile.toString('utf16le'));
         if(!csvFile){
             return response(ERROR_STATUS.OBJECT_NOT_EXISTS, {error:ERRORS.SUMMARY_NOT_EXISTS})
         }
@@ -584,6 +593,33 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
         });
     }
 
+    addCustomSummary = async (experimentName, summaryName, sentencesWeights) => {
+        const experiment = await this.collectionsService.experiments().get(experimentName);
+        if(!experiment){
+            return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
+        }
+
+        const customSummary = await this.collectionsService.experiments().customSummariesOf(experimentName).get(summaryName);
+
+        if(customSummary){
+            return response(ERROR_STATUS.NAME_NOT_VALID,{error: ERRORS.CUSTOM_SUMMARY_EXISTS} );
+        }
+        
+        const parser = new Parser({delimiter: '\t'});
+        const sent_table = parser.parse(sentencesWeights);
+
+        const path = `experiments/${experimentName}/custom-sent-table/${summaryName}`;
+        await this.storageService.uploadBuffer(path, Buffer.from(sent_table,'utf16le'), fileTypes.Csv);
+        await this.collectionsService.experiments().customSummariesOf(experimentName).add(summaryName,{
+            type: 'custom',
+            name: summaryName,
+            path,
+            creation_date: Date.now()
+        });
+
+        return response(0);
+    }
+
     getSummaries = async (experimentName)=> {
         // const eyesExample = {id: 'eye1',data:{name:'eye1', creation_date:Date.now()}}
         const experiment = await this.collectionsService.experiments().get(experimentName);
@@ -595,12 +631,14 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
         const allAutomaticAlgs = await this.collectionsService.automaticAlgos().getAll();
         const allMergedTables = await this.collectionsService.experiments().mergedSentOf(experimentName).getAll();
         const allTestsTable = await this.collectionsService.experiments().getTests(experimentName).getAll();
+        const allCustomTable = await this.collectionsService.experiments().customSummariesOf(experimentName).getAll();
 
         return response(0, {
             data:{
                 auto: this.intersectAutomaticAlgs(allAutomaticAlgs, autoSentTables),
                 eyes: allTestsTable.filter(test => test.data.sent_table_path),
                 merged: allMergedTables,
+                custom: allCustomTable
             }
         });
     }
@@ -622,7 +660,7 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
         });
     };
 
-runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
+    runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
         const experiment = await this.collectionsService.experiments().get(experimentName);
         if(!experiment){
             return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
@@ -749,6 +787,22 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
     }
 
 
+    getSentencesWeights = async (experimentName:string) => {
+        const expriment = await this.collectionsService.experiments().get(experimentName)
+        if(!expriment){
+            return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
+        }
+
+        const img= await this.collectionsService.images().get(expriment.imageName)
+        if(!img){
+            return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.IM_NOT_EXISTS} );
+        }
+
+        const base_sentences_table = await this.storageService.downloadToBuffer(img.base_sent_table_path);
+        return response(0, {data: await csvToJson({delimiter:'auto'}).fromString(base_sentences_table.toString('utf16le'))});   
+    }
+
+
     private async sent_table_initializer(names: string[],types: string [], experiment: any) {
         const sent_tables = []
         for(var i=0; i<names.length; i++){
@@ -769,7 +823,7 @@ runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
             status: 0,
             data:sent_tables
         };
-    }
+    };
     private validateIds(paramsList){
         let ans = '';
         for(var param in paramsList){

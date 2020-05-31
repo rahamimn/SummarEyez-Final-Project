@@ -62,6 +62,19 @@ app.get('/api/experiments/:experimentName', (req, res) => errorHandling(res, asy
     const response = await experimentService.getExperimentInfo(req.params.experimentName)
     res.send(response);
 }));
+app.get('/api/experiments/:experimentName/sentencesWeights', (req, res) => errorHandling(res, async () => {  
+    const response = await experimentService.getSentencesWeights(req.params.experimentName)
+    res.send(response);
+}));
+
+app.post('/api/experiments/:experimentName/sentencesWeights',bodyParser.json(), (req, res) => errorHandling(res, async () => {  
+    const response = await experimentService.addCustomSummary(
+        req.params.experimentName,
+        req.body.name,
+        req.body.sentencesWeights 
+    );
+    res.send(response);
+}));
 
 //returns all the questions of the experiment
 app.get('/api/experiments/:experimentName/questions', (req, res) => errorHandling(res, async () => {  

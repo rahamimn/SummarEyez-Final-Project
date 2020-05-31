@@ -3,6 +3,7 @@ export const ERRORS = {
     //exists
     TEST_EXISTS: 'test already exists',
     EXP_EXISTS: 'experiment already exists',
+    CUSTOM_SUMMARY_EXISTS: 'custom summary already exists',
     IM_EXISTS: 'image already exists',
     FORM_EXISTS: 'form already exists',
     AlG_EXISTS: 'algorithm already exists',

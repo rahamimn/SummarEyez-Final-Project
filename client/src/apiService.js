@@ -6,6 +6,13 @@ const api = {
         const res = await axios.get(`/api/experiments/${experimentName}/summary?type=${type}&name=${name}`);
         return res.data;
     },
+    addCustomSummary: async (experimentName,name, sentencesWeights) => {
+        const res = await axios.post(`/api/experiments/${experimentName}/sentencesWeights`,{
+            name,
+            sentencesWeights
+        });
+        return res.data;
+    },
 
     exportSummaryCsv: async (experimentName,type,name) => {
         const res = await axios.get(`/api/experiments/${experimentName}/summary?csv=true&type=${type}&name=${name}`, { responseType: 'blob' });
@@ -209,6 +216,11 @@ const api = {
         const res = await axios.get(`/api/testPlans/${testPlanId}/tests?csv=true`);  
         return {...res.data, file: res.data.data && new Blob([res.data.data.csv])};
     },
+
+    getSentencesWeights: async (experimentName) => {
+        const res = await axios.get(`/api/experiments/${experimentName}/sentencesWeights`);
+        return res.data;
+    }
 }
 
 export default api;

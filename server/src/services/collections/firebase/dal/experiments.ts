@@ -13,7 +13,6 @@ export class Experiments extends BaseCollection {
         return new Tests(this.collection.doc(experimentId).collection('tests'))
     }
     mergedSentOf(experimentId: string){
-        
         return new SentTable(this.collection.doc(experimentId).collection('merged-sent'))
     }
 
@@ -24,4 +23,8 @@ export class Experiments extends BaseCollection {
     formsOf(experimentId: string){
         return new Forms(this.collection.doc(experimentId).collection('forms'))
     }   
+
+    customSummariesOf(experimentId: string){
+        return new SentTable(this.collection.doc(experimentId).collection('custom-summaries'))
+    }
 }

@@ -38,7 +38,7 @@ const useToolbarStyles = makeStyles(theme => ({
     const [isMergeOpen, setIsMergeOpen] = useState(false);
     const [isLoadingRun, setIsLoadingRun] = useState(false);
 
-    const allSelected = [...selected.auto, ...selected.eyes, ...selected.merged];
+    const allSelected = [...selected.auto, ...selected.eyes, ...selected.merged ,...selected.custom];
     const numSelected = allSelected.length;
     const disabled = selected.auto.filter((selected) => selected.disabled) 
     

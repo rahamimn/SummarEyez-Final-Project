@@ -19,4 +19,10 @@ export const mergedHeaders = [
     { id: 'creation_date', label: 'Creation Date' ,type:'date' },
     { id: 'numOfOrigins', label: 'From # Summaries' },
     { id: 'grade', label: 'Grade'},
-  ];
+];
+
+export const customHeaders = [
+    { id: 'name', label: 'Name' },
+    { id: 'creation_date', label: 'Creation Date' ,type:'date' },
+    { id: 'grade', label: 'Grade'},
+];

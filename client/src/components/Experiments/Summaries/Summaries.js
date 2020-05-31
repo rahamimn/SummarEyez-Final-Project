@@ -10,7 +10,8 @@ import {MainToolbar} from './MainToolbar';
 import {
   autoHeaders,
   eyesHeaders,
-  mergedHeaders
+  mergedHeaders,
+  customHeaders
 } from './Headers';
 import api from '../../../apiService';
 import {useParams} from 'react-router-dom'
@@ -31,11 +32,13 @@ export function Summaries() {
   const [summaries,setSummaries] = useState({
     auto: [],
     eyes: [],
+    custom: [],
     merged: []
   }); 
   const [autoSelected,setAutoSelected] = useState([]); 
   const [eyesSelected,setEyesSelected] = useState([]); 
   const [mergedSelected,setMergedSelected] = useState([]); 
+  const [customSelected,setCustomSelected] = useState([]); 
 
   const formatData = (summaries) => {
     summaries.merged = summaries.merged.map(merged => ({
@@ -67,7 +70,8 @@ export function Summaries() {
         selected = {{
           auto: autoSelected,
           eyes: eyesSelected,
-          merged: mergedSelected
+          merged: mergedSelected,
+          custom: customSelected
         }} />
       <ExpansionPanel>
         <ExpansionPanelSummary
@@ -99,6 +103,22 @@ export function Summaries() {
             onChangeSelected={setEyesSelected}
             headers={eyesHeaders}
             rows={summaries.eyes}/>
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
+      <ExpansionPanel>
+        <ExpansionPanelSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel2a-content"
+          id="summaries-custom-switch"
+        >
+          <Typography className={classes.heading}>Custom Summaries</Typography>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails>
+          <TableSummaries 
+            selected={customSelected}
+            onChangeSelected={setCustomSelected}
+            headers={customHeaders}
+            rows={summaries.custom}/>
         </ExpansionPanelDetails>
       </ExpansionPanel>
       <ExpansionPanel>

@@ -13,6 +13,7 @@ import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import DeveloperBoardIcon from '@material-ui/icons/DeveloperBoard';
+import AddToQueueIcon from '@material-ui/icons/AddToQueue';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -32,6 +33,7 @@ import { TestPlanManager } from './TestPlansManager/TestPlanManager';
 import { Typography } from '@material-ui/core';
 import { TestsPoolMain } from './TestPool/TestPoolMain';
 import {ExperimentInfo} from './ExperimentInfo/ExperimentInfo';
+import { AddCustomSummary } from './AddCustomSummary/AddCustomSummary';
 
 
 const drawerWidth = 240;
@@ -129,6 +131,13 @@ function MainExperiments({permit}) {
               </ListItemIcon>
               <ListItemText primary={'Upload Fixations'} />
             </ListItem>
+
+            <ListItem button id='main-experiments-add-custom-summary' onClick={e => history.push(experimetPage('addCustomSummary'))}>
+              <ListItemIcon>
+                <AddToQueueIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Add Custom Summary'} />
+            </ListItem>
           </List>
         }
     </div>
@@ -181,6 +190,10 @@ function MainExperiments({permit}) {
  
             <Route path={experimetRoutePage('forms')}>
               <FormsManager/>
+            </Route>
+
+            <Route path={experimetRoutePage('addCustomSummary')}>
+              <AddCustomSummary/>
             </Route>
 
             <Route path={experimetRoutePage('uploadFixations')}>
