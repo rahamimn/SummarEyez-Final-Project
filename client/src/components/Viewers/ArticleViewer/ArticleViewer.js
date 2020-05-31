@@ -40,7 +40,6 @@ export const ArticleViewer = ({summary, title}) => {
         colorPalete:'op_1'
     });
 
-    let [isGradient, setIsGradient] = useState(true);
     let [minWeight, setMinWeight] = useState(0);
     let [topSentencesCount, setTopSentencesCount ] = useState(summary.length);
 
@@ -115,17 +114,6 @@ export const ArticleViewer = ({summary, title}) => {
                             ))}
                         </Select>
                     </FilterRow>
-                    <FilterRow text="Gradient">
-                        <ToggleButton
-                            value="check"
-                            selected={isGradient}
-                            onChange={() => {
-                                setIsGradient(!isGradient);
-                            }}
-                            >
-                            <CheckIcon />
-                        </ToggleButton>
-                    </FilterRow>
                     <div style={{marginTop:'10px', marginBottom:'20px'}}>
                         {paleteColors(COLORS[color.colorSize][color.colorPalete])}
                     </div>
@@ -166,7 +154,6 @@ export const ArticleViewer = ({summary, title}) => {
                         title={title}
                         filters={{
                             color: color && {size: color.colorSize, palete: color.colorPalete},
-                            isGradient,
                             minWeight,
                             topSentencesCount
                         }}/>

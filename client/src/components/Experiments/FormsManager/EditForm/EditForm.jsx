@@ -19,7 +19,6 @@ const emptyForm = {
     isReadSummary: false,
     withFixations: false,
     summary: { filters:{ 
-      isGradient: true,
       color:{size:'3', palete:'op_1'}}},
 }
 
@@ -182,7 +181,6 @@ export function EditForm({
       const filtersComp = useCallback(() => {
         const {summary} = formDTO;
         const filters = summary && summary.filters;
-        const isGradient = filters && filters.isGradient ; 
         const minWeight = filters && filters.minWeight ; 
         const disabled = form && !form.editable;
         const FilterTag = ({children, style}) => <Paper variant="outlined" style={{
@@ -248,21 +246,6 @@ export function EditForm({
                   ))}
                 </Select>
               </FilterTag> 
-
-              <FilterTag style={{width:'150px'}}>
-                <Typography color="textSecondary">Gradient</Typography>
-                <ToggleButton
-                    disabled={disabled}
-                    value="check"
-                    selected={isGradient}
-                    onChange={() => {
-                        filters.isGradient =  !isGradient;
-                        updateField('summary',{...summary, filters })
-                    }}
-                    >
-                    <CheckIcon />
-                </ToggleButton> 
-              </FilterTag>
 
               <FilterTag>
                 <FilterWeightSetter 

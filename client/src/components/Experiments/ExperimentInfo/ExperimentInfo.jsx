@@ -106,7 +106,6 @@ export function ExperimentInfo() {
 					title={'OCR text'}
 					filters={{
 						color: {size:'8', palete: 'op_1'},
-						isGradient: true,
 						minWeight: 0,
 					}}
 				/>

@@ -31,7 +31,6 @@ export const QuizViewer = ({
               title={summaryDetails.title}
               filters ={{
                 color: filters.color || {size:'3', palete:'op_1'},
-                isGradient: filters.isGradient !== undefined ? filters.isGradient : true,
                 minWeight: filters.minWeight || 0,
                 topSentencesCount:21
               }}/>
