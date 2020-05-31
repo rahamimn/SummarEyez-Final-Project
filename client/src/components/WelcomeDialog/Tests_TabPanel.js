@@ -14,7 +14,7 @@ export default function Tests_TabPanel() {
     setTestPlans(res.data);
   },[]);
 
-  useEffect(() => fetchTestPlans(),[fetchTestPlans]);
+  useEffect(() => {fetchTestPlans()},[fetchTestPlans]);
 
   return (
     <div style={{display:'flex', flexDirection:'column', justifyContent:'space-between', height:'40vh'}}>

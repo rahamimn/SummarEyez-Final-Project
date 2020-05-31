@@ -44,7 +44,7 @@ export function Question({
             style={{
               minHeight:'55px',
               margin:'10px 0',
-              padding:'5px 5px',
+              padding:'5px 5px 5px 15px',
               display:'flex',
               alignItems:'center',
               backgroundColor: !onNext && question.correctAnswer === `${i}` && '#4bdd26'
