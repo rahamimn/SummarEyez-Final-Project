@@ -31,6 +31,7 @@ export const QuizViewer = ({
               title={summaryDetails.title}
               filters ={{
                 color: filters.color || {size:'3', palete:'op_1'},
+                hideUnderMin:false,
                 minWeight: filters.minWeight || 0,
                 topSentencesCount:21
               }}/>

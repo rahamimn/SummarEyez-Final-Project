@@ -41,6 +41,7 @@ export const ArticleViewer = ({summary, title}) => {
     });
 
     let [minWeight, setMinWeight] = useState(0);
+    let [hideUnderMin, setHideUnderMin] = useState(false);
     let [topSentencesCount, setTopSentencesCount ] = useState(summary.length);
 
     useEffect(() => {
@@ -114,6 +115,7 @@ export const ArticleViewer = ({summary, title}) => {
                             ))}
                         </Select>
                     </FilterRow>
+                    
                     <div style={{marginTop:'10px', marginBottom:'20px'}}>
                         {paleteColors(COLORS[color.colorSize][color.colorPalete])}
                     </div>
@@ -130,6 +132,7 @@ export const ArticleViewer = ({summary, title}) => {
                         }}
                         id="minimumWeight"
                         label="minimum weight" />
+                    
 
                     <TextField 
                         style={{width:'180px', marginBottom:'15px'}}
@@ -144,6 +147,18 @@ export const ArticleViewer = ({summary, title}) => {
                         }}
                         id="minimumWeight"
                         label="Top Sentences"/>
+                        
+                    <FilterRow text="Hide Sentence">
+                        <ToggleButton
+                            value="check"
+                            selected={hideUnderMin}
+                            onChange={() => {
+                                setHideUnderMin(!hideUnderMin);
+                            }}
+                            >
+                            <CheckIcon />
+                        </ToggleButton>
+                    </FilterRow>
 
                     
                 </div>
@@ -154,6 +169,7 @@ export const ArticleViewer = ({summary, title}) => {
                         title={title}
                         filters={{
                             color: color && {size: color.colorSize, palete: color.colorPalete},
+                            hideUnderMin,
                             minWeight,
                             topSentencesCount
                         }}/>

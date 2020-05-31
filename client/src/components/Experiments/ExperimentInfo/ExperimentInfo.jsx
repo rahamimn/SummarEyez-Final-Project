@@ -105,7 +105,8 @@ export function ExperimentInfo() {
 					summary={experimentInfo.base_sent_table}
 					title={'OCR text'}
 					filters={{
-						color: {size:'8', palete: 'op_1'},
+            color: {size:'8', palete: 'op_1'},
+            hideUnderMin: false,
 						minWeight: 0,
 					}}
 				/>

@@ -19,6 +19,7 @@ const emptyForm = {
     isReadSummary: false,
     withFixations: false,
     summary: { filters:{ 
+      hideUnderMin: false,
       color:{size:'3', palete:'op_1'}}},
 }
 
@@ -181,6 +182,7 @@ export function EditForm({
       const filtersComp = useCallback(() => {
         const {summary} = formDTO;
         const filters = summary && summary.filters;
+        const hideUnderMin = filters && filters.hideUnderMin ; 
         const minWeight = filters && filters.minWeight ; 
         const disabled = form && !form.editable;
         const FilterTag = ({children, style}) => <Paper variant="outlined" style={{
@@ -246,6 +248,21 @@ export function EditForm({
                   ))}
                 </Select>
               </FilterTag> 
+
+              <FilterTag style={{width:'150px'}}>
+                <Typography color="textSecondary">Hide Sentences</Typography>
+                <ToggleButton
+                    disabled={disabled}
+                    value="check"
+                    selected={hideUnderMin}
+                    onChange={() => {
+                        filters.hideUnderMin =  !hideUnderMin;
+                        updateField('summary',{...summary, filters })
+                    }}
+                    >
+                    <CheckIcon />
+                </ToggleButton> 
+              </FilterTag>
 
               <FilterTag>
                 <FilterWeightSetter 

@@ -8,6 +8,7 @@ export const BaseViewer = ({
     title,
     filters}) => {
     const { color,
+            hideUnderMin,
             minWeight,
             topSentencesCount } = filters;
     
@@ -52,6 +53,7 @@ export const BaseViewer = ({
                     }}
                     key={'sent'+i}
                     style={{
+                        visibility: summary[i].normalized_weight < minWeight && hideUnderMin? 'hidden': 'visible',
                         backgroundColor: color && backgroundColor(summary[i]),
                         textDecoration: i === selectedSent && 'underline'}}>
                         {isSamePar && <span>&nbsp;</span>}
