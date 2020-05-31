@@ -43,13 +43,15 @@ export function AddQuestion({
             label="Question"/>
           
           {
-            question.answers.map((ans,i) => (
+            question.answers.map((ans,i) => {
+              const index = i+1;
+              return (
               <div style={{display:'flex'}}>
                  <Radio
-                    checked={question.correctAnswer === `${i}`}
-                    onChange={() => setQuestion({...question, correctAnswer:`${i}`})}
-                    value={i}
-                    inputProps={{ 'aria-label': 'A' ,id:`add-question-ans-radio-${i}`}}
+                    checked={question.correctAnswer === `${index}`}
+                    onChange={() => setQuestion({...question, correctAnswer:`${index}`})}
+                    value={index}
+                    inputProps={{ 'aria-label': 'A' ,id:`add-question-ans-radio-${index}`}}
                   />
                 <TextField 
                   value={ans}
@@ -59,11 +61,12 @@ export function AddQuestion({
                     answers[i] = e.target.value;
                     setQuestion({...question, answers: [...answers]});
                   }}
-                  id={`add-question-ans-${i}`}
-                  key={`ans-${i}`}
-                label={`Ans #${i}`}/>
+                  id={`add-question-ans-${index}`}
+                  key={`ans-${index}`}
+                label={`Ans #${index}`}/>
               </div>
-            )) 
+            )
+          }) 
           }
           
           <Button

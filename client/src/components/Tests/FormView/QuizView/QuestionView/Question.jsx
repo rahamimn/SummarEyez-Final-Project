@@ -15,7 +15,7 @@ function IndexAns ({index, selected}){
       height:'60px',
       color: selected && 'white',
       marginRight:'13px'
-      }}>{index+1}</div>
+      }}>{index}</div>
 }
 export function Question({
     question,
@@ -37,28 +37,30 @@ export function Question({
      
       <Typography style={{marginBottom:'15px'}}>{question.question}</Typography>
       {
-        question.answers.map((ans,i) =>(
+        question.answers.map((ans,i) =>{
+        const index = i+1;
+        return (
           <Paper
-            id={`question-ans-${i}`}
-            key={`ans-${i}`} 
+            id={`question-ans-${index}`}
+            key={`ans-${index}`} 
             style={{
               minHeight:'55px',
               margin:'10px 0',
               padding:'5px 5px 5px 15px',
               display:'flex',
               alignItems:'center',
-              backgroundColor: !onNext && question.correctAnswer === `${i}` && '#4bdd26'
+              backgroundColor: !onNext && question.correctAnswer === `${index}` && '#4bdd26'
             }}
-            elevation={selected === i ? 5 : 1 }
-            onClick={() => onNext && setSelected(i)}>
+            elevation={selected === index ? 5 : 1 }
+            onClick={() => onNext && setSelected(index)}>
               <IndexAns 
-                index={i}
-                selected={selected === i}
+                index={index}
+                selected={selected === index}
               />
               <Typography>{ans}</Typography>
       
           </Paper>
-        ))
+        )})
       }
       {onNext && <div style={{float:'right'}}>
         <Button 
