@@ -15,7 +15,7 @@ function IndexAns ({index, selected}){
       height:'60px',
       color: selected && 'white',
       marginRight:'13px'
-      }}>{index}</div>
+      }}>{index+1}</div>
 }
 export function Question({
     question,
