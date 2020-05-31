@@ -211,7 +211,8 @@ export function EditForm({
 
                   value={filters.color.size}
                   onChange={(event) => {
-                    filters.color =  {...filters.color, size: event.target.value};
+                    const nextSize = event.target.value;
+                    filters.color =  {...filters.color, size: nextSize, palete: Object.keys(COLORS[nextSize])[0]};
                     updateField('summary',{...summary, filters })
                   }}
                   input={<Input style={{display:'block', width:'100px', marginRight:'5px'}}/>}
