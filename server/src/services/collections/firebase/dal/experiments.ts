@@ -1,4 +1,3 @@
-import { SentTable } from './sentTables';
 import { Tests } from "./tests";
 import { BaseCollection } from "./baseCollection";
 import { Forms } from "./forms";
@@ -13,11 +12,11 @@ export class Experiments extends BaseCollection {
         return new Tests(this.collection.doc(experimentId).collection('tests'))
     }
     mergedSentOf(experimentId: string){
-        return new SentTable(this.collection.doc(experimentId).collection('merged-sent'))
+        return new BaseCollection(this.collection.doc(experimentId).collection('merged-sent'))
     }
 
     mergedWordOf(experimentId: string){
-        return new SentTable(this.collection.doc(experimentId).collection('merged-word'))
+        return new BaseCollection(this.collection.doc(experimentId).collection('merged-word'))
     }
 
     formsOf(experimentId: string){
@@ -25,6 +24,6 @@ export class Experiments extends BaseCollection {
     }   
 
     customSummariesOf(experimentId: string){
-        return new SentTable(this.collection.doc(experimentId).collection('custom-summaries'))
+        return new BaseCollection(this.collection.doc(experimentId).collection('custom-summaries'))
     }
 }

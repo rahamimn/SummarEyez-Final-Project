@@ -220,6 +220,13 @@ const api = {
     getSentencesWeights: async (experimentName) => {
         const res = await axios.get(`/api/experiments/${experimentName}/sentencesWeights`);
         return res.data;
+    },
+
+    addRateSummaries: async (testPlanId,testId,rateSummariesAnswers) => {
+        const res = await axios.post(`/api/testPlan/${testPlanId}/tests/${testId}`,{
+            rateSummariesAnswers,
+        });
+        return res.data;
     }
 }
 

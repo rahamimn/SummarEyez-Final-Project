@@ -1,4 +1,3 @@
-import { SentTable } from './../../collections/firebase/dal/sentTables';
 import { PythonScripts } from "./python-scripts";
 //@ts-ignore
 import {promises as fs} from 'fs';

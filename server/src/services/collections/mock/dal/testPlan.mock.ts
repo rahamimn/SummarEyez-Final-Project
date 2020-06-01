@@ -7,4 +7,8 @@ export class TestPlanMock extends BaseCollectionMock implements TestPlans{
         super(collection)
         this.collection = collection;
     }
+
+    ratingAnswersOf(testPlanId:string){
+        return this.getSubCollectionOf(testPlanId,'rating_answers',BaseCollectionMock);
+    }
 }

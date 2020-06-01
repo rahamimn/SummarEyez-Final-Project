@@ -8,6 +8,7 @@ export const QuizViewer = ({
   type,
   name,
   filters = {},
+  thumbnail = false
 }) => {
   const [loader,setLoader] = useState(false);
     const [summaryDetails,setSummaryDetails] = useState({
@@ -27,6 +28,7 @@ export const QuizViewer = ({
 
     return loader ? <div style={{width:'100%', height:'100px', display:'flex',justifyContent:'center', alignItems:'center'}} ><CircularProgress size="60px"/></div> : 
            <BaseViewer 
+              thumbnail={thumbnail}
               summary={summaryDetails.summary} 
               title={summaryDetails.title}
               filters ={{

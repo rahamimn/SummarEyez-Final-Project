@@ -6,7 +6,9 @@ export const BaseViewer = ({
     SentPopper,
     summary,
     title,
-    filters}) => {
+    filters,
+    thumbnail = false
+}) => {
     const { color,
             hideUnderMin,
             minWeight,
@@ -55,7 +57,7 @@ export const BaseViewer = ({
                     style={{
                         visibility: summary[i].normalized_weight < minWeight && hideUnderMin? 'hidden': 'visible',
                         backgroundColor: color && backgroundColor(summary[i]),
-                        textDecoration: i === selectedSent && 'underline'}}>
+                        textDecoration: i === selectedSent && !thumbnail && 'underline'}}>
                         {isSamePar && <span>&nbsp;</span>}
                         {summary[i].text}
                 </span>
@@ -76,8 +78,8 @@ export const BaseViewer = ({
 
     return <div style={{ 
         // width:'800px',
-        fontSize: '19px',
-        padding:'50px',
+        fontSize: thumbnail? '4p': '19px',
+        padding: thumbnail? '0' : '50px',
         fontFamily: '"Times New Roman", Times, serif', fontWeight:'400'}}>
         <strong><div style={{fontSize:"30px"}}>{title}</div></strong>
         {sentHtml}
@@ -85,27 +87,3 @@ export const BaseViewer = ({
 }
 
 
-// const colors = [{
-//     id:'yellow',
-//     value: 90,
-// },
-// {
-//     id:'red',
-//     value: 35,
-// },
-// {
-//     id:'blue',
-//     value: 200,
-// },
-// {
-//     id:'adir confused1',
-//     value: 260,
-// },
-// {
-//     id:'adir confused2',
-//     value: 150,
-// },
-// {
-//     id:'adir confused3',
-//     value: 15,
-// }];

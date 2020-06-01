@@ -4,12 +4,14 @@ import api from '../../apiService';
 import { Typography, Button, Container, Card, TextField, CircularProgress } from '@material-ui/core';
 import { ERROR_STATUS } from '../ERRORS';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import { RateSummaries } from './RateSummariesForm';
 
 const Phases = {
   Start: 'start',
   FillTest: 'fillTest',
   Finish: 'finish',
   Success: 'success',
+  RateSummaries: 'rate' 
 }
 function MainTests({testPlanId}) {
   const [forms,setForms] = useState([]);
@@ -21,6 +23,7 @@ function MainTests({testPlanId}) {
   const [testId,setTestId] = useState('');
   const [testIdError,setTestIdError] = useState(false);
   const [tests,setTests] = useState([]);
+  const [rateSummariesAnswers,setRateSummariesAnswers] = useState({});
   const [loadingSubmition,setLoadingSubmition] = useState(false);
   const [phase, setPhase] = useState(Phases.Start);
 
@@ -135,7 +138,8 @@ function MainTests({testPlanId}) {
                     async testInput => await api.addTest({
                       ...testInput,
                       testPlanId: selectedTestPlan.id
-                    }))
+                    })),
+                    api.addRateSummaries(testPlanId,testId,rateSummariesAnswers)
                   );
                   setLoadingSubmition(false);
                   if(responses.some(res => res.status === ERROR_STATUS.NAME_NOT_VALID)){
@@ -171,7 +175,7 @@ const Success = () => (
 );
 
 
-  const onFinish = async ({
+  const onFinishForms = async ({
     answers,
     sentanceWeights,
     buffer,
@@ -189,12 +193,17 @@ const Success = () => (
       setTests(newTests);
       
       if(newTests.length === forms.length) {
-        setPhase(Phases.Finish);
+        setPhase(Phases.RateSummaries);
         setCurrentFormIndex(0);
       } else {
         setCurrentFormIndex(currentFormIndex + 1);
-     }
-    };
+      }
+  };
+
+  const onFinishRateSummaries = async (ratingAnswers) => {
+    setRateSummariesAnswers(ratingAnswers);
+    setPhase(Phases.Finish);
+  };
 
   return (
     <Container style={{display:'flex', justifyContent:'center'}}>
@@ -204,9 +213,9 @@ const Success = () => (
       {phase === Phases.FillTest &&  
         <Form
           form={forms[currentFormIndex]}
-          onFinish={onFinish}/>
+          onFinish={onFinishForms}/>
       }
-  
+      {phase === Phases.RateSummaries && <RateSummaries forms={forms} onFinish={onFinishRateSummaries}/>}
     </Container>
   );
   

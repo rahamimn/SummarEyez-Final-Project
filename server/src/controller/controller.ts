@@ -181,14 +181,21 @@ app.post('/api/testPlan', bodyParser.json(), (req, res) => errorHandling(res, as
 }));
 
 
-app.get('/api/allTestPlan', bodyParser.json(), (req,res) => errorHandling(res, async () => {
+app.get('/api/allTestPlan', (req,res) => errorHandling(res, async () => {
     const allTestPlans = await experimentService.getAllTestPlans();
     res.send(allTestPlans);
 }));
 
-app.get('/api/testPlan/:testPlanId', bodyParser.json(), (req, res) => errorHandling(res, async () => {
+app.get('/api/testPlan/:testPlanId', (req, res) => errorHandling(res, async () => {
     const TestPlan = await experimentService.getTestPlan(req.params.testPlanId);
     res.send(TestPlan);
+}));
+
+app.post('/api/testPlan/:testPlanId/tests/:testId', bodyParser.json(), (req, res) => errorHandling(res, async () => {
+
+    const {testPlanId, testId} = req.params;
+    const response = await experimentService.addRatingAnswers(testPlanId, testId, req.body.rateSummariesAnswers);
+    res.send(response);
 }));
 
 app.get('/api/experiments/:experimentName/tests',(req, res) => 

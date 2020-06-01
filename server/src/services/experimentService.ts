@@ -1,4 +1,3 @@
-import { SentTable } from './collections/firebase/dal/sentTables';
 import { fileTypes, Storage } from "./storage/storageTypes";
 import { Collections } from "./collections/collectionsTypes";
 import { PythonScriptInterface } from "./pythonScripts/pythonScriptsTypes";
@@ -67,6 +66,20 @@ export class ExperimentService{
         }
         return algNames;
     }
+
+addRatingAnswers = async (testPlanId, testId, rateSummariesAnswers) => {
+    const testPlan = await this.collectionsService.testPlans().get(testPlanId);
+    if(!testPlan){
+        return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error:ERRORS.TEST_PLAN_NAME_NOT_EXISTS});
+    }
+    await this.collectionsService.testPlans().ratingAnswersOf(testPlanId).add(testId,{
+        testPlanId :testPlanId,
+        testId: testId,
+        answers: rateSummariesAnswers
+    });
+
+    return response(0);
+}
  
 addTest = async (params) => {
     const experiment= await this.collectionsService.experiments().get(params.experimentName)
