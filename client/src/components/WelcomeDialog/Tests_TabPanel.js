@@ -77,7 +77,7 @@ export default function Tests_TabPanel() {
           size="large"
           style={{ marginRight: '10px' }}
           onClick={() => {
-            if(selectedTestPlanId){
+            if(option === "one-test"){
               window.open(`/tests/${selectedTestPlanId}`);
             }else{
               window.open('/tests');
