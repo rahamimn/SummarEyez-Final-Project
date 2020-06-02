@@ -10,7 +10,7 @@ import Alert from '@material-ui/lab/Alert'
 import Divider from '@material-ui/core/Divider'
 import Typography from '@material-ui/core/Typography'
 import { ERROR_STATUS } from '../../ERRORS';
-import { CardContent } from '@material-ui/core'
+import { CardContent, Paper } from '@material-ui/core'
 
 
 export class UploadFixations extends Component {
@@ -67,7 +67,12 @@ export class UploadFixations extends Component {
           Upload New Fixation File
         </Typography>
         <Divider />
-
+        <Paper  variant="outlined" style={{padding:'10px', marginTop:'10px'}}>
+          <Typography style={{color:'#555555'}}>
+            The fixations uploaded into form named "Manually" you can see result in All-Summaries page in eyes section, <br/>
+            Or you can See in Test Pool just choose "Manually". 
+          </Typography>
+        </Paper>
         <div>
           {this.state.uploading ?
             <div style={{ width: '100%', textAlign: 'center', marginTop: '20px' }}>

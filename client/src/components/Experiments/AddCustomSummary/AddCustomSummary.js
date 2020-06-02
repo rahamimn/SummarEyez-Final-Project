@@ -30,9 +30,8 @@ export function AddCustomSummary() {
             <Typography variant="h5">Add Custom Summary</Typography>
             <Divider/>
             <Paper  variant="outlined" style={{padding:'10px', marginTop:'10px'}}>
-                <Typography>
-                    Here you may add custom summary to the system.<br/>
-                    * just to clarify summary is only set of weights and sentences, the color filters, are set only in the form, after you create one.
+                <Typography style={{color:'#555555'}}>
+                    just to clarify summary is only set of weights and sentences, the color filters, are set only in the form, after you create one.
                 </Typography>
             </Paper>
 

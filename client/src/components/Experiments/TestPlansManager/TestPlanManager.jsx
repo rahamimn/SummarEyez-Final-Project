@@ -34,7 +34,7 @@ export function TestPlanManager(){
         </Typography>
         <Divider/>
         <Paper  variant="outlined" style={{padding:'10px', marginTop:'10px'}}>
-          <Typography>
+          <Typography style={{color:'#555555'}}>
             Before the creation of Test you must create the relevent forms in the spefic experiment section on the "Create New Form".
           </Typography>
         </Paper>

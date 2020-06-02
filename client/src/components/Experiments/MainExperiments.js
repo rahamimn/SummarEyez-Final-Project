@@ -102,7 +102,7 @@ function MainExperiments({permit}) {
       
         {experimentName &&
           <List component="div" disablePadding>
-            <Typography style={{paddingLeft:'10px'}} variant="h5" >{experimentName}</Typography>
+            <Typography style={{backgroundColor:'#eeeeee',display:'flex', justifyContent:'center',height:'50px',alignItems:'center'}} variant="h5" >{experimentName}</Typography>
 
             <ListItem id='main-experiments-info' button onClick={e => history.push(experimetPage('info'))}>
               <ListItemIcon>
