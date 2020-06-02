@@ -49,9 +49,10 @@ describe('Manage Form', () => {
         await browser.pause(1000);
     }
 
-    const handleCreateTestPlan = async (newFormName,newTestPlanName)=>{
+    const handleCreateTest = async (newFormName,newTestPlanName)=>{
         await experimentDriver.navigateTo.testPlan();
         await driver.click("test-plan-manaer-create-button");
+        await driver.click("create-test-plan-checkbox-with-rate");
         await driver.TestPlanDriver.createTestPlan(
             newTestPlanName,
             DEFAULT_EXP_NAME,
@@ -66,6 +67,7 @@ describe('Manage Form', () => {
         await driver.setValue('main-tests-student-id', studentId);
         await driver.click('main-tests-register');
 
+        await driver.click('next-step-form');
         await browser.pause(1000);
 
         await answerQuestion(browser,questions[0].ans);
@@ -109,7 +111,7 @@ describe('Manage Form', () => {
 
         await createForm(newFormName, questions);
 
-        await handleCreateTestPlan(newFormName, newTestPlanName)
+        await handleCreateTest(newFormName, newTestPlanName)
 
         await performTest(studentId, newTestPlanName, questions);
 

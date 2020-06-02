@@ -149,10 +149,10 @@ export class Driver {
 
             await this.setValue('add-question-question',question);
 
-            await this.setValue('add-question-ans-0',answers[0]);
-            await this.setValue('add-question-ans-1',answers[1]);
-            await this.setValue('add-question-ans-2',answers[2]);
-            await this.setValue('add-question-ans-3',answers[3]);
+            await this.setValue('add-question-ans-1',answers[0]);
+            await this.setValue('add-question-ans-2',answers[1]);
+            await this.setValue('add-question-ans-3',answers[2]);
+            await this.setValue('add-question-ans-4',answers[3]);
 
             await this.click(`add-question-ans-radio-${ans}`);
 

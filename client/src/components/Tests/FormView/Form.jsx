@@ -111,6 +111,6 @@ const StepPage = ({children, onClick}) => (
     <div style={{width: '800px'}}>
         {children}
         {onClick && <div style={{float:'right'}}>
-            <Button onClick={onClick}> Next</Button>
+            <Button id="next-step-form" onClick={onClick}> Next</Button>
         </div>}
     </div>);

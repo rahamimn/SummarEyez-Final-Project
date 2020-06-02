@@ -69,7 +69,7 @@ export function CreateTestPlan({ setSelectedForm, onCreate, onClose}){
               label="name"/>
             <div style={{display:'flex', alignItems:'center'}}>
               <Typography> With Rating Summaries</Typography>
-              <Checkbox checked={withRateSummaries} onChange={(e) => setWithRateSummaries(!withRateSummaries)}/>
+              <Checkbox id="create-test-plan-checkbox-with-rate" checked={withRateSummaries} onChange={(e) => setWithRateSummaries(!withRateSummaries)}/>
             </div>
           </div>
         {formsDetails.map(detail => (
