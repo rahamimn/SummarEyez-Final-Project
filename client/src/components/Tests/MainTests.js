@@ -69,7 +69,7 @@ function MainTests({testPlanId}) {
             id="main-tests-student-id"
             label="Student ID" />
 
-          <Autocomplete
+          {!testPlanId && <Autocomplete
             id="main-test-choose-test-plan"
             style={{ width: '200px', marginRight:10 }}
             options={testPlans}
@@ -88,7 +88,7 @@ function MainTests({testPlanId}) {
             renderInput={params => (
               <TextField  
                 {...params}
-                label="Choose a Test Plan"
+                label="Choose a Test"
                 // variant="outlined"
                 fullWidth
                 inputProps={{
@@ -97,7 +97,7 @@ function MainTests({testPlanId}) {
                 }}
               />
             )}
-          />
+          />}
           <div>
             <Button
               id="main-tests-register"

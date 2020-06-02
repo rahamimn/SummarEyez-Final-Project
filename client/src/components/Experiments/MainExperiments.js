@@ -90,13 +90,13 @@ function MainExperiments({permit}) {
           <ListItemIcon>
               <AllInboxIcon />
           </ListItemIcon>
-          <ListItemText primary={'Test Plans Manager'} />
+          <ListItemText primary="Create New Test" secondary="and manage them" />
         </ListItem>
         <ListItem id='main-experiments-test-pool' button onClick={e => history.push(experimetPage('testPool'))}>
           <ListItemIcon>
             <AssessmentIcon />
           </ListItemIcon>   
-          <ListItemText primary={'Test pool'} />
+          <ListItemText primary='Test pool' secondary="by forms / tests" />
         </ListItem>
       </List>
       
@@ -115,14 +115,14 @@ function MainExperiments({permit}) {
               <ListItemIcon>
                 <LibraryBooksIcon />
               </ListItemIcon>
-              <ListItemText primary={'Summaries'} />
+              <ListItemText primary="All Summaries" secondary="merge, export, view" />
             </ListItem>
 
             <ListItem button  id='test-form-manager-side-button' onClick={e => history.push(experimetPage('forms'))}>
             <ListItemIcon>
               <DeveloperBoardIcon />
             </ListItemIcon>
-              <ListItemText primary={'Test Forms Manager'} />
+            <ListItemText primary="Create New Form" secondary="edit and more" />
             </ListItem>
 
             <ListItem button onClick={e => history.push(experimetPage('uploadFixations'))}>
@@ -136,7 +136,7 @@ function MainExperiments({permit}) {
               <ListItemIcon>
                 <AddToQueueIcon />
               </ListItemIcon>
-              <ListItemText primary={'Add Custom Summary'} />
+              <ListItemText primary={'Add Custom Summary'}/>
             </ListItem>
           </List>
         }

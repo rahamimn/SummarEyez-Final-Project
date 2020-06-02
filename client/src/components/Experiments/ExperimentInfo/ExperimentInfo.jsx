@@ -53,6 +53,7 @@ export function ExperimentInfo() {
                 <Paper variant="outlined" style={{margin:'15px 5px 0px', padding:'10px'}}>
                   <Typography>{experimentInfo.description}</Typography>
                 </Paper>
+
                 <List>
                   <ListItem>
                     <ListItemIcon>
@@ -75,7 +76,7 @@ export function ExperimentInfo() {
                       <DoubleArrowRoundedIcon />
                     </ListItemIcon>
                     <ListItemText
-                      primary={`Test: ${experimentInfo.testsCounter}`}
+                      primary={`Submitted Tests: ${experimentInfo.testsCounter}`}
                     />
                   </ListItem>
                   <ListItem>
@@ -87,6 +88,7 @@ export function ExperimentInfo() {
                     />
                   </ListItem>
                 </List>
+              <Typography>* All the data related to experiment only. </Typography>
               </div> :
               <div style={{padding:'40px'}}>
                 <CircularProgress/>

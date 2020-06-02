@@ -30,9 +30,14 @@ export function TestPlanManager(){
     <div style={{ flexGrow: 1}}>
       <Card style={{padding: '20px'}}>
         <Typography variant="h5" >
-          Manage Test Plan 
+          Manage Tests 
         </Typography>
         <Divider/>
+        <Paper  variant="outlined" style={{padding:'10px', marginTop:'10px'}}>
+          <Typography>
+            Before the creation of Test you must create the relevent forms in the spefic experiment section on the "Create New Form".
+          </Typography>
+        </Paper>
         <div style={{display:'flex', alignItems:'flex-end', marginTop:'10px'}}>
           <Autocomplete
             disabled={isCreating}
@@ -55,7 +60,7 @@ export function TestPlanManager(){
             renderInput={params => (
               <TextField
                 {...params}
-                label="Choose a test plan"
+                label="Choose created test"
                 fullWidth
                 inputProps={{
                     ...params.inputProps,
@@ -70,7 +75,7 @@ export function TestPlanManager(){
             setIsCreating(true);
             setSelectedTestPlan(null);
             setTestPlanText('');
-            }}> Create New Test Plan </Button>}
+            }}> Create New Test</Button>}
          </div>
          { selectedTestPlan && !isCreating &&
             <div>

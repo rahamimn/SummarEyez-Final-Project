@@ -56,7 +56,7 @@ export function AddCustomSummary() {
                 
             }
             <Button 
-                disabled={rankSentences.length === 0}
+                disabled={nameText === '' || rankSentences.length === 0}
                 onClick={
                     async () =>{
                         const {status} = await api.addCustomSummary(experimentName,nameText,rankSentences);

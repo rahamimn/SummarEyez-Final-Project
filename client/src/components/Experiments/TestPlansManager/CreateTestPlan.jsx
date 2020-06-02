@@ -46,7 +46,7 @@ export function CreateTestPlan({ setSelectedForm, onCreate, onClose}){
       <Paper variant="outlined" style={{padding: '15px',width:'fit-content',marginTop:'10px', flexGrow: 1}}>
           <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
           <Typography variant="h5">
-            Create Test Plan
+            Create New Test
             </Typography>
             { onClose ? (
                 <IconButton aria-label="close" onClick={() => onClose()}>
@@ -69,7 +69,7 @@ export function CreateTestPlan({ setSelectedForm, onCreate, onClose}){
               label="name"/>
             <div style={{display:'flex', alignItems:'center'}}>
               <Typography> With Rating Summaries</Typography>
-              <Checkbox checked={withRateSummaries} onChange={(e) => setWithRateSummaries(e.target.value)}/>
+              <Checkbox checked={withRateSummaries} onChange={(e) => setWithRateSummaries(!withRateSummaries)}/>
             </div>
           </div>
         {formsDetails.map(detail => (

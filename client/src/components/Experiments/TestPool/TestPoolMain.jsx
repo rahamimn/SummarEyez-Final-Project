@@ -86,7 +86,7 @@ export const TestsPoolMain = () =>  {
       <div>
         <Card style={{padding:'20px'}}>
             <Typography variant="h5" >
-                Test Pool 1
+                Form Submitted
             </Typography>
             <Divider/>
             <div style={{width: '400px' }}>
@@ -110,7 +110,7 @@ export const TestsPoolMain = () =>  {
         </div>
         </Card>
         <Card style={{marginTop: '20px', padding: '20px'}}>
-          <Typography>Export Answers By TestPlan</Typography>
+          <Typography>Export Tests as CSV (forms and ratings)</Typography>
           <div style={{display:'flex', alignItems:'flex-end'}}>
             <Autocomplete
                 id="test-manager-choose-test-plan"

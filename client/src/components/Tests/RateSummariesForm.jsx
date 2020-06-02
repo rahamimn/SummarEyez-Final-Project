@@ -2,6 +2,7 @@
 import React, {useState} from 'react';
 import { Card, Container, Button, Typography } from '@material-ui/core';
 import { ChooseSummary } from './RateSummaries/ChooseSummary';
+import { RateSummary } from './RateSummaries/RateSummary';
 
 export function RateSummaries({
     onFinish,
@@ -9,7 +10,7 @@ export function RateSummaries({
 }) {
   const [step,setStep] = useState(0);
   const [answers,setAnswers] = useState({
-    summariesRate: {},
+    summariesRate: Array(forms.length).fill(null),
     topSummary: {},
     worstSummary: {}
   });
@@ -35,6 +36,19 @@ export function RateSummaries({
 
   const renderByStage = [
     <StartForm/>,
+    ...forms.map((form,i) => <RateSummary form={form} onNext={(rate) => {
+      const summariesRate = answers.summariesRate;
+      summariesRate[i] = {
+        formName: form.name,
+        experimentName: form.experimentName,
+        rate: rate
+      };
+      setAnswers({
+        ...answers,
+        summariesRate
+      });
+      nextStep();
+    }}/>),
     <ChooseSummary text ="Top Summary?" forms={forms} onNext={form => {
       setAnswers({
         ...answers,

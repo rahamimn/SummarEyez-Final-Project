@@ -310,7 +310,11 @@ testOfTestPlan = async (testPlanId, csv) =>{
                         const summary = entry.rating.answers.worstSummary;
                         return  `${summary.formName}/${summary.experimentName}`
                     })
-                }
+                },
+                ...testPlan.forms.map((form,i) => ({
+                    label: `Rate of ${form.formId}/${form.experimentName}`,
+                    value: entry => entry.rating.answers.summariesRate[i].rate
+                }))
                 ]
             }
         
