@@ -112,6 +112,7 @@ export const dataCreation = async (experimetService: ExperimentService) => {
     // PLAN1 - Single Form
     const plan1 = await experimetService.addTestPlan(
         'Test Plan1',
+        true,
         [{ "experimentName": "expA", "formId": "formA1" }]
         // Ask Adir about syntax here - How to use the fields names properly, I couldn't use them here.
     )
@@ -119,6 +120,7 @@ export const dataCreation = async (experimetService: ExperimentService) => {
     // PLAN2 - TWO forms of TWO different experiments
     const plan2 = await experimetService.addTestPlan(
         'Test Plan2',
+        true,
         [{ "experimentName": "expA", "formId": "formA1" },
         { "experimentName": "expB", "formId": "formB1" }]
     )
@@ -126,6 +128,7 @@ export const dataCreation = async (experimetService: ExperimentService) => {
     // PLAN3 - THREE forms of THREE different experiments
     const plan3 = await experimetService.addTestPlan(
         'Test Plan3',
+        true,
         [{ "experimentName": "expA", "formId": "formA1" },
         { "experimentName": "expB", "formId": "formB1" },
         { "experimentName": "expC", "formId": "formC1" }]

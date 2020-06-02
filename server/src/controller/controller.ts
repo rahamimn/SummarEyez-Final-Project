@@ -175,8 +175,8 @@ app.post('/api/experiments/:experimentName/questions', bodyParser.json(), (req, 
 }));
 
 app.post('/api/testPlan', bodyParser.json(), (req, res) => errorHandling(res, async () => {
-    const {testPlanName, formsDetails}  = req.body;
-    const addTestPlan = await experimentService.addTestPlan(testPlanName, formsDetails);
+    const {testPlanName,withRateSummaries, formsDetails}  = req.body;
+    const addTestPlan = await experimentService.addTestPlan(testPlanName,withRateSummaries, formsDetails);
     res.send(addTestPlan);
 }));
 

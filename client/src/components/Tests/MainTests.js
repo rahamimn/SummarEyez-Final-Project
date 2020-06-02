@@ -193,7 +193,7 @@ const Success = () => (
       setTests(newTests);
       
       if(newTests.length === forms.length) {
-        setPhase(Phases.RateSummaries);
+        setPhase(selectedTestPlan.withRateSummaries ? Phases.RateSummaries : Phases.Finish );
         setCurrentFormIndex(0);
       } else {
         setCurrentFormIndex(currentFormIndex + 1);

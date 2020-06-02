@@ -1,5 +1,5 @@
 import React,{useState,useEffect, useCallback} from 'react';
-import { Typography, TextField, Button, Paper, IconButton} from '@material-ui/core';
+import { Typography, TextField, Button, Paper, IconButton, Checkbox} from '@material-ui/core';
 import api from '../../../apiService';
 import { ERROR_STATUS } from '../../ERRORS';
 import CloseIcon from '@material-ui/icons/Close';
@@ -12,6 +12,7 @@ export function CreateTestPlan({ setSelectedForm, onCreate, onClose}){
     const [testPlanName,setTestPlanName] = useState('');
     const [testPlanNameError,setTestPlanNameError] = useState(null);
     const [addIsOpen,setAddIsOpen] = useState(false);
+    const [withRateSummaries,setWithRateSummaries] = useState(true);
 
     const onSelectForm = (experimentName, form) => {
         setAddIsOpen(false);
@@ -34,7 +35,7 @@ export function CreateTestPlan({ setSelectedForm, onCreate, onClose}){
     const usedExperiments = formsDetails.map(d => d.experimentName);
 
     const addTestPlan = async () => {
-      const {status} = await api.addTestPlans(testPlanName, formsDetails.map(d => ({experimentName:d.experimentName, formId: d.form.name})));
+      const {status} = await api.addTestPlans(testPlanName,withRateSummaries, formsDetails.map(d => ({experimentName:d.experimentName, formId: d.form.name})));
       if(status === ERROR_STATUS.NAME_NOT_VALID)
         setTestPlanNameError(true);
       if(status===0){
@@ -54,17 +55,23 @@ export function CreateTestPlan({ setSelectedForm, onCreate, onClose}){
                 ) : null
             }
           </div>
-        <TextField 
-          error={testPlanNameError}
-          helperText={testPlanNameError && "Name empty, or already exsits" }
-          value={testPlanName}
-          style={{width: '200px',marginTop:'10px', marginBottom: '20px'}}
-          onChange={(e) => {
-            setTestPlanNameError(false);
-            setTestPlanName(e.target.value);
-          }}
-          id="create-test-plan-name"
-          label="name"/>
+          <div style={{display:'flex', justifyContent:'space-between'}}>
+            <TextField 
+              error={testPlanNameError}
+              helperText={testPlanNameError && "Name empty, or already exsits" }
+              value={testPlanName}
+              style={{width: '200px',marginTop:'10px', marginBottom: '20px'}}
+              onChange={(e) => {
+                setTestPlanNameError(false);
+                setTestPlanName(e.target.value);
+              }}
+              id="create-test-plan-name"
+              label="name"/>
+            <div style={{display:'flex', alignItems:'center'}}>
+              <Typography> With Rating Summaries</Typography>
+              <Checkbox checked={withRateSummaries} onChange={(e) => setWithRateSummaries(e.target.value)}/>
+            </div>
+          </div>
         {formsDetails.map(detail => (
           <Paper style={{padding:'10px', width:'500px', marginTop:'10px', display:'flex'}} variant="outlined">
               <Typography style={{width:'250px', padding:'0 5px'}}>{detail.experimentName}</Typography>

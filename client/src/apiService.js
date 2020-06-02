@@ -195,9 +195,10 @@ const api = {
         return res.data;
     },
 
-    addTestPlans: async (testPlanName, formsDetails) => {
+    addTestPlans: async (testPlanName, withRateSummaries, formsDetails) => {
         const res = await axios.post(`/api/testPlan`,{
             testPlanName,
+            withRateSummaries,
             formsDetails
         });
         return res.data;

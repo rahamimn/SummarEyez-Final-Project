@@ -201,7 +201,7 @@ private checkFormsExist = async (experimentsNames, formsId) => {
     return  response(0);
 }
 
-addTestPlan = async (testPlanName: any, formsDetails: any) =>{
+addTestPlan = async (testPlanName: any, withRateSummaries: boolean, formsDetails: any) =>{
     var experimentNames  = formsDetails.map(formDetail => formDetail.experimentName);
     var formIds = formsDetails.map(formDetail => formDetail.formId);
 
@@ -224,6 +224,7 @@ addTestPlan = async (testPlanName: any, formsDetails: any) =>{
     }
     await this.collectionsService.testPlans().add(testPlanName, {
         id: testPlanName,
+        withRateSummaries,
         forms: formsDetails
     })
     return response(0);
@@ -231,6 +232,7 @@ addTestPlan = async (testPlanName: any, formsDetails: any) =>{
 
 testOfTestPlan = async (testPlanId, csv) =>{
     const testPlan = await this.collectionsService.testPlans().get(testPlanId);
+
     if(!testPlan){
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS, {error: ERRORS.TEST_PLAN_NAME_NOT_EXISTS})
     }
@@ -250,9 +252,21 @@ testOfTestPlan = async (testPlanId, csv) =>{
         } 
     }  
 
+
+
     jsonAns = groupBy(jsonAns, (test) => test.id);
 
-    jsonAns =  Object.entries(jsonAns).map(entry => ({testId: entry[0], tests: entry[1]}))
+
+    let summaryRatings = null;
+    if(testPlan.withRateSummaries){
+        summaryRatings = await this.collectionsService.testPlans().ratingAnswersOf(testPlanId).getAll();
+    }
+
+    jsonAns = Object.entries(jsonAns).map(entry => ({
+        testId: entry[0],
+        tests: entry[1],
+        rating: summaryRatings && summaryRatings.find(rating => rating.id === entry[0]).data
+    }))
     var csvRes
     if(csv === true){
         try{
@@ -282,6 +296,24 @@ testOfTestPlan = async (testPlanId, csv) =>{
                     ]);
                 }
             });
+            if(summaryRatings){
+                fields = [...fields, {
+                    label: 'Top Summary[<form>/<experimnet>]',
+                    value: (entry => {
+                        const summary = entry.rating.answers.topSummary;
+                        return  `${summary.formName}/${summary.experimentName}`
+                    })
+                },
+                {
+                    label: 'Worst Summary [<form>/<experimnet>]',
+                    value: (entry => {
+                        const summary = entry.rating.answers.worstSummary;
+                        return  `${summary.formName}/${summary.experimentName}`
+                    })
+                }
+                ]
+            }
+        
 
             var opts = { fields };
             var parser = new Parser(opts);
