@@ -36,9 +36,6 @@ describe('Manage Form', () => {
         await driver.click("create-new-form-btn");
         await driver.setValue("form-name",newFormName);
 
-
-        await driver.EditFormDriver.clickSwitch.questions();
-
         await driver.EditFormDriver.createQuestion(questions[0]);
         await driver.EditFormDriver.createQuestion(questions[1]);
         
