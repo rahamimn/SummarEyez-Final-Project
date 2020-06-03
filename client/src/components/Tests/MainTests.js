@@ -116,15 +116,7 @@ function MainTests({testPlanId}) {
       <div style={{display: 'flex', justifyContent: 'center'}}>
         <div style={{width: '800px' }}>
           <Typography variant="h3"> Submition </Typography>
-          <TextField 
-            error={testIdError}
-            helperText={testIdError && "id already exsits, please choose different id" }
-            value={testId}
-            style={{width: '200px',marginTop:'10px', marginBottom: '20px'}}
-            onChange={(e) => setTestId(e.target.value)}
-            id="main-tests-student-id"
-            label="Student ID" />
-        
+                 
           <div style={{display:'flex',justifyContent: ' flex-end'}}>
             {loadingSubmition ? 
               <CircularProgress style={{marginRight:'10px'}}/> :

@@ -28,7 +28,14 @@ export const COLORS = {
         op_1:['#ffffff','#ffffcc','#d9f0a3','#addd8e','#78c679','#41ab5d','#238443','#005a32'],
         op_2:['#ffffff','#ffffd4','#fee391','#fec44f','#fe9929','#ec7014','#cc4c02','#8c2d04']
     },
+    '9':{
+        green:['#ffffe5','#f7fcb9','#d9f0a3','#addd8e','#78c679','#41ab5d','#238443','#006837','#004529'],
+    },
+    '10':{
+        green:['#ffffff','#ffffe5','#f7fcb9','#d9f0a3','#addd8e','#78c679','#41ab5d','#238443','#006837','#004529'],
+    },
+
 }
 
-export const COLORS_SIZES = ['1','3','4','5','6','7','8'];
+export const COLORS_SIZES = ['1','3','4','5','6','7','8','9','10'];
 
