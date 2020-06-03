@@ -61,7 +61,12 @@ export const BaseViewer = ({
                         {isSamePar && <span>&nbsp;</span>}
                         {summary[i].text}
                 </span>
-                {SentPopper &&  <SentPopper id={'sent-'+i} sentIndex={i} weight={summary[i].normalized_weight} anchorEl={anchorEl} isOpen={selectedSent === i}/>}
+                {SentPopper &&  <SentPopper id={'sent-'+i} 
+                    sentIndex={i}
+                    weight={summary[i].normalized_weight}
+                    anchorEl={anchorEl}
+                    isOpen={selectedSent === i}
+                    close={() => setSelectedSent(null) }/>}
             </span>
         );
         

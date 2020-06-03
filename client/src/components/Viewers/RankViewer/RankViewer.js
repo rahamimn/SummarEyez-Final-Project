@@ -6,7 +6,7 @@ export const RankSentences = ({
     setRankSentences
 }) => {
     
-    const SentPopper = ({weight, isOpen, id, anchorEl, sentIndex}) => {
+    const SentPopper = ({weight, isOpen, id, anchorEl, sentIndex, close}) => {
         const [val,setVal] = useState(weight);
         return (
         <Popper id={id} open={isOpen} anchorEl={anchorEl}>
@@ -33,6 +33,7 @@ export const RankSentences = ({
                             rankSentences[sentIndex].weight = val
                             rankSentences[sentIndex].normalized_weight = val;
                             setRankSentences([...rankSentences])
+                            close()
                     }}> Ok</Button>
             </Card>
         </Popper>)};
