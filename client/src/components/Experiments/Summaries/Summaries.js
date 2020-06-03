@@ -57,6 +57,7 @@ export function Summaries() {
     setAutoSelected([]);
     setEyesSelected([]);
     setMergedSelected([]);
+    setCustomSelected([]);
   },[experimentName]);
 
   useEffect(() => {

@@ -19,10 +19,14 @@ import CloseIcon from '@material-ui/icons/Close';
 export default function MergeDialog({
   onClose, selected 
 }) {
+  const formatSelected = (selectedSummaries) => selectedSummaries
+    .map(summ =>({name: summ.data.name, type: summ.data.type, percentage: 0}));
+    
   const addToInput = (selected) => [
-   ...selected.auto.map(a =>({name: a.data.name, type: a.data.type, percentage: 0})),  
-   ...selected.eyes.map(a =>({name: a.data.name, type: a.data.type, percentage: 0})),
-   ...selected.merged.map(a =>({name: a.data.name, type: a.data.type, percentage: 0}))
+   ...formatSelected(selected.auto),
+   ...formatSelected(selected.eyes),
+   ...formatSelected(selected.custom),
+   ...formatSelected(selected.merged),
   ]
 
   const {experimentName} = useParams();
