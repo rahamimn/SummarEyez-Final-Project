@@ -118,7 +118,7 @@ describe('Manage Form', () => {
         const [ans0,ans1] = await viewTestPool(questions, newFormName);
         
         expect(ans0).toBe(true);
-        expect(ans1).toBe(true);
+        expect(ans1).toBe(true); 
     });
 
 
@@ -143,14 +143,14 @@ describe('Manage Form', () => {
 
         await SummariesDriver.switchTable.auto();
 
-        for(let i = 0; i < 10; i++){
+        for(let i = 0; i < 10; i++){ 
             await SummariesDriver.nextPage();
         }
 
         await SummariesDriver.clickOnRowWithName(newAlgoName+'.py');
         await SummariesDriver.toolbarActions.run();
 
-        await browser.pause(5000);
+        await browser.pause(15000);
 
         await SummariesDriver.clickOnRowWithName(newAlgoName+'.py');
         await SummariesDriver.toolbarActions.view();
