@@ -438,11 +438,9 @@ export function EditForm({
         return (
         <div>
           <div>
-            <Typography variant="h6" style={{display: 'inline-block'}}>
-              {title}
-            </Typography>
             <Switch
               disabled={disabled}
+              color="primary"
               style={{display:'block'}}
               checked={formDTO[field]}
               onChange={() => { 
@@ -451,6 +449,9 @@ export function EditForm({
               }}
               inputProps={{ 'aria-label': 'secondary checkbox', id}}
             />
+            <Typography variant="h6" style={{display: 'inline-block'}}>
+              {title}
+            </Typography>
           </div>
           {withFooter && formDTO[field] && <Divider style={{width: '350px'}}/>}
         </div>
