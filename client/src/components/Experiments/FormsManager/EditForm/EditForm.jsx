@@ -15,8 +15,8 @@ const emptyForm = {
     name:'',
     questionIds:[],
     isRankSentences: false,
-    isFillAnswers: false,
-    isReadSummary: false,
+    isFillAnswers: true,
+    isReadSummary: true,
     withFixations: false,
     summary: { filters:{ 
       hideUnderMin: false,
@@ -287,7 +287,7 @@ export function EditForm({
 
         return isReadSummary && (
           <Card variant="outlined" style={{margin:'10px 0 20px 15px', padding:'15px 20px 30px'}}>
-            {summaryError && <div>ERROR</div>}
+            {summaryError && <div style={{color:'red'}}>Please Choose Summary</div>}
             <div style={{ display: 'flex'}}>
               <Autocomplete
                   id="edit-form-summary-type"
@@ -355,7 +355,7 @@ export function EditForm({
         const disabled = form && !form.editable;
         return formDTO.isFillAnswers && 
           <div style={{marginBottom:'20px', marginLeft:'15px'}}>
-            {questionsError && <Typography>ERROR</Typography>}
+            {questionsError && <Typography style={{color:'red'}}>Please Select at least one question</Typography>}
             <Select
               labelId="select-questions"
               id="edit-form-select-questions"

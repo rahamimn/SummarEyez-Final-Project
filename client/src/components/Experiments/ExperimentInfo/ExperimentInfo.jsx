@@ -42,9 +42,9 @@ export function ExperimentInfo() {
 						<Typography variant="h5">
 							{experimentName} Info
 						</Typography>
-						<Button color="primary" onClick={() => setOcrModalOpen(true)}>
-							Show OCR
-						</Button>
+						{experimentInfo && <Button color="primary" onClick={() => setOcrModalOpen(true)}>
+              Show Plain-Text
+						</Button>}
 					</div>
 					<Divider/>
          

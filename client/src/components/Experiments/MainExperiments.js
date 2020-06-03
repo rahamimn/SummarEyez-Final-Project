@@ -96,7 +96,7 @@ function MainExperiments({permit}) {
           <ListItemIcon>
             <AssessmentIcon />
           </ListItemIcon>   
-          <ListItemText primary='Test pool' secondary="by forms / tests" />
+          <ListItemText primary='Test Results' secondary="by forms / tests" />
         </ListItem>
       </List>
       
