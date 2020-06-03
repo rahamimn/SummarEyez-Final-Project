@@ -14,6 +14,13 @@ export function Form({
     const [answers,setAnswers] = useState();
     const [rankSentences,setRankSentences] = useState(form.isRankSentences && addWeight(form.base_sentences_table));
     const [fixations,setFixations] = useState(null);
+    const [withTimeout,setWithTimeout] = useState(false);
+
+    if(withTimeout){
+        const {minute} = form && form.summary;
+        setWithTimeout(false);
+        setTimeout(() => nextStep() , minute*10 * 1000);
+    }
 
     useEffect(() => {
         setStep(0);
@@ -23,9 +30,13 @@ export function Form({
     },[form]);
 
     const StartForm = () => {
+        const {withTimer, minutes} = form && form.summary;
         return (
-        <StepPage onClick={() => nextStep()}>
+        <StepPage onClick={nextStartTime}>
             <Typography variant="h4">New Task ahead</Typography>
+            {withTimer &&  
+                <Typography variant="h5">You have {minutes} minutes to read this summary</Typography>
+            }
             <Typography variant="h5">press next to start</Typography>
         </StepPage>
     )};
@@ -78,7 +89,7 @@ export function Form({
         form.withFixations && <UploadFixations/>
 
     ].filter(x => x);
-    
+
     const nextStep = (answersInput) => {
         if(step+1 === renderByStage.length){
             onFinish({
@@ -93,7 +104,13 @@ export function Form({
             setStep(step+1)
         }
     };
-
+    
+        const nextStartTime = () => {
+            const {withTimer} = form && form.summary;
+            nextStep();
+            withTimer && setWithTimeout(true);
+        };
+    
     
   return (
     <Container>

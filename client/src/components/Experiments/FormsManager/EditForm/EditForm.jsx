@@ -18,9 +18,13 @@ const emptyForm = {
     isFillAnswers: true,
     isReadSummary: true,
     withFixations: false,
-    summary: { filters:{ 
-      hideUnderMin: false,
-      color:{size:'3', palete:'op_1'}}},
+    summary: { 
+      withTimer: false,
+      minutes:5,
+      filters:{ 
+        hideUnderMin: false,
+        color:{size:'3', palete:'op_1'}}
+      },
 }
 
 const ITEM_HEIGHT = 48;
@@ -29,7 +33,7 @@ const MenuProps = {
   PaperProps: {
     style: {
       maxHeight: ITEM_HEIGHT * 5.5 + ITEM_PADDING_TOP,
-      width: 250,
+      width: 400,
     },
   },
 };
@@ -344,6 +348,27 @@ export function EditForm({
                     e && setSummaryNameText(value)
                 }
                 inputValue={summaryNameText || ''}
+                />
+              }
+
+            </div>
+            <div style={{ display:'flex', alignItems:'center', marginTop:'30px'}}>
+              <Typography variant="h6" style={{marignRight: '10px'}}>Set Timer(minutes): </Typography>
+              <Checkbox  style={{ marginRight: '10px'}} checked={formDTO.summary.withTimer} onChange={() => 
+                setFormDTO({...formDTO, summary:{...summary, withTimer: !formDTO.summary.withTimer} })}/>
+              {formDTO.summary.withTimer &&
+                <TextField 
+                style={{width:'100px'}}
+                inputProps={{min:1,max:60, step:1}}
+                type="number"
+                value={formDTO.summary.minutes}
+                onChange={(e) => {
+                  const {value} = e.target;
+                  if(value >= 1 && value <= 60){
+                    setFormDTO({...formDTO, summary:{...summary, minutes: value} })
+                  }
+                }}
+                id="edit-form-minutes"
                 />
               }
             </div>
