@@ -79,6 +79,7 @@ export function CreateTestPlan({ setSelectedForm, onCreate, onClose}){
                 <Typography style={{cursor: 'pointer'}} onClick={() => setSelectedForm({...detail.form, experimentName: detail.experimentName})}>{detail.form.name}</Typography>
               </div>
               <Button onClick={() => { 
+                setSelectedForm(null);
                 setFormsDetails(formsDetails.filter((d) => !(
                   d.experimentName === detail.experimentName &&
                   d.form === detail.form) ))
