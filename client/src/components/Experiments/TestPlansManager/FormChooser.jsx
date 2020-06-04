@@ -56,7 +56,10 @@ export function FormChooser({experiments, onSelectForm, dontRefresh, alreadyDone
           autoHighlight
           getOptionLabel={option => option.id}
           onChange={(e,form) => {
-             setSelectedForm(form && form.data)
+            dontRefresh ?
+              form && onSelectForm(selectedExperiment, form.data):
+              setSelectedForm(form && form.data) 
+             
           }}
           onInputChange={(e, value) => experimentText && setFormText(value)}
           inputValue={formText}
@@ -72,20 +75,22 @@ export function FormChooser({experiments, onSelectForm, dontRefresh, alreadyDone
               }}
             />
           )}/>
-          <Button 
-            disabled={!selectedForm || !selectedExperiment}
-            onClick={() =>{
-    
-              onSelectForm(selectedExperiment, selectedForm)
-              if(!dontRefresh){
-                setSelectedExperiment(null);
-                setExperimentText('');
-                setFormText('');
-                setForms([]);
-              }
-            }}>
-            OK
-          </Button>
+          {!dontRefresh &&
+            <Button 
+              disabled={!selectedForm || !selectedExperiment}
+              onClick={() =>{
+      
+                onSelectForm(selectedExperiment, selectedForm)
+                if(!dontRefresh){
+                  setSelectedExperiment(null);
+                  setExperimentText('');
+                  setFormText('');
+                  setForms([]);
+                }
+              }}>
+              OK
+            </Button>
+          }
       </div>
 
     )
