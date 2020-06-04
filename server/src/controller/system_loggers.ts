@@ -1,7 +1,7 @@
 export var summarEyez_system_logger = require('logger').createLogger('summarEyez_system_logger.log'); // logs to a file
 export var summarEyez_system_error_logger = require('logger').createLogger('summarEyez_system_error_logger.log'); // logs to a file
 
-export var summarEyez_system_failier_logger = require('logger').createLogger('summarEyez_failier_logger.log'); // logs to a file
+export var summarEyez_system_failure_logger = require('logger').createLogger('summarEyez_failier_logger.log'); // logs to a file
 
 
 //regular system logger.
@@ -19,9 +19,9 @@ export async function addToErrorLogger(string_func_name) {
 
 }
 
-//system failier logger.
-//will contain details of system failier's
+//system failure logger.
+//will contain details of system failure's
 export async function addToSystemFailierLogger(string_func_name) {
 
-    summarEyez_system_failier_logger.info("error in func: ", string_func_name );
+    summarEyez_system_failure_logger.info("error in func: ", string_func_name );
 }
