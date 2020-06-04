@@ -4,6 +4,7 @@ import { Storages } from "../services/storage/storage";
 import { Collections } from "../services/collections/collections";
 import { dataCreation } from "../utils/dataCreationForE2e";
 import { ERROR_STATUS } from "../utils/Errors";
+import { addToSystemFailierLogger } from "./system_loggers";
 
 const cors = require('cors');
 const express = require('express');
@@ -32,7 +33,8 @@ const errorHandling = async (res, cb) => {
         await cb();
 
     }catch(error){
-        console.log(error);
+        addToSystemFailierLogger("controller.ts,  errorHandling")
+        // console.log(error);
         
         if(error instanceof PythonError){
             res.send({status: ERROR_STATUS.PYTHON_ERROR, error})

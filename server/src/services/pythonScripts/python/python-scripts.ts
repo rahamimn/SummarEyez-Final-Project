@@ -1,5 +1,6 @@
 import {PythonShell} from 'python-shell';
 import { PythonScriptInterface } from '../pythonScriptsTypes';
+import { addToSystemFailierLogger } from '../../../controller/system_loggers';
 const fs = require('fs');
 //doesn't tested at all
 export class PythonError extends Error {
@@ -78,6 +79,7 @@ export class PythonScripts implements PythonScriptInterface {
             return {text, word_ocr, base_sent_table};
         }
         catch(e){
+            addToSystemFailierLogger("python script.ts, processImage")
             throw new PythonError(e)
         }   
     }
@@ -102,6 +104,7 @@ export class PythonScripts implements PythonScriptInterface {
             return {word_table, sentences_table};
         }
         catch(e){
+            addToSystemFailierLogger("python script.ts, genTableFromEyez")
             throw new PythonError(e.message)
         }   
     }
@@ -130,6 +133,7 @@ export class PythonScripts implements PythonScriptInterface {
             return {tables: filteredTables};
         }
         catch(e){
+            addToSystemFailierLogger("python script.ts, runAutomaticAlgs")
             throw new PythonError(e)
         }  
     }
@@ -161,6 +165,7 @@ export class PythonScripts implements PythonScriptInterface {
             return {merged_table};
         }
         catch(e){
+            addToSystemFailierLogger("python script.ts, mergeTables")
             throw new PythonError(e)
         } 
         
