@@ -2,6 +2,7 @@ import { fileTypes, Storage } from "./storage/storageTypes";
 import { Collections } from "./collections/collectionsTypes";
 import { PythonScriptInterface } from "./pythonScripts/pythonScriptsTypes";
 const forEP = require('foreach-promise');
+import { addToSystemFailierLogger, addToErrorLogger, addToRegularLogger } from "../Collections/../controller/system_loggers";
 //@ts-ignore
 import {promises as fs} from 'fs';
 import * as csvToJson from 'csvtojson';
@@ -68,8 +69,10 @@ export class ExperimentService{
     }
 
 addRatingAnswers = async (testPlanId, testId, rateSummariesAnswers) => {
+    addToRegularLogger("addRatingAnswers", {testPlanId, testId, rateSummariesAnswers})
     const testPlan = await this.collectionsService.testPlans().get(testPlanId);
     if(!testPlan){
+        addToErrorLogger("addRatingAnswers")
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error:ERRORS.TEST_PLAN_NAME_NOT_EXISTS});
     }
     await this.collectionsService.testPlans().ratingAnswersOf(testPlanId).add(testId,{
@@ -82,19 +85,23 @@ addRatingAnswers = async (testPlanId, testId, rateSummariesAnswers) => {
 }
  
 addTest = async (params) => {
+    addToRegularLogger("addTest", {params})
     const experiment= await this.collectionsService.experiments().get(params.experimentName)
     const paramsList = {'testId': params.testId};
     const error = this.validateIds(paramsList);
     
     if(error != ''){
+        addToErrorLogger("addTest")
         return response(ERROR_STATUS.NAME_NOT_VALID,{error} );
     }
     if(!experiment){
+        addToErrorLogger("addTest")
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
     }
   
     const img= await this.collectionsService.images().get(experiment.imageName)
     if(!img){
+        addToErrorLogger("addTest")
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.IM_NOT_EXISTS} );
     }
  
@@ -104,6 +111,7 @@ addTest = async (params) => {
         .get(params.testId);
 
     if(test){
+        addToErrorLogger("addTest")
         return response(ERROR_STATUS.NAME_NOT_VALID, {error: ERRORS.TEST_EXISTS});
     }
 
@@ -112,16 +120,19 @@ addTest = async (params) => {
     if(params.fixations){
         const word_ocr = await this.storageService.downloadToBuffer(img.word_ocr_path);
         if(!word_ocr){
+            addToErrorLogger("addTest")
             return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.WORD_OCR_TBL_NOT_EXISTS} );
         }
         const base_sentences_table = await this.storageService.downloadToBuffer(img.base_sent_table_path);
         if(!base_sentences_table){
+            addToErrorLogger("addTest")
             return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.SENT_TBL_NOT_EXISTS} );
         }
    
         if(params.testPlanId && params.testPlanId != -1){
             const testPlanNameExist = await this.collectionsService.testPlans().get(params.testPlanId);
             if(!testPlanNameExist){
+                addToErrorLogger("addTest")
                 return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.TEST_PLAN_NAME_NOT_EXISTS} );  
             }
         }
@@ -183,6 +194,7 @@ private checkExpiramentExist = async (experimentsNames) => {
         var nameOfExpirament = experimentsNames[i]
         const expriment = await this.collectionsService.experiments().get(nameOfExpirament)
         if (!expriment) {
+            addToErrorLogger("checkExpiramentExist")
             return response(ERROR_STATUS.NAME_NOT_VALID,{error: ERRORS.FORM_NOT_EXISTS})
         }
     }
@@ -195,6 +207,7 @@ private checkFormsExist = async (experimentsNames, formsId) => {
         var nameOfExpirament = experimentsNames[i]
         var currFrom = await this.collectionsService.experiments().formsOf(nameOfExpirament).get(nameOfForm);
         if (!currFrom) {
+            addToErrorLogger("checkFormsExist")
             return response(ERROR_STATUS.NAME_NOT_VALID,{error: ERRORS.FORM_NOT_EXISTS})
         }
     }
@@ -202,17 +215,20 @@ private checkFormsExist = async (experimentsNames, formsId) => {
 }
 
 addTestPlan = async (testPlanName: any, withRateSummaries: boolean, formsDetails: any) =>{
+    addToRegularLogger("addTestPlan", {testPlanName, withRateSummaries, formsDetails})
     var experimentNames  = formsDetails.map(formDetail => formDetail.experimentName);
     var formIds = formsDetails.map(formDetail => formDetail.formId);
 
     const validExpiraments = await this.checkExpiramentExist(experimentNames );
     if(validExpiraments.status === ERROR_STATUS.NAME_NOT_VALID )
     {
+        addToErrorLogger("addTestPlan")
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS, {error: ERRORS.EXP_NOT_EXISTS})
     }
     const validFroms = await this.checkFormsExist(experimentNames , formIds);
     if(validFroms.status === ERROR_STATUS.NAME_NOT_VALID )
     {
+        addToErrorLogger("addTestPlan")
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS, {error: ERRORS.FORM_NOT_EXISTS})
     }
 
@@ -220,6 +236,7 @@ addTestPlan = async (testPlanName: any, withRateSummaries: boolean, formsDetails
 
     if(testPlanNameExist)
     {
+        addToErrorLogger("addTestPlan")
         return response(ERROR_STATUS.NAME_NOT_VALID, {error: ERRORS.TEST_PLAN_NAME_EXISTS})
     }
     await this.collectionsService.testPlans().add(testPlanName, {
@@ -231,9 +248,11 @@ addTestPlan = async (testPlanName: any, withRateSummaries: boolean, formsDetails
 }
 
 testOfTestPlan = async (testPlanId, csv) =>{
+    addToRegularLogger("testOfTestPlan", {testPlanId, csv})
     const testPlan = await this.collectionsService.testPlans().get(testPlanId);
 
     if(!testPlan){
+        addToErrorLogger("testOfTestPlan")
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS, {error: ERRORS.TEST_PLAN_NAME_NOT_EXISTS})
     }
     var jsonAns = []
@@ -271,6 +290,7 @@ testOfTestPlan = async (testPlanId, csv) =>{
     if(csv === true){
         try{
             if(jsonAns.length === 0){
+                addToErrorLogger("testOfTestPlan")
                 return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{ error:ERRORS.TEST_NOT_EXISTS});
             }
             const samp = jsonAns[0].tests
@@ -325,7 +345,8 @@ testOfTestPlan = async (testPlanId, csv) =>{
             //console.log( csvRes);
         }
         catch (err){
-            console.error(err);
+            addToSystemFailierLogger("testOfTestPlan")
+            // console.error(err);
         }
     }
     
@@ -335,14 +356,17 @@ testOfTestPlan = async (testPlanId, csv) =>{
 
 
 getAllTestPlans = async () =>{
+    addToRegularLogger("getAllTestPlans", {})
     const allTestPlans = await this.collectionsService.testPlans().getAll();
     return response(0, {data: allTestPlans});
 }
 
 getTestPlan= async (testPlanId: any) =>{  
+    addToRegularLogger("getTestPlan", {testPlanId})
     const testPlan = await this.collectionsService.testPlans().get(testPlanId);
     if(!testPlan)
     {
+        addToErrorLogger("getTestPlan")
         return response(ERRORS.TEST_PLAN_NAME_NOT_EXISTS, {error: ERRORS.TEST_PLAN_NAME_NOT_EXISTS})
     }
 
@@ -350,12 +374,15 @@ getTestPlan= async (testPlanId: any) =>{
 }
 
 addForm = async (params) =>{
+    addToRegularLogger("addForm", {params})
     const expriment = await this.collectionsService.experiments().get(params.experimentName)
     if(!expriment){
+        addToErrorLogger("addForm")
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
     }
     const form = await this.collectionsService.experiments().formsOf(params.experimentName).get(params.name);
     if(form){
+        addToErrorLogger("addForm")
         return response(ERROR_STATUS.NAME_NOT_VALID,{error: ERRORS.FORM_EXISTS} );
     }
     await this.collectionsService.experiments().formsOf(params.experimentName).add(params.name,{
@@ -373,18 +400,21 @@ addForm = async (params) =>{
 }
 
 updateForm = async (params) =>{
- 
+    addToRegularLogger("updateForm", {params})
     const expriment = await this.collectionsService.experiments().get(params.experimentName)
     if(!expriment){
+        addToErrorLogger("updateForm")
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
     }
 
     const form = await this.collectionsService.experiments().formsOf(params.experimentName).get(params.name);
     if(!form){
+        addToErrorLogger("updateForm")
         return response(ERROR_STATUS.NAME_NOT_VALID,{error: ERRORS.FORM_NOT_EXISTS} );
     }
    
     if(!form.editable){
+        addToErrorLogger("updateForm")
         return response(ERROR_STATUS.NAME_NOT_VALID,{error: ERRORS.FORM_NOT_EDITABLE} );
     }
 
@@ -405,8 +435,10 @@ updateForm = async (params) =>{
 
 
 getAllForms = async (experimentName) =>{
+    addToRegularLogger("getAllForms", {experimentName})
     const expriment = await this.collectionsService.experiments().get(experimentName)
     if(!expriment){
+        addToErrorLogger("getAllForms")
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
     }
     const forms = await this.collectionsService.experiments().formsOf(experimentName).getAll();
@@ -414,18 +446,22 @@ getAllForms = async (experimentName) =>{
 }
 
 getForm = async (experimentName, formId, onlyMeta = false) =>{
+    addToRegularLogger("getForm", {experimentName, formId})
     const expriment = await this.collectionsService.experiments().get(experimentName)
     if(!expriment){
+        addToErrorLogger("getForm")
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
     }
 
     const form = await this.collectionsService.experiments().formsOf(experimentName).get(formId);
     if(!form){
+        addToErrorLogger("getForm")
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.FORM_NOT_EXISTS} );
     }
 
     const img= await this.collectionsService.images().get(expriment.imageName)
     if(!img){
+        addToErrorLogger("getForm")
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.IM_NOT_EXISTS} );
     }
 
@@ -437,6 +473,7 @@ getForm = async (experimentName, formId, onlyMeta = false) =>{
         if(form.isRankSentences == true){
             base_sentences_table = await this.storageService.downloadToBuffer(img.base_sent_table_path);
             if(!base_sentences_table){
+                addToErrorLogger("getForm")
                 return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.SENT_TBL_NOT_EXISTS} );
             }
             base_sentences_table = await csvToJson({delimiter:'auto'}).fromString(base_sentences_table.toString('utf16le'))
@@ -458,8 +495,10 @@ getForm = async (experimentName, formId, onlyMeta = false) =>{
 }
 
 getFilteredTest = async (experimentName, formId, minScore) =>{
+    addToRegularLogger("getFilteredTest", {experimentName, formId, minScore})
     const experiment= await this.collectionsService.experiments().get(experimentName)
     if(!experiment){
+        addToErrorLogger("getFilteredTest")
         return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
     }
 
@@ -471,12 +510,15 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
     }
 
     addImage = async (name, buffer) => {
+        addToRegularLogger("addImage", {name, buffer})
         const image = await this.collectionsService.images().get(name);
         if(image){
+            addToErrorLogger("addImage")
             return response(ERROR_STATUS.NAME_NOT_VALID, {error:ERRORS.IM_EXISTS});
         }
         const ans= this.validateIds({'name': name});
         if(ans != ''){
+            addToErrorLogger("addImage")
             return response(-1,{error: ans} );
         }
 
@@ -514,6 +556,7 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
                         existingShouldRunAlgs.push(autoName);
                     }
                     catch(e){
+                        addToSystemFailierLogger("addImage")
                       console.error(`${autoName} not exists in server`);
                     }
                 });
@@ -528,13 +571,15 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
             }
         }
         catch(e){
-            console.log('addImage-run-automatic-failed');
+            addToSystemFailierLogger("addImage")
+            console.error('addImage-run-automatic-failed');
         }
 
         return response(0);
     }
 
     getImages = async () => {
+        addToRegularLogger("getImages", {})
         const imagesCollection = await this.collectionsService.images();
         const images  = await imagesCollection.getAll();
 
@@ -542,13 +587,16 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
     }
 
     getExperiments = async () => {
+        addToRegularLogger("getExperiments", {})
         const experiments = await this.collectionsService.experiments().getAll();
         return response(0, {data: experiments});
     }
 
     getExperimentInfo = async (experimentName: any) => {
+        addToRegularLogger("getExperimentInfo", {experimentName})
         const experiment = await this.collectionsService.experiments().get(experimentName);
         if(!experiment){
+            addToErrorLogger("getExperimentInfo")
             return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
         }
         const image = await this.collectionsService.images().get(experiment.imageName);
@@ -569,8 +617,10 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
     }
 
     getAllQuestions= async(experimentName: any) => {
+        addToRegularLogger("getAllQuestions", {experimentName})
         const experiment = await this.collectionsService.experiments().get(experimentName);
         if(!experiment){
+            addToErrorLogger("getAllQuestions")
             return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
         }
         const questionsOfImage = await this.collectionsService.images().questionsOf(experiment.imageName).getAll();
@@ -617,13 +667,16 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
     }
 
     getSummary = async (experimentName, type, name, asText = false) => {
+        addToRegularLogger("getSummary", {experimentName, type, name})
         const experiment = await this.collectionsService.experiments().get(experimentName);
         if(!experiment){
+            addToErrorLogger("getSummary")
             return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
         }
 
         const csvFile = await this.getSentTableFile(experiment, type, name);
         if(!csvFile){
+            addToErrorLogger("getSummary")
             return response(ERROR_STATUS.OBJECT_NOT_EXISTS, {error:ERRORS.SUMMARY_NOT_EXISTS})
         }
 
@@ -639,14 +692,17 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
     }
 
     addCustomSummary = async (experimentName, summaryName, sentencesWeights) => {
+        addToRegularLogger("addCustomSummary", {experimentName, summaryName, sentencesWeights})
         const experiment = await this.collectionsService.experiments().get(experimentName);
         if(!experiment){
+            addToErrorLogger("addCustomSummary")
             return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
         }
 
         const customSummary = await this.collectionsService.experiments().customSummariesOf(experimentName).get(summaryName);
 
         if(customSummary){
+            addToErrorLogger("addCustomSummary")
             return response(ERROR_STATUS.NAME_NOT_VALID,{error: ERRORS.CUSTOM_SUMMARY_EXISTS} );
         }
         
@@ -666,9 +722,10 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
     }
 
     getSummaries = async (experimentName)=> {
-        // const eyesExample = {id: 'eye1',data:{name:'eye1', creation_date:Date.now()}}
+        addToRegularLogger("getSummaries", {experimentName})
         const experiment = await this.collectionsService.experiments().get(experimentName);
         if(!experiment){
+            addToErrorLogger("getSummaries")
             return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
         }
 
@@ -706,8 +763,10 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
     };
 
     runAutomaticAlgs = async (algsNames: string[], experimentName:string ) => {
+        addToRegularLogger("runAutomaticAlgs", {algsNames, experimentName})
         const experiment = await this.collectionsService.experiments().get(experimentName);
         if(!experiment){
+            addToErrorLogger("runAutomaticAlgs")
             return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
         };
             
@@ -724,14 +783,17 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
     }
 
     addAutomaticAlgorithms = async (name: string, buffer) => {
+        addToRegularLogger("addAutomaticAlgorithms", {name,buffer})
         const error = this.validateIds({'name': name});
         if(error != ''){
+            addToErrorLogger("addAutomaticAlgorithms")
             return response(ERROR_STATUS.NAME_NOT_VALID, {error} );
         }
         const formattedName = name.endsWith('.py') ? name :  (name+'.py');
         const path = `automatic-algos/${formattedName}`
         await this.storageService.uploadBuffer(path, buffer, fileTypes.Text);
         if (await this.collectionsService.automaticAlgos().get(formattedName) != undefined){
+            addToErrorLogger("addAutomaticAlgorithms")
             return response(ERROR_STATUS.NAME_NOT_VALID,{ error: ERRORS.AlG_EXISTS });
         }
         else{
@@ -745,14 +807,17 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
     };
 
     addExperiment = async (experimentName, imageName, description)=>{
+        addToRegularLogger("addExperiment", {experimentName, imageName, description})
         const paramsList= {'experimentName': experimentName, 'imageName': imageName};
         const manuallyFormName = 'Manually';
 
         const error = this.validateIds(paramsList);
         if(error != ''){
+            addToErrorLogger("addExperiment")
             return response(ERROR_STATUS.NAME_NOT_VALID,{error} );
         }
         if(await this.collectionsService.experiments().get(experimentName)){
+            addToErrorLogger("addExperiment")
             return response(ERROR_STATUS.NAME_NOT_VALID,{ error: ERRORS.EXP_EXISTS});
         }
         await this.collectionsService.experiments().add(experimentName,{
@@ -772,12 +837,15 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
 
 
     addQuestion = async (experimentName,question, answers, correctAnswer)=>{
+        addToRegularLogger("addQuestion", {experimentName,question, answers, correctAnswer})
         const experiment = await this.collectionsService.experiments().get(experimentName);
         if(!experiment){
+            addToErrorLogger("addQuestion")
             return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
         }
         
         if(correctAnswer >4 || correctAnswer <0){
+            addToErrorLogger("addQuestion")
             return response(ERROR_STATUS.GENERAL_ERROR,{error: "the value of the correct answer is not valid"});
         }
         const experimentImageName = experiment.imageName;
@@ -793,8 +861,9 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
     }
 
     mergeSummaries = async(experimentName, mergedName, sammaries_details ) =>{
-
+        addToRegularLogger("mergeSummaries", {experimentName, mergedName, sammaries_details})
         if(sammaries_details.length ==0){
+            addToErrorLogger("mergeSummaries")
             return response(ERROR_STATUS.GENERAL_ERROR,{error: "no summaries input provided"});
         }
         var percents = sammaries_details.map(sammary => sammary.percentage)
@@ -803,6 +872,7 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
 
         const expriment = await this.collectionsService.experiments().get(experimentName)
         if(!expriment){
+            addToErrorLogger("mergeSummaries")
             return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
         }   
 
@@ -811,6 +881,7 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
 
         const {status, data: sent_tables}  = await this.sent_table_initializer(names,types, expriment);
         if(status !== 0){
+            addToErrorLogger("mergeSummaries")
             return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.SUMMARY_NOT_EXISTS});
         }
 
@@ -833,13 +904,17 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
 
 
     getSentencesWeights = async (experimentName:string) => {
+        addToRegularLogger("getSentencesWeights", {experimentName})
+
         const expriment = await this.collectionsService.experiments().get(experimentName)
         if(!expriment){
+            addToErrorLogger("getSentencesWeights")
             return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
         }
 
         const img= await this.collectionsService.images().get(expriment.imageName)
         if(!img){
+            addToErrorLogger("getSentencesWeights")
             return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.IM_NOT_EXISTS} );
         }
 
