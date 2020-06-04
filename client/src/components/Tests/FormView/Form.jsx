@@ -16,10 +16,14 @@ export function Form({
     const [fixations,setFixations] = useState(null);
     const [withTimeout,setWithTimeout] = useState(false);
 
-    if(withTimeout){
+    if(step === 1 && withTimeout){
+
         const {minutes} = form && form.summary;
         setWithTimeout(false);
-        setTimeout(() => nextStep() , minutes * 10 * 1000);
+        setTimeout(() => {
+            nextStep();
+            setWithTimeout(false);
+        } , minutes * 60 * 1000);
     }
 
     useEffect(() => {
