@@ -1,5 +1,5 @@
 import React,{useState,useEffect, useCallback} from 'react';
-import { Typography, Card, TextField, Button, Divider} from '@material-ui/core';
+import { Typography, Card, TextField, Button, Divider, Paper} from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import {
   useParams,
@@ -39,7 +39,13 @@ export function FormsManager(){
             Forms Manager
           </Typography>
           <Divider/>
-          <Autocomplete
+          <Paper  variant="outlined" style={{padding:'10px', marginTop:'10px'}}>
+            <Typography style={{color:'#555555'}}>
+              If form have not been tested in real life, you can still change it.
+            </Typography>
+          </Paper>
+          <div style={{display:'flex', alignItems:'flex-end', marginTop:'10px'}}>
+           <Autocomplete
             disabled={newForm}
             id="forms-manager-choose-form"
             style={{ width: '200px', marginRight:10 }}
@@ -72,7 +78,6 @@ export function FormsManager(){
             <Button 
               id='create-new-form-btn'
               style={{display: 'block'}}
-              color="primary"
               onClick={() => {
                 setNewForm(true)
                 setFormText('')
@@ -82,6 +87,7 @@ export function FormsManager(){
                   Create New Form
             </Button>
           }
+          </div>
         </Card>
         {(newForm || selectedForm) && <EditForm 
           form={selectedForm}

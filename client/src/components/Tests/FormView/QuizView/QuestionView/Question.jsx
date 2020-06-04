@@ -33,7 +33,8 @@ export function Question({
   return (
     <Card style={{ 
       padding:'20px',
-      minWidth:'500px'}}>
+      minWidth:'500px',
+      maxWidth:'600px'}}>
      
       <Typography style={{marginBottom:'15px'}}>{question.question}</Typography>
       {
@@ -44,9 +45,10 @@ export function Question({
             id={`question-ans-${index}`}
             key={`ans-${index}`} 
             style={{
+              cursor: onNext && 'pointer',
               minHeight:'55px',
               margin:'10px 0',
-              padding:'5px 5px 5px 15px',
+              padding:'5px 15px 5px 15px',
               display:'flex',
               alignItems:'center',
               backgroundColor: !onNext && question.correctAnswer === `${index}` && '#4bdd26'

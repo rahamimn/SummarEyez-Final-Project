@@ -2,7 +2,7 @@
 import React, {useState, useEffect} from 'react';
 import { QuizViewer } from '../../Viewers/quizViewer/quizViewer';
 import { Quiz } from './QuizView/Quiz';
-import { Card, Container, Button, Typography } from '@material-ui/core';
+import { Card, Container, Button, Typography, Paper } from '@material-ui/core';
 import { RankSentences } from '../../Viewers/RankViewer/RankViewer';
 import { DropzoneArea } from 'material-ui-dropzone';
 
@@ -17,9 +17,9 @@ export function Form({
     const [withTimeout,setWithTimeout] = useState(false);
 
     if(withTimeout){
-        const {minute} = form && form.summary;
+        const {minutes} = form && form.summary;
         setWithTimeout(false);
-        setTimeout(() => nextStep() , minute*10 * 1000);
+        setTimeout(() => nextStep() , minutes * 10 * 1000);
     }
 
     useEffect(() => {
@@ -31,13 +31,49 @@ export function Form({
 
     const StartForm = () => {
         const {withTimer, minutes} = form && form.summary;
+        const {isReadSummary , isFillAnswers, isRankSentences, withFixations } = form ;
         return (
         <StepPage onClick={nextStartTime}>
             <Typography variant="h4">New Task ahead</Typography>
-            {withTimer &&  
-                <Typography variant="h5">You have {minutes} minutes to read this summary</Typography>
-            }
-            <Typography variant="h5">press next to start</Typography>
+            <Paper variant="outlined" style={{padding:'10px', marginTop:'10px'}}>
+                <Typography >
+                    Some Instruction: <br/><br/> 
+                    Your next task includes the following missions: <br/> 
+                    <div style={{marginLeft:'8px'}}>
+                        {isReadSummary && <strong>- Reading Summary <br/></strong>}
+                        {isRankSentences && <strong>- Read a Summary and rank sentences weights<br/></strong>}
+                        {isFillAnswers && <strong>- Answer Questions<br/></strong>}
+                        {withFixations && <strong>- Upload System fixation files (for stuff) <br/></strong>}
+                    </div>
+
+                </Typography>
+                {isReadSummary && (withTimer || isFillAnswers) &&
+                     <Typography style={{marginTop:'10px'}}>
+                        regarding the Reading Summary mission:
+                        <ul>
+                        {withTimer && <li>
+                            For that you would have <strong>{minutes} minutes </strong>, <br/>
+                            you can proceed before the times ends. <br/>
+                            in any case after the time ends you will be start immediately the next mission.
+                        </li>}
+                        {isFillAnswers && <li><span>Please read carfully you would be asking about that text. (you will not have the option to go back) <br/></span></li> }
+                        </ul>
+                    </Typography>
+                }
+                {isFillAnswers &&  
+                    <Typography style={{marginTop:'10px'}}>
+                        regarding the Answer Questions mission:<br/>
+                        <ul>
+                            <li>
+                                please answer as soon as possible.
+                            </li>
+                        </ul>
+                    </Typography>
+            }           
+            </Paper>
+            <Typography style={{marginTop:'10px'}}>
+                press next to start
+            </Typography>
         </StepPage>
     )};
 
