@@ -55,6 +55,7 @@ export function AddCustomSummary() {
                 
             }
             <Button 
+                id="add-custom-summary-submit"
                 disabled={nameText === '' || rankSentences.length === 0}
                 onClick={
                     async () =>{

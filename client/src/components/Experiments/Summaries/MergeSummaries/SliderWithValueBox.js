@@ -53,7 +53,7 @@ const PrettoSlider = withStyles({
 
 
 export default function CustomizedSlider({
-  setPercentage,
+  setPercentage, rowIndex
 }) {
   const [value, setValue] = React.useState(0);
 
@@ -89,6 +89,7 @@ export default function CustomizedSlider({
      
       <div/>
           <Input
+            id={`slider-num-${rowIndex}`}
             value={value}
             margin="dense"
             onChange={handleInputChange}

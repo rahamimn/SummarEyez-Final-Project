@@ -125,14 +125,14 @@ function MainExperiments({permit}) {
             <ListItemText primary="Create New Form" secondary="edit and more" />
             </ListItem>
 
-            <ListItem button onClick={e => history.push(experimetPage('uploadFixations'))}>
+            <ListItem button id='upload-fixations-side-button' onClick={e => history.push(experimetPage('uploadFixations'))}>
               <ListItemIcon>
                 <DashboardIcon />
               </ListItemIcon>
               <ListItemText primary={'Upload Fixations'} />
             </ListItem>
 
-            <ListItem button id='main-experiments-add-custom-summary' onClick={e => history.push(experimetPage('addCustomSummary'))}>
+            <ListItem button id='add-custom-summary-side-button' onClick={e => history.push(experimetPage('addCustomSummary'))}>
               <ListItemIcon>
                 <AddToQueueIcon />
               </ListItemIcon>
