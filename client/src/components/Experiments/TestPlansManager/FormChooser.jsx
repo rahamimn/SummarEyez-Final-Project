@@ -1,11 +1,12 @@
 import React,{useState, useCallback} from 'react';
-import { TextField } from '@material-ui/core';
+import { TextField, Button } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
 import api from '../../../apiService';
 
 export function FormChooser({experiments, onSelectForm, dontRefresh, alreadyDone}){
     const [selectedExperiment,setSelectedExperiment] = useState(null);
+    const [selectedForm,setSelectedForm] = useState(null);
     const [forms,setForms] = useState([]);
 
     const [formText,setFormText] = useState('');
@@ -13,11 +14,11 @@ export function FormChooser({experiments, onSelectForm, dontRefresh, alreadyDone
 
     const fetchForms = useCallback(async(selectedExperiment) => {
       const forms = await api.getForms(selectedExperiment);
-      setForms(forms.data);
+      setForms(forms.data.filter(form => form.id !== 'Manually'));
     },[]);
 
     return (
-      <div style={{ display: 'flex', justifyContent:'space-between', flexGrow: 1}}>       
+      <div style={{ display: 'flex', flexGrow: 1, alignItems:'flex-end'}}>       
         <Autocomplete
           id="form-chooser-choose-experiment"
           style={{ width: '200px', marginRight:10 }}
@@ -55,13 +56,7 @@ export function FormChooser({experiments, onSelectForm, dontRefresh, alreadyDone
           autoHighlight
           getOptionLabel={option => option.id}
           onChange={(e,form) => {
-            if(!dontRefresh){
-              setSelectedExperiment(null);
-              setExperimentText('');
-              setFormText('');
-              setForms([]);
-            }
-            form && onSelectForm(selectedExperiment, form.data);
+             setSelectedForm(form && form.data)
           }}
           onInputChange={(e, value) => experimentText && setFormText(value)}
           inputValue={formText}
@@ -77,6 +72,20 @@ export function FormChooser({experiments, onSelectForm, dontRefresh, alreadyDone
               }}
             />
           )}/>
+          <Button 
+            disabled={!selectedForm || !selectedExperiment}
+            onClick={() =>{
+    
+              onSelectForm(selectedExperiment, selectedForm)
+              if(!dontRefresh){
+                setSelectedExperiment(null);
+                setExperimentText('');
+                setFormText('');
+                setForms([]);
+              }
+            }}>
+            OK
+          </Button>
       </div>
 
     )

@@ -73,9 +73,16 @@ export function CreateTestPlan({ setSelectedForm, onCreate, onClose}){
             </div>
           </div>
         {formsDetails.map(detail => (
-          <Paper style={{padding:'10px', width:'500px', marginTop:'10px', display:'flex'}} variant="outlined">
-              <Typography style={{width:'250px', padding:'0 5px'}}>{detail.experimentName}</Typography>
-              <Typography>{detail.form.name}</Typography>
+          <Paper style={{padding:'10px', width:'500px', marginTop:'10px', display:'flex', justifyContent:'space-between', alignItems:'center'}} variant="outlined">
+              <div style={{display:'flex'}}>
+                <Typography style={{width: '180px'}}>{detail.experimentName}</Typography>
+                <Typography style={{cursor: 'pointer'}} onClick={() => setSelectedForm({...detail.form, experimentName: detail.experimentName})}>{detail.form.name}</Typography>
+              </div>
+              <Button onClick={() => { 
+                setFormsDetails(formsDetails.filter((d) => !(
+                  d.experimentName === detail.experimentName &&
+                  d.form === detail.form) ))
+              }}>Remove</Button>
           </Paper>)
         )}
         <Paper style={{padding:'15px', width:'500px', marginTop:'10px'}} variant="outlined">
