@@ -91,7 +91,7 @@ export const TestsPoolMain = () =>  {
             <Divider/>
             <div style={{width: '400px' }}>
                 <FormChooser 
-                    dontRefresh 
+                    withoutButton 
                     alreadyDone
                     experiments={experiments} 
                     onSelectForm={(expName,form) => {
