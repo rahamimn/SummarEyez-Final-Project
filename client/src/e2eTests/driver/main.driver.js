@@ -108,7 +108,11 @@ export class Driver {
             testPlan: async () => 
                 await this.click("main-experiments-test-plans"),
             testPool: async () => 
-                await this.click("main-experiments-test-pool")
+                await this.click("main-experiments-test-pool"),
+            uploadFixation: async () => 
+                await this.click("upload-fixations-side-button"),
+            addCustomSummary: async () => 
+                await this.click("add-custom-summary-side-button"),
         }
     };
 
@@ -136,6 +140,16 @@ export class Driver {
         },
         submit: async () => this.click("upload-algorithm-button")
     }
+
+    UploadFixationDriver = {
+        insertName: async (name) => this.setValue('insert-fixation-name',name),
+        upload: async (filePath) => {
+            const uploadInput = await this.browser.$(`input[type="file"]`);
+            await uploadInput.setValue(filePath);
+        },
+        submit: async () => this.click("upload-fixation-button")
+    }
+
 
     EditFormDriver = {
         clickSwitch: {
@@ -167,14 +181,17 @@ export class Driver {
             auto: async () => this.click('summaries-auto-switch'),
             eyes: async () => this.click('summaries-eyes-switch'),
             merge: async () => this.click('summaries-merge-switch'),
+            custom: async () => this.click('summaries-custom-switch'),
         },
-        nextPage: async () => (await this.browser.$('[aria-label="Next page"]')).click(),
+        nextPage: async (summaryType) => (await this.browser.$(`#expansion-panel-${summaryType} [aria-label="Next page"]`)).click(),
         clickOnRowWithName: async (name) => 
             (await this.browser.$(`[id$="${name}-row"]`)).click(),
 
         toolbarActions: {
             run: async () => this.click("main-toolbar-run-alg"),
-            view: async () => this.click("main-toolbar-view")
+            view: async () => this.click("main-toolbar-view"),
+            merge: async () => this.click("main-toolbar-merge"),
+            layers: async () => this.click("main-toolbar-layers")
         }
         
     }

@@ -45,7 +45,8 @@ export default function SimpleTable({
               </TableCell>
               <TableCell align="right">
                         <Slider
-                            setPercentage={setPercentageOf(index)}                          
+                            setPercentage={setPercentageOf(index)}
+                            rowIndex={index}
                             />
               </TableCell>
             </TableRow>

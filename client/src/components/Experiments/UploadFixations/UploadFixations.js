@@ -86,7 +86,7 @@ export class UploadFixations extends Component {
                 value={this.state.fixationName}
                 style={{ marginBottom: '20px' }}
                 onChange={this.handleChangeName}
-                id="standard-basic"
+                id="insert-fixation-name"
                 label="Insert fixation name"
               />
 
@@ -98,6 +98,7 @@ export class UploadFixations extends Component {
               />
               
               <Button
+                id="upload-fixation-button"
                 style={{ marginTop: '20px' }}
                 disabled={this.state.files.length === 0 || !this.state.fixationName}
                 variant="contained"
@@ -123,14 +124,14 @@ export class UploadFixations extends Component {
           anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
           open={this.state.apiAlertShows}
           onClose={this.handleCloseAlert}>
-          <Alert variant="filled" severity="error" onClose={this.handleCloseAlert} > Error has occured in system</Alert>
+          <Alert id="error-alert-upload-fixation" variant="filled" severity="error" onClose={this.handleCloseAlert} > Error has occured in system</Alert>
         </Snackbar>
 
         <Snackbar
           anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
           open={this.state.successShows}
           onClose={this.handleSuccessAlert}>
-          <Alert variant="filled" severity="success" onClose={this.handleSuccessAlert}> Uploaded Successfully </Alert>
+          <Alert id="success-alert-upload-fixation" variant="filled" severity="success" onClose={this.handleSuccessAlert}> Uploaded Successfully </Alert>
         </Snackbar>
       </Card>
 

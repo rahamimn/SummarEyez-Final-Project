@@ -28,7 +28,9 @@ export const RankSentences = ({
                     }}
                     id="minimumWeight"
                     label="minimum weight" />
-                <Button onClick={
+                <Button
+                    id="ok-minimum-weight"
+                    onClick={
                         () => {
                             rankSentences[sentIndex].weight = val
                             rankSentences[sentIndex].normalized_weight = val;

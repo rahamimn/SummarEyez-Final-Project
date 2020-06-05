@@ -95,12 +95,13 @@ export default function MergeDialog({
                 value={mergeName}
                 style={{marginBottom: '10px'}}
                 onChange={handleChangeName}
-                id="standard-basic"
+                id="submit-merged-summary-name-input"
                 label="Type new name..."
                 />
 
 
           <Button
+            id="create-merged-summary-btn"
             color="primary"
             disabled={isDisabled}
             onClick={

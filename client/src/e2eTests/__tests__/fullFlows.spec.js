@@ -141,7 +141,7 @@ describe('Manage Form', () => {
         await SummariesDriver.switchTable.auto();
 
         for(let i = 0; i < 10; i++){ 
-            await SummariesDriver.nextPage();
+            await SummariesDriver.nextPage('auto');
         }
 
         await SummariesDriver.clickOnRowWithName(newAlgoName+'.py');

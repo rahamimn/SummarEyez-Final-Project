@@ -107,11 +107,13 @@ const useToolbarStyles = makeStyles(theme => ({
         ]}
 
         {allSelected.length > 1 && disabled.length === 0 && [
-            <Button key="3" color="inherit" onClick={ ()=> setIsMergeOpen(true)  }>Merge</Button>,
-            <Button key="4" color="inherit" onClick={ () => {
-              window.open(`/article-layers/${experimentName}?${stringifySummaries()}`,'_blank')
-            }}
-            >Layers</Button>
+            <Button 
+              id="main-toolbar-merge" key="3" color="inherit" onClick={ ()=> setIsMergeOpen(true)}>
+                Merge</Button>,
+            <Button 
+              id="main-toolbar-layers"key="4" color="inherit" onClick={ () => {
+              window.open(`/article-layers/${experimentName}?${stringifySummaries()}`,'_blank')}}>
+                Layers</Button>
         ]}
       </Toolbar>
       {isMergeOpen && 

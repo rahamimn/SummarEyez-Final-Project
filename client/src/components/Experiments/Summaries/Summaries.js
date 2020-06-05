@@ -74,7 +74,7 @@ export function Summaries() {
           merged: mergedSelected,
           custom: customSelected
         }} />
-      <ExpansionPanel>
+      <ExpansionPanel id="expansion-panel-auto">
         <ExpansionPanelSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
@@ -90,7 +90,7 @@ export function Summaries() {
             rows={summaries.auto}/>
         </ExpansionPanelDetails>
       </ExpansionPanel>
-      <ExpansionPanel>
+      <ExpansionPanel id="expansion-panel-eyes">
         <ExpansionPanelSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel2a-content"
@@ -106,7 +106,7 @@ export function Summaries() {
             rows={summaries.eyes}/>
         </ExpansionPanelDetails>
       </ExpansionPanel>
-      <ExpansionPanel>
+      <ExpansionPanel id="expansion-panel-custom">
         <ExpansionPanelSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel2a-content"
@@ -122,7 +122,7 @@ export function Summaries() {
             rows={summaries.custom}/>
         </ExpansionPanelDetails>
       </ExpansionPanel>
-      <ExpansionPanel>
+      <ExpansionPanel id="expansion-panel-merged">
         <ExpansionPanelSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel2a-content"
