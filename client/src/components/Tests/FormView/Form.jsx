@@ -93,7 +93,7 @@ export function Form({
     )
 
     const UploadFixations = () => (
-        <StepPage onClick={() => nextStep()}>
+        <StepPage onClick={() => nextStep()} disabled={!fixations}>
             <DropzoneArea
                 initialFiles={[fixations && URL.createObjectURL(fixations)].filter(f=>f)}
                 filesLimit={1}
@@ -164,10 +164,10 @@ export function Form({
 
 const addWeight = (summary) => summary.map(sent => ({...sent, weight: 0, normalized_weight:0})); 
 
-const StepPage = ({children, onClick}) => (
+const StepPage = ({children, onClick, disabled}) => (
     <div style={{width: '800px'}}>
         {children}
         {onClick && <div style={{float:'right'}}>
-            <Button id="next-step-form" onClick={onClick}> Next</Button>
+            <Button disabled={disabled} id="next-step-form" onClick={onClick}> Next</Button>
         </div>}
     </div>);
