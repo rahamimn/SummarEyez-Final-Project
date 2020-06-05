@@ -18,7 +18,7 @@ export default function Tests_TabPanel() {
   useEffect(() => {fetchTestPlans()},[fetchTestPlans]);
 
   return (
-    <div style={{display:'flex', flexDirection:'column', justifyContent:'space-between', height:'40vh'}}>
+    <div style={{display:'flex', flexDirection:'column', justifyContent:'space-between', height:'40vh', width:'100%'}}>
       <div>
         <div>
           <Typography style={{color:'#aaaaaa'}}>You may choose specific test or choose one later</Typography>

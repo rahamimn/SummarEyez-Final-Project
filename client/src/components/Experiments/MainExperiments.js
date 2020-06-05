@@ -145,7 +145,7 @@ function MainExperiments({permit}) {
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <TopNav isExperimentMode experimentName={experimentName} permit={permit}/>
+      <TopNav experimentName={experimentName}/>
       <nav className={classes.drawer} aria-label="mailbox folders">
         <Hidden xsDown implementation="css">
           <Drawer

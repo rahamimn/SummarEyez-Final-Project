@@ -23,15 +23,13 @@ const useStyle = makeStyles(theme => ({
 
 export const TopNav = ({
     experimentName,
-    isExperimentMode,
-    permit
 }) => {
     const history = useHistory();
     const classes = useStyle();
     const [showModeSelection, setShowModeSelection] = useState(false);
 
     return <div>
-      <AppBar position="fixed" className={isExperimentMode ? classes.appBarWithDrawer: 'ffff'}>
+      <AppBar position="fixed" className={classes.appBarWithDrawer}>
       <Toolbar>
         <div style={{
           width: '100%',
@@ -51,9 +49,16 @@ export const TopNav = ({
           </Typography>}
         </div>
         <div>
-          {isExperimentMode && <Button style={{marginRight: '8px'}} endIcon={<LibraryAddIcon/>} color="inherit" onClick={() => history.push(
-            experimentName ? `/experiments/${experimentName}/new` : '/experiments-new/new'
-            )}>New Experiment</Button>}
+          <Button 
+            style={{marginRight: '8px'}} 
+            endIcon={<LibraryAddIcon/>} 
+            color="inherit" 
+            onClick={() => history.push(
+              experimentName ? 
+                `/experiments/${experimentName}/new` :
+                '/experiments-new/new'
+            )}>New Experiment
+          </Button>
           <Button id="top-nav-mode" endIcon={<OpenInBrowserIcon/>} color="inherit" onClick={() => setShowModeSelection(true)}>Mode</Button>
         </div>
         </div>
@@ -61,9 +66,7 @@ export const TopNav = ({
       
     </AppBar>
     {showModeSelection && <WelcomeDialog 
-        experimentName={experimentName}
-        onClose={() => setShowModeSelection(false)}
-        permit={permit}/>
+        onClose={() => setShowModeSelection(false)}/>
         }
   </div>
   

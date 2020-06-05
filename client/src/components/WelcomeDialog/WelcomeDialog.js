@@ -12,9 +12,10 @@ import TestsTabPanel from './Tests_TabPanel';
 export default function WelcomeDialog({
   onClose,
   permit,
+  withNewTab
 }) {
   const [value, setValue] = React.useState(0);
-
+  const indexTab = (index) =>  withNewTab ? index : index - 1; 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -37,22 +38,22 @@ export default function WelcomeDialog({
             textColor="primary"
             aria-label="scrollable force tabs example"
           >
-            <Tab label="Create New" {...a11yProps(0)} />
+            {withNewTab && <Tab label="Create New" {...a11yProps(0)} />}
             <Tab id="welcome dialog-choose" label="Choose Existing" {...a11yProps(1)} />
             <Tab label="Tests" {...a11yProps(2)} />
           </Tabs>
         </AppBar>
 
-        <div style={{minHeight:'250px', maxWidth:'470px'}}>
-          <TabPanel  value={value} index={0}>
+        <div style={{minHeight:'250px',width:'470px'}}>
+          {withNewTab && <TabPanel  value={value} index={0}>
             <CreateNewExpTabPanel permit={permit} onClose={onClose}/>
-          </TabPanel>
+          </TabPanel>}
 
-          <TabPanel value={value} index={1}>
+          <TabPanel value={value} index={indexTab(1)}>
             <ChooseFromExistingTabPanel permit={permit} onClose={onClose}/>
           </TabPanel>
 
-          <TabPanel  value={value} index={2}>
+          <TabPanel  value={value} index={indexTab(2)}>
             <TestsTabPanel/>
           </TabPanel>
         </div>

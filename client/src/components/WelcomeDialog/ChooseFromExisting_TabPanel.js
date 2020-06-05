@@ -66,7 +66,7 @@ export default function ChooseFromExisting_TabPanel({
 
         />
 
-        <TextField
+        {permit &&<TextField
           error={isKeyError}
           helperText=""
           autoFocus
@@ -77,7 +77,7 @@ export default function ChooseFromExisting_TabPanel({
           onChange={(e) => setPermKey(e.target.value)}
           type="password"
           fullWidth
-        />
+        />}
       </div>
       <div style={{
         display: 'flex',
@@ -93,7 +93,7 @@ export default function ChooseFromExisting_TabPanel({
           style={{ marginRight: '10px' }}
           onClick={() => {
             onClose && onClose();
-            validate() ?
+            (!permit || validate()) ?
               history.push(`/experiments/${experiment.id}`) :
               setKeyError(true);
           }}

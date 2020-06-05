@@ -27,13 +27,13 @@ function Main() {
         </Route>
         <Route path="/experiments-new" render={ () => {
           if(experimentsPermission) {
-            return <MainExperiments permit={permit} />
+            return <MainExperiments/>
           }
           return <Redirect to={{pathname: "/"}}/>
         }}/>
         <Route path="/experiments/:experimentName" render={ () => {
           if(experimentsPermission) {
-            return <MainExperiments permit={permit} />
+            return <MainExperiments/>
           }
           return <Redirect to={{pathname: "/"}}/>
         }}/>
@@ -51,7 +51,7 @@ function Main() {
             height: '100vh',
             backgroundImage:"url(/background.jpg)"
             }}>
-              <WelcomeDialog permit={permit}/>
+              <WelcomeDialog withNewTab permit={permit}/>
             </div>
         </Route>
       </Switch>   

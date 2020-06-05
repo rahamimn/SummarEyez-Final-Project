@@ -89,7 +89,6 @@ export function TestPlanManager(){
         }
         {isCreating &&
           <CreateTestPlan
-            openFormEdit
             setSelectedForm={setSelectedForm}
             onClose={() =>  setIsCreating(false)}
             onCreate={async () => {
