@@ -100,7 +100,7 @@ export function TestPlanManager(){
       </Card>
       {(selectedForm) && <EditForm 
         form={selectedForm}
-        onSave={() =>{}}
+        onSave={() => setSelectedForm(null)}
         experimentName={selectedForm.experimentName}
         />
       }

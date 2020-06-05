@@ -28,6 +28,11 @@ export function CreateTestPlan({ setSelectedForm, onCreate, onClose}){
       setExperiments(experiments.data.map(exp => exp.id));
     },[]);
 
+    const fetchForm = async (experimentName, formId) => {
+      const res = await api.getForm(experimentName, formId, true);
+      setSelectedForm({...res.data,experimentName});
+    }
+
     useEffect(() => {
         fetchExperiments();
     },[fetchExperiments]);
@@ -76,7 +81,10 @@ export function CreateTestPlan({ setSelectedForm, onCreate, onClose}){
           <Paper style={{padding:'10px', width:'500px', marginTop:'10px', display:'flex', justifyContent:'space-between', alignItems:'center'}} variant="outlined">
               <div style={{display:'flex'}}>
                 <Typography style={{width: '180px'}}>{detail.experimentName}</Typography>
-                <Typography style={{cursor: 'pointer'}} onClick={() => setSelectedForm({...detail.form, experimentName: detail.experimentName})}>{detail.form.name}</Typography>
+                <Typography style={{cursor: 'pointer'}} onClick={() => {
+                  fetchForm(detail.experimentName, detail.form.name)
+                } 
+                  }>{detail.form.name}</Typography>
               </div>
               <Button onClick={() => { 
                 setSelectedForm(null);
