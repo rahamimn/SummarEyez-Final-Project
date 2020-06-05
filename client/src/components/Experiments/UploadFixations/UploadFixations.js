@@ -70,7 +70,7 @@ export class UploadFixations extends Component {
         <Paper  variant="outlined" style={{padding:'10px', marginTop:'10px'}}>
           <Typography style={{color:'#555555'}}>
             The fixations uploaded into form named "Manually" you can see result in All-Summaries page in eyes section, <br/>
-            Or you can See in Test Pool just choose "Manually". 
+            Or you can See in Test Results just choose "Manually". 
           </Typography>
         </Paper>
         <div>

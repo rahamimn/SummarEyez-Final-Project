@@ -5,3 +5,6 @@ prototype/docs
 dist
 serviceAcountKey.json
 automatic-algorithms
+summarEyez_failier_logger.log
+summarEyez_system_error_logger.log
+summarEyez_system_logger.log
