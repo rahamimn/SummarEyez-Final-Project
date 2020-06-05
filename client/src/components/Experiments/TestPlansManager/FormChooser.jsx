@@ -4,7 +4,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 
 import api from '../../../apiService';
 
-export function FormChooser({experiments, onSelectForm, withoutButton, alreadyDone}){
+export function FormChooser({experiments, onSelectForm, withoutButton, alreadyDone, withManually}){
     const [selectedExperiment,setSelectedExperiment] = useState(null);
     const [selectedForm,setSelectedForm] = useState(null);
     const [forms,setForms] = useState([]);
@@ -14,7 +14,10 @@ export function FormChooser({experiments, onSelectForm, withoutButton, alreadyDo
 
     const fetchForms = useCallback(async(selectedExperiment) => {
       const forms = await api.getForms(selectedExperiment);
-      setForms(forms.data.filter(form => form.id !== 'Manually'));
+      setForms(forms.data.filter(form => 
+        (withManually || form.id !== 'Manually') &&
+        (!alreadyDone || !form.data.editable)
+      ));
     },[]);
 
     return (
@@ -52,7 +55,7 @@ export function FormChooser({experiments, onSelectForm, withoutButton, alreadyDo
         <Autocomplete
           id="form-chooser-choose-form"
           style={{ width: '200px', marginRight:10 }}
-          options={alreadyDone ? forms.filter(form => !form.data.editable): forms}
+          options={forms}
           autoHighlight
           getOptionLabel={option => option.id}
           onChange={(e,form) => {

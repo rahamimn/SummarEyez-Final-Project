@@ -93,6 +93,7 @@ export const TestsPoolMain = () =>  {
                 <FormChooser 
                     withoutButton 
                     alreadyDone
+                    withManually
                     experiments={experiments} 
                     onSelectForm={(expName,form) => {
                         fetchTests(expName,form);
