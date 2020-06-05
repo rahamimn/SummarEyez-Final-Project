@@ -16,10 +16,10 @@ export function ChooseSummary({
   const genOnSelect = form => () => setSelected(form);
 
   return (
-    <div>
+  <div style={{width:'970px'}}>
         <Typography variant="h4">{text}</Typography>
         <Divider/>
-        <div style={{display:'flex', flexWrap:'nowrap'}}>
+        <div style={{display:'flex', flexWrap:'wrap', marginTop:'20px'}}>
             {forms
               .filter(form => form.isReadSummary)
               .map(form => (
