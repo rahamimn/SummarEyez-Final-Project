@@ -874,7 +874,13 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
         if(!expriment){
             addToErrorLogger("mergeSummaries")
             return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{error: ERRORS.EXP_NOT_EXISTS} );
-        }   
+        } 
+        
+       const mergedSummary = await this.collectionsService.experiments().mergedSentOf(experimentName).get(mergedName);
+        if(mergedSummary){
+            addToErrorLogger("mergeSummaries")
+            return response(ERROR_STATUS.NAME_NOT_VALID,{ error: ERRORS.MERGED_SUMMARY_EXISTS});
+        }
 
         const image = await this.collectionsService.images().get(expriment.imageName)
         const base_sent_table = await this.storageService.downloadToBuffer(image.base_sent_table_path);

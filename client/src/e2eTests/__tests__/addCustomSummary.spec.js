@@ -29,12 +29,10 @@ describe('Add Custom Summary', () => {
     });
 
     it('success - create custom summary and see results', async () => {
+        const newSummaryName = chance.word();
 
         await experimentDriver.navigateTo.addCustomSummary();
-
-        const newSummaryName = chance.word();
-        const inputSummaryName = await browser.$('#add-custom-summary-name-input');
-        await inputSummaryName.setValue(newSummaryName);
+        await driver.setValue('add-custom-summary-name-input', newSummaryName);
 
         const sentence1 = await browser.$('//body/div/div/div/div/main/div[2]/div[2]/div[2]/div/p[1]/span/span');
         await sentence1.click()
@@ -54,8 +52,8 @@ describe('Add Custom Summary', () => {
 
         await browser.pause(1000);
 
-        const addButton = await browser.$('#add-custom-summary-submit');
-        await addButton.click()
+
+        await driver.click('add-custom-summary-submit');
 
         await browser.pause(1000);
 
@@ -78,41 +76,27 @@ describe('Add Custom Summary', () => {
         await browser.pause(2000);
     });
 
+    const addCustomSummaryWithName = async (summaryName) => {
+        await experimentDriver.navigateTo.addCustomSummary();
+        await driver.setValue('add-custom-summary-name-input', summaryName);
+        await browser.pause(1000);
+        await driver.click('add-custom-summary-submit');
+        await browser.pause(1000);
+    };
+
+    const setWeightValue = async () => {
+        await driver.setValue('minimumWeight', chance.floating({ min: 0.1, max: 0.9, fixed: 1 }));
+        await driver.click('ok-minimum-weight');
+    }
+
     it('fail - name exists', async () => {
+        const summaryName = chance.word();
 
-        await experimentDriver.navigateTo.addCustomSummary();
-
-        const mySummaryName = chance.word();
-        const inputSummaryName = await browser.$('#submit-merged-summary-name-input');
-        await inputSummaryName.setValue(mySummaryName);
-
-        const addButton = await browser.$('#add-custom-summary-submit');
-        await addButton.click()
-
-        await browser.pause(1000);
-
-        await experimentDriver.navigateTo.addCustomSummary();
-
-        const inputSummaryName2 = await browser.$('#add-custom-summary-name-input');
-        await inputSummaryName2.setValue(mySummaryName);
-
-        await browser.pause(1000);
-
-        const addButton2 = await browser.$('#add-custom-summary-submit');
-        await addButton2.click()
-
-        await browser.pause(1000);
+        await addCustomSummaryWithName(summaryName);
+        await addCustomSummaryWithName(summaryName);
 
         const ErrorText = await browser.$('#add-custom-summary-name-input-helper-text');
         expect(await ErrorText.getText()).toBe('name error, already exists or wrong characters')
 
     });
 })
-
-async function setWeightValue(browser) {
-    const minWeightBox = await browser.$('#minimumWeight');
-    await minWeightBox.setValue(chance.floating({ min: 0.1, max: 0.9, fixed: 1 }));
-    const okButton = await browser.$('#ok-minimum-weight');
-    await okButton.click();
-}
-

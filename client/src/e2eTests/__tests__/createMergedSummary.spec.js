@@ -1,8 +1,7 @@
 
 const { remote } = require('webdriverio');
-import {answerQuestion, DEFAULT_EXP_NAME, Driver} from '../driver/main.driver';
+import { DEFAULT_EXP_NAME, Driver} from '../driver/main.driver';
 import Chance from 'chance';
-import path from 'path';
 const chance = new Chance();
 
 jest.setTimeout(100000);
@@ -29,36 +28,32 @@ describe('Create Merged Summary', () => {
         await browser.deleteSession()
     });
 
-
-
-    it('success - create merged summary and see results', async () => {
-
-        await experimentDriver.navigateTo.summaries();
+    const addMergedSummary = async (name) => {
+        const val0 = chance.integer({min:0, max:100});
 
         const SummariesDriver = driver.SummariesDriver;
 
+        await experimentDriver.navigateTo.summaries();
+  
         await SummariesDriver.switchTable.auto();
-
         await SummariesDriver.clickOnRowWithName('algo1.py');
         await SummariesDriver.clickOnRowWithName('algo1b.py');
         await SummariesDriver.toolbarActions.merge();
 
-        const val0 = chance.integer({min:0, max:100});
-        const box0 = await browser.$('#slider-num-0');
-        await box0.setValue(val0);
+        await driver.setValue('slider-num-0',val0)
+        await driver.setValue('slider-num-1',100-val0)
 
-        const box1 = await browser.$('#slider-num-1');
-        await box1.setValue(100-val0);
+        await driver.setValue('submit-merged-summary-name-input',name)
+        await driver.click('create-merged-summary-btn');
+        await browser.pause(1000);
+    };
 
+    it('success - create merged summary and see results', async () => {
         const newSummaryName = chance.word();
-        const inputSummaryName = await browser.$('#submit-merged-summary-name-input');
-        await inputSummaryName.setValue(newSummaryName);
+        const SummariesDriver = driver.SummariesDriver;
 
-        const createButton = await browser.$('#create-merged-summary-btn');
-        await createButton.click()
-
-        await browser.pause(10000);
-
+        await addMergedSummary(newSummaryName);
+        await browser.pause(4000);
         await SummariesDriver.switchTable.merge();
 
         for(let i = 0; i < 10; i++){ 
@@ -74,47 +69,14 @@ describe('Create Merged Summary', () => {
         await browser.pause(2000);
     });
 
-    // it('fail - name exists', async () => {
+    it('fail - name exists', async () => {
+        const aSummaryName = chance.word();
 
-    //     await experimentDriver.navigateTo.summaries();
+        await addMergedSummary(aSummaryName);
+        await browser.pause(4000);
+        await addMergedSummary(aSummaryName);
 
-    //     const SummariesDriver = driver.SummariesDriver;
-
-    //     await SummariesDriver.switchTable.auto();
-
-    //     await SummariesDriver.clickOnRowWithName('algo1.py');
-    //     await SummariesDriver.clickOnRowWithName('algo1b.py');
-    //     await SummariesDriver.toolbarActions.merge();
-
-    //     const box0 = await browser.$('#slider-num-0');
-    //     await box0.setValue(100);
-
-    //     const box1 = await browser.$('#slider-num-1');
-    //     await box1.setValue(0);
-
-    //     const mySummaryName = chance.word();
-    //     const inputSummaryName = await browser.$('#submit-merged-summary-name-input');
-    //     await inputSummaryName.setValue(mySummaryName);
-
-    //     const createButton = await browser.$('#create-merged-summary-btn');
-    //     await createButton.click()
-
-    //     await browser.pause(10000);
-
-    //     await SummariesDriver.toolbarActions.merge();
-
-    //     const box0 = await browser.$('#slider-num-0');
-    //     await box0.setValue(100);
-
-    //     const box1 = await browser.$('#slider-num-1');
-    //     await box1.setValue(0);
-
-    //     const inputSummaryName2 = await browser.$('#submit-merged-summary-name-input');
-    //     await inputSummaryName2.setValue(mySummaryName);
-
-    //     const createButton = await browser.$('#create-merged-summary-btn');
-    //     await createButton.click()
-
-    //     //catch error 
-    // });
+        const ErrorText = await browser.$('#submit-merged-summary-name-input-helper-text');
+        expect(await ErrorText.getText()).toBe('invalid name')
+    });
 })

@@ -77,6 +77,7 @@ export function FormChooser({experiments, onSelectForm, withoutButton, alreadyDo
           )}/>
           {!withoutButton &&
             <Button 
+              id="form-chooser-ok"
               disabled={!selectedForm || !selectedExperiment}
               onClick={() =>{
       

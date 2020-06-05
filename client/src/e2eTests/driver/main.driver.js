@@ -33,25 +33,6 @@ const chooseExperiment = async (index, browser) => {
     await option.click();
 };
 
-const selectFromDropdownByIndex = async (index,autoCompleteId,browser) => {
-    
-    const dropdown = await browser.$(`#${autoCompleteId}-input`);
-    await dropdown.click();
-
-    const option = await browser.$(`#${autoCompleteId}-option-${index}`);
-    await option.click();
-};
-
-
-
-const fillPasswordAndGo = async (password) => {
-    const inputElem = await browser.$('#welcome-dialog-permission-input');
-    await inputElem.setValue(`${password}`);
-
-    const submitBtn = await browser.$('#welcome-dialog-new-experiment');
-    await submitBtn.click();
-} 
-
 
 export const answerQuestion = async (browser,ans) => {
     const answer = await browser.$(`#question-ans-${ans}`);
@@ -120,7 +101,8 @@ export class Driver {
         selectForm: async (experimentName,formName) => {
             await this.selectFromDropdownByName(experimentName,'form-chooser-choose-experiment');
             await this.selectFromDropdownByName(formName,'form-chooser-choose-form');
-        }
+        },
+        clickOk: async () => this.click('form-chooser-ok')
     };
 
     TestPlanDriver = {
@@ -128,6 +110,7 @@ export class Driver {
             await this.setValue('create-test-plan-name',testPlanName )
             await this.click('create-test-plan-add-more');
             await this.FormChooserDriver.selectForm(experimentName,formName);
+            await this.FormChooserDriver.clickOk();
             await this.click('create-test-plan-submit');
         }
     };
@@ -154,6 +137,7 @@ export class Driver {
     EditFormDriver = {
         clickSwitch: {
             questions: async() => this.click('questions-switch'),
+            readSummary: async() => this.click('read-summary-switch'),
             uploadFixations: async() => this.click('upload-fixations-switch'),
             rankSentences: async() => this.click('rank-sentences-switch'),
         },

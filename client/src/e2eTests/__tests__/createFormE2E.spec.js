@@ -1,12 +1,13 @@
 
 const { remote } = require('webdriverio');
-import {enterExp} from '../driver/main.driver';
+import {Driver, DEFAULT_EXP_NAME} from '../driver/main.driver';
 import Chance from 'chance';
 const chance = new Chance();
 
 jest.setTimeout(100000);
 describe('Manage Form', () => {
     let browser;
+    let driver,experimentDriver;
     beforeAll(async ()=>{
         browser = await remote({
             logLevel: 'debug',
@@ -14,43 +15,47 @@ describe('Manage Form', () => {
                 browserName: 'chrome'
             }
         })
+        driver = new Driver(browser);
+        experimentDriver = driver.expPageDriver;
 
     })
 
+
     beforeEach(async () => {
-        await browser.url('localhost:3000')
-        await enterExp(0,browser);
+        await experimentDriver.navigateToExperimentPage(DEFAULT_EXP_NAME);
     });
 
     afterAll(async () => {
         await browser.deleteSession()
     });
 
-    it('success - create new form',async () => {
-        
+    const createForm = async (name) => {
         const testFormManagerButton = await browser.$('#test-form-manager-side-button');
         await testFormManagerButton.click();
 
         const createNewFormButton = await browser.$('#create-new-form-btn');
         await createNewFormButton.click();
 
-        const newFormName = chance.word();
-        const formNameBox = await browser.$('#form-name');
-        await formNameBox.setValue(newFormName);
+        await driver.setValue('form-name',name);
 
-        const uploadFixationButton = await browser.$('#upload-fixations-switch');
-        await uploadFixationButton.click();
+        await driver.EditFormDriver.clickSwitch.questions();
+        await driver.EditFormDriver.clickSwitch.readSummary();
+        await driver.EditFormDriver.clickSwitch.rankSentences();
+        await driver.EditFormDriver.clickSwitch.uploadFixations();
 
-        const rankSentencesButton = await browser.$('#rank-sentences-switch');
-        await rankSentencesButton.click();
+        await browser.pause(1000);
 
-        const createFormSubmitBtn = await browser.$('#create-form-submit-btn');
-        await createFormSubmitBtn.click();
+        await driver.click('create-form-submit-btn');
         
         await browser.pause(1000);
-        
-        const formsDropdown = await browser.$('#forms-manager-choose-form');
-        await formsDropdown.click();
+    };
+
+    it('success - create new form',async () => {
+        const newFormName = chance.word();
+
+        await createForm(newFormName);
+
+        await driver.click('forms-manager-choose-form');
 
         const options = await browser.$$(`[id^=forms-manager-choose-form-option-]`);
     
@@ -59,35 +64,11 @@ describe('Manage Form', () => {
     });
 
     it('fail - form name exists',async () => {
-        const testFormManagerButton = await browser.$('#test-form-manager-side-button');
-        await testFormManagerButton.click();
-
-        const createNewFormButton = await browser.$('#create-new-form-btn');
-        await createNewFormButton.click();
-
         const existingFormName = 'formA1';
-        const formNameBox = await browser.$('#form-name');
-        await formNameBox.setValue(existingFormName);
 
-        const uploadFixationButton = await browser.$('#upload-fixations-switch');
-        await uploadFixationButton.click();
-
-        const rankSentencesButton = await browser.$('#rank-sentences-switch');
-        await rankSentencesButton.click();
-
-        const createFormSubmitBtn = await browser.$('#create-form-submit-btn');
-        await createFormSubmitBtn.click();
-
+        await createForm(existingFormName);
+      
         const ErrorText = await browser.$('#form-name-helper-text');
         expect(await ErrorText.getText()).toBe('Name empty, or already exsits')
     });
-
-
-    const chooseForm = async (index) => {
-        const imageDropdown = await browser.$('#forms-manager-choose-form');
-        await imageDropdown.click();
-
-        const option = await browser.$(`#forms-manager-choose-form-option-${index}`);
-        await option.click();
-    };
 })

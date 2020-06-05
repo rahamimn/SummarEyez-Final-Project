@@ -29,16 +29,17 @@ describe('Manage Form', () => {
         await browser.deleteSession()
     });
 
-
-
     const createForm = async (newFormName,questions)=>{
         await experimentDriver.navigateTo.testManager();
         await driver.click("create-new-form-btn");
         await driver.setValue("form-name",newFormName);
 
+        await driver.EditFormDriver.clickSwitch.readSummary();
+
         await driver.EditFormDriver.createQuestion(questions[0]);
         await driver.EditFormDriver.createQuestion(questions[1]);
-        
+
+     
         await browser.pause(1000);
         
         await driver.click("create-form-submit-btn"); 
@@ -62,6 +63,7 @@ describe('Manage Form', () => {
     const performTest = async (studentId,newTestPlanName,questions)=>{
         await browser.url(`localhost:3000/tests/${newTestPlanName}`);
         await driver.setValue('main-tests-student-id', studentId);
+        await browser.pause(1000);
         await driver.click('main-tests-register');
 
         await driver.click('next-step-form');
@@ -103,7 +105,7 @@ describe('Manage Form', () => {
         const questions = new Array(2).fill(1).map(() => ({
             question: chance.name(),
             answers: [0,1,2,3].map(a => chance.name()),
-            ans: chance.integer({min:0,max:3})
+            ans: chance.integer({min:1,max:4})
         }));
 
         await createForm(newFormName, questions);

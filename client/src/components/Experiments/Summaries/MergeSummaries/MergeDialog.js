@@ -14,6 +14,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import Typography from '@material-ui/core/Typography'
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import CloseIcon from '@material-ui/icons/Close';
+import { ERROR_STATUS } from '../../../ERRORS';
 
 
 export default function MergeDialog({
@@ -39,7 +40,7 @@ export default function MergeDialog({
   const [mergeName, setMergeName] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [textColor, setTextColor] = useState("inherit")
-  const [isSubmitted, setIsSubmitted] = useState(false)
+  const [nameErrorText, setNameErrorText] = useState('')
 
 
   const setPercentageOf = (index) => (value) => {
@@ -49,8 +50,10 @@ export default function MergeDialog({
     (percentTotalSum() === 1) ? setTextColor("primary") : setTextColor("error");
   }
 
-  const handleChangeName = (event) =>
-    setMergeName(event.target.value)
+  const handleChangeName = (event) =>{
+    setNameErrorText('');
+    setMergeName(event.target.value);
+  }
 
   const percentTotalSum = () =>
     mergeInput.reduce((totPercent, record) => totPercent+record.percentage, 0)
@@ -58,7 +61,7 @@ export default function MergeDialog({
   const isWeightSumValid = () => 
     percentTotalSum() === 1;
   
-  const isDisabled = !isWeightSumValid() || mergeName.length === 0 || isSubmitted;
+  const isDisabled = !isWeightSumValid() || mergeName.length === 0 || nameErrorText;
 
 
     return (
@@ -90,8 +93,8 @@ export default function MergeDialog({
             alignItems:"center",
             justifyContent:'space-between'}}>
           <TextField 
-                // error={this.state.isNameExists}
-                // helperText={this.state.isNameExists && "Name already exsits, please choose different name" }
+                error={nameErrorText}
+                helperText={nameErrorText}
                 value={mergeName}
                 style={{marginBottom: '10px'}}
                 onChange={handleChangeName}
@@ -106,12 +109,19 @@ export default function MergeDialog({
             disabled={isDisabled}
             onClick={
               async () => {
-                setIsSubmitted(true)
                 setIsLoading(true);
-                await api.mergeAlgorithms(experimentName, mergeName, mergeInput);
+                const {status} = await api.mergeAlgorithms(experimentName, mergeName, mergeInput);
                 //TO-DO error handling
+                if(status === ERROR_STATUS.NAME_NOT_VALID){
+                  setNameErrorText('invalid name');
+                }
+                else if(status < 0){
+
+                }
+                else{
+                  onClose(mergeName);
+                }
                 setIsLoading(false);
-                onClose(mergeName);
               }
               }>Create</Button>
           </div>

@@ -101,7 +101,7 @@ function MainTests({testPlanId}) {
           <div>
             <Button
               id="main-tests-register"
-              disabled={!testId || !selectedTestPlan}
+              disabled={!testId || !selectedTestPlan || forms.length === 0}
               style={{float:'right'}} 
               onClick={() => setPhase(Phases.FillTest)}
               > Start </Button>
