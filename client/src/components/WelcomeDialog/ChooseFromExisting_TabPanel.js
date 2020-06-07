@@ -38,7 +38,7 @@ export default function ChooseFromExisting_TabPanel({
   return (
     <div style={{display:'flex', flexDirection:'column', justifyContent:'space-between', height:'40vh'}}>
       <div>
-        <Typography style={{color:'#aaaaaa'}}>Choose From Existing Research, and see related summaries, and tests</Typography>
+        <Typography style={{color:'#aaaaaa'}}>Choose From Existing Experiment, and see related summaries, tests, and forms</Typography>
         <Autocomplete
           id="choose-from-existing-experiment-select"
           style={{ width: '100%', marginRight: 10 }}

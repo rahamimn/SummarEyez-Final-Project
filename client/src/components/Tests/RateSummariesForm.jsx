@@ -2,9 +2,9 @@
 import React, {useState} from 'react';
 import { Card, Container, Button, Typography } from '@material-ui/core';
 import { ChooseSummary } from './RateSummaries/ChooseSummary';
-import { RateSummary } from './RateSummaries/RateSummary';
+import { RateSummaries } from './RateSummaries/rateSummaries';
 
-export function RateSummaries({
+export function RateSummariesForm({
     onFinish,
     forms
 }) {
@@ -36,19 +36,14 @@ export function RateSummaries({
 
   const renderByStage = [
     <StartForm/>,
-    ...forms.map((form,i) => <RateSummary form={form} onNext={(rate) => {
-      const summariesRate = answers.summariesRate;
-      summariesRate[i] = {
-        formName: form.name,
-        experimentName: form.experimentName,
-        rate: rate
-      };
+
+    <RateSummaries forms={forms} onNext={summariesRate => {
       setAnswers({
-        ...answers,
-        summariesRate
+      ...answers,
+      summariesRate
       });
       nextStep();
-    }}/>),
+    }}/>,
     <ChooseSummary text ="Top Summary?" forms={forms} onNext={form => {
       setAnswers({
         ...answers,

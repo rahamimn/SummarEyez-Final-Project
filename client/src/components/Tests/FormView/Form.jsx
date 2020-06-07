@@ -5,7 +5,8 @@ import { Quiz } from './QuizView/Quiz';
 import { Card, Container, Button, Typography, Paper } from '@material-ui/core';
 import { RankSentences } from '../../Viewers/RankViewer/RankViewer';
 import { DropzoneArea } from 'material-ui-dropzone';
-
+import {Timer} from './Timer/Timer';
+ 
 export function Form({
     form,
     onFinish,
@@ -14,17 +15,6 @@ export function Form({
     const [answers,setAnswers] = useState();
     const [rankSentences,setRankSentences] = useState(form.isRankSentences && addWeight(form.base_sentences_table));
     const [fixations,setFixations] = useState(null);
-    const [withTimeout,setWithTimeout] = useState(false);
-
-    if(step === 1 && withTimeout){
-
-        const {minutes} = form && form.summary;
-        setWithTimeout(false);
-        setTimeout(() => {
-            nextStep();
-            setWithTimeout(false);
-        } , minutes * 60 * 1000);
-    }
 
     useEffect(() => {
         setStep(0);
@@ -37,7 +27,7 @@ export function Form({
         const {withTimer, minutes} = form && form.summary;
         const {isReadSummary , isFillAnswers, isRankSentences, withFixations } = form ;
         return (
-        <StepPage onClick={nextStartTime}>
+        <StepPage onClick={nextStep}>
             <Typography variant="h4">New Task ahead</Typography>
             <Paper variant="outlined" style={{padding:'10px', marginTop:'10px'}}>
                 <Typography >
@@ -81,7 +71,10 @@ export function Form({
         </StepPage>
     )};
 
-    const Summary = () => (
+    const Summary = () => {
+        const {minutes, withTimer} = form && form.summary;
+
+        return (
         <StepPage onClick={() => nextStep()}>
             <QuizViewer
                 experimentName={form.experimentName}
@@ -89,8 +82,10 @@ export function Form({
                 name={form.summary.name}
                 filters={form.summary.filters}
             />
+            {withTimer && <Timer seconds={minutes*60} whenFinished={nextStep}/>}
         </StepPage>
-    )
+        );
+    }
 
     const UploadFixations = () => (
         <StepPage onClick={() => nextStep()} disabled={!fixations}>
@@ -145,13 +140,6 @@ export function Form({
         }
     };
     
-        const nextStartTime = () => {
-            const {withTimer} = form && form.summary;
-            nextStep();
-            withTimer && setWithTimeout(true);
-        };
-    
-    
   return (
     <Container>
         <Card elevation={4} style={{ padding:'30px', display:'flex', flexDirection:'column', alignItems:'center'}}>
@@ -171,3 +159,6 @@ const StepPage = ({children, onClick, disabled}) => (
             <Button disabled={disabled} id="next-step-form" onClick={onClick}> Next</Button>
         </div>}
     </div>);
+
+
+

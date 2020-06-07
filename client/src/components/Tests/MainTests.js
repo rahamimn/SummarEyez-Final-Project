@@ -4,7 +4,7 @@ import api from '../../apiService';
 import { Typography, Button, Container, Card, TextField, CircularProgress } from '@material-ui/core';
 import { ERROR_STATUS } from '../ERRORS';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { RateSummaries } from './RateSummariesForm';
+import { RateSummariesForm } from './RateSummariesForm';
 
 const Phases = {
   Start: 'start',
@@ -207,7 +207,7 @@ const Success = () => (
           form={forms[currentFormIndex]}
           onFinish={onFinishForms}/>
       }
-      {phase === Phases.RateSummaries && <RateSummaries forms={forms} onFinish={onFinishRateSummaries}/>}
+      {phase === Phases.RateSummaries && <RateSummariesForm forms={forms} onFinish={onFinishRateSummaries}/>}
     </Container>
   );
   

@@ -39,7 +39,6 @@ describe('Manage Form', () => {
         await driver.EditFormDriver.createQuestion(questions[0]);
         await driver.EditFormDriver.createQuestion(questions[1]);
 
-     
         await browser.pause(1000);
         
         await driver.click("create-form-submit-btn"); 
