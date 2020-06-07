@@ -1,5 +1,5 @@
 import React,{useState,useEffect, useCallback, useMemo} from 'react';
-import { Typography, Grid, Card, TextField, Button, Divider, Select, MenuItem, Checkbox, ListItemText, Input, Switch, Paper, IconButton } from '@material-ui/core';
+import { Typography, Grid, Card, TextField, Button, Divider, Select, MenuItem, Checkbox, ListItemText, Input, Switch, Paper, IconButton, CardContent } from '@material-ui/core';
 import { QuizViewer } from '../../../Viewers/quizViewer/quizViewer';
 import api from '../../../../apiService';
 import { Question } from '../../../Tests/FormView/QuizView/QuestionView/Question';
@@ -264,7 +264,7 @@ export function EditForm({
                 />
               </FilterTag>
 
-              <FilterTag style={{width:'150px'}}>
+              <FilterTag style={{width:'200 px'}}>
                 <Typography color="textSecondary">Hide Sentences</Typography>
                 <ToggleButton
                     disabled={disabled}
@@ -279,6 +279,38 @@ export function EditForm({
                 </ToggleButton> 
               </FilterTag>
             </div>
+            <Card variant="outlined" style={{backgroundColor:'#eeeeee', marginTop:'40px'}}>
+                <CardContent>
+                  <Typography style={{display:'block'}}>Instructions</Typography>
+                  <ul>
+                    <li>
+                        <Typography style={{display:'block'}} >
+                          For Plain Text set in "minimum weight" 1.1 as value
+                        </Typography>
+                    </li>
+                    <li>
+                        <Typography style={{display:'block'}} >
+                          For Highlight(yellow) Text select "color size" 1 and "palete" yellow, and "minimum weight" as 0.5 or any other value.
+                        </Typography>
+                    </li>
+                    <li>
+                        <Typography style={{display:'block'}} >
+                        For Gradually Text select "color size" 2 (or above) and what palete you want, and set "minimum weight" as 0.
+                        </Typography>
+                    </li>
+                    <li>
+                        <Typography style={{display:'block'}} >
+                          For Hide Sentences Text select "color size" 1 (or above) and "palete" yellow, check "Hide Senteneces" and set "minimum weight" as 0.5 or any other value.
+                        </Typography>
+                    </li>
+                    <li>
+                        <Typography style={{display:'block'}} >
+                          Off course any other variation is possible 
+                        </Typography>
+                    </li>
+                  </ul>
+                </CardContent>
+            </Card>
           </div>
         );
       },[formDTO, form, updateField]); 
@@ -354,21 +386,22 @@ export function EditForm({
             </div>
             <div style={{ display:'flex', alignItems:'center', marginTop:'30px'}}>
               <Typography variant="h6" style={{marignRight: '10px'}}>Set Timer(minutes): </Typography>
-              <Checkbox  style={{ marginRight: '10px'}} checked={formDTO.summary.withTimer} onChange={() => 
+              <Checkbox disabled={disabled} style={{ marginRight: '10px'}} checked={formDTO.summary.withTimer} onChange={() => 
                 setFormDTO({...formDTO, summary:{...summary, withTimer: !formDTO.summary.withTimer} })}/>
               {formDTO.summary.withTimer &&
                 <TextField 
-                style={{width:'100px'}}
-                inputProps={{min:1,max:60, step:1}}
-                type="number"
-                value={formDTO.summary.minutes}
-                onChange={(e) => {
-                  const {value} = e.target;
-                  if(value >= 1 && value <= 60){
-                    setFormDTO({...formDTO, summary:{...summary, minutes: value} })
-                  }
-                }}
-                id="edit-form-minutes"
+                  disabled={disabled}
+                  style={{width:'100px'}}
+                  inputProps={{min:1,max:60, step:1}}
+                  type="number"
+                  value={formDTO.summary.minutes}
+                  onChange={(e) => {
+                    const {value} = e.target;
+                    if(value >= 1 && value <= 60){
+                      setFormDTO({...formDTO, summary:{...summary, minutes: value} })
+                    }
+                  }}
+                  id="edit-form-minutes"
                 />
               }
             </div>
@@ -485,8 +518,8 @@ export function EditForm({
       );
       const {isReadSummary, isFillAnswers, isRankSentences, withFixations} = formDTO;
       return (isFetchingData ? <div>loading</div> : 
-        <Grid container spacing={3} style={{width:"100%"}}>
-          <Grid item xs={12} sm={6}>
+        <Grid wrap="wrap" container spacing={3} style={{width:"100%"}}>
+          <Grid item xs={12} sm={6} style={{minWidth:'700px'}}>
             <Card style={{marginTop: '10px', padding: '20px'}}>
               <div style={{display:'flex', justifyContent: 'space-between', alignItems:'flex-end'}}>
                 <Typography variant="h5">
@@ -557,7 +590,7 @@ export function EditForm({
               </Button>
             </Card>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={6} style={{minWidth:'700px'}}>
             { question && 
               <div style={{margin:'10px 0'}}>
                 <Question question={question} />
@@ -580,12 +613,12 @@ export function EditForm({
       <TextField 
         disabled={disabled}
         style={{width:'180px', marginBottom:'15px'}}
-        inputProps={{min:0,max:1, step:0.1}}
+        inputProps={{min:0,max:1.1, step:0.1}}
         type="number"
         value={val}
         onChange={(e) => {
           const {value} = e.target;
-          if(value >= 0 && value <= 1){
+          if(value >= 0 && value <= 1.1){
               setVal(value);
           }
         }}

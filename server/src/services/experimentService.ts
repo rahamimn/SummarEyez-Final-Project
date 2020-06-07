@@ -293,12 +293,12 @@ testOfTestPlan = async (testPlanId, csv) =>{
                 addToErrorLogger("testOfTestPlan")
                 return response(ERROR_STATUS.OBJECT_NOT_EXISTS,{ error:ERRORS.TEST_NOT_EXISTS});
             }
-            const samp = jsonAns[0].tests
+            const testsSamp = jsonAns[0].tests
             const testData = (entry,ind) => entry.tests[ind].data;
 
             var fields =[{label: 'student ID' , value: (entry) => entry.testId }];
 
-            samp.forEach((test, index) => {
+            testsSamp.forEach((test, index) => {
                 fields = [...fields,
                     {label: 'form ID' , value: (entry) => testData(entry,index).formId },
                     {label: 'experiment ID' , value: (entry) => {
@@ -317,6 +317,8 @@ testOfTestPlan = async (testPlanId, csv) =>{
                 }
             });
             if(summaryRatings){
+                const summariesRatesSamp = jsonAns[0].rating.answers.summariesRate;
+
                 fields = [...fields, {
                     label: 'Top Summary[<form>/<experimnet>]',
                     value: (entry => {
@@ -331,10 +333,10 @@ testOfTestPlan = async (testPlanId, csv) =>{
                         return  `${summary.formName}/${summary.experimentName}`
                     })
                 },
-                ...testPlan.forms.map((form,i) => ({
+                ...testPlan.forms.map((form,i) => summariesRatesSamp[i] && ({
                     label: `Rate of ${form.formId}/${form.experimentName}`,
                     value: entry => entry.rating.answers.summariesRate[i].rate
-                }))
+                })).filter(x => x)
                 ]
             }
         
@@ -346,7 +348,7 @@ testOfTestPlan = async (testPlanId, csv) =>{
         }
         catch (err){
             addToSystemFailierLogger("testOfTestPlan")
-            // console.error(err);
+            console.error(err);
         }
     }
     
