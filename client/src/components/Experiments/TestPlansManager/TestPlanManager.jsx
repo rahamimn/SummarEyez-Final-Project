@@ -60,6 +60,9 @@ export function TestPlanManager(){
             renderInput={params => (
               <TextField
                 {...params}
+                color="default" 
+                variant="outlined"
+                size="small"
                 label="Choose created test"
                 fullWidth
                 inputProps={{
@@ -69,8 +72,14 @@ export function TestPlanManager(){
               />
             )}
           /> 
+          <Typography variant="caption">
+            Or -
+          </Typography>
           {!isCreating && <Button 
             id="test-plan-manaer-create-button"
+            color="primary" 
+            variant="outlined"
+            size="large"
             onClick={() => {
             setIsCreating(true);
             setSelectedTestPlan(null);

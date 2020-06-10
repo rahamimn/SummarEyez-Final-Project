@@ -49,7 +49,7 @@ export function Question({
               padding:'5px 5px 5px 15px',
               display:'flex',
               alignItems:'center',
-              backgroundColor: !onNext && question.correctAnswer === `${index}` && '#4bdd26'
+              backgroundColor: !onNext && question.correctAnswer === `${index}` && '#CCFFE5'
             }}
             elevation={selected === index ? 5 : 1 }
             onClick={() => onNext && setSelected(index)}>

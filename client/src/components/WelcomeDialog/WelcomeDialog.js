@@ -1,10 +1,8 @@
 import React from 'react';
-
 import TabPanel from './TabPanel';
 import { Tabs, Tab, Dialog, AppBar } from '@material-ui/core';
-
 import ChooseFromExistingTabPanel from './ChooseFromExisting_TabPanel';
-import CreateNewExpTabPanel from './CreateNewExp_TabPanel copy';
+import CreateNewExpTabPanel from './CreateNewExp_TabPanel';
 import TestsTabPanel from './Tests_TabPanel';
 
 
@@ -37,19 +35,20 @@ export default function WelcomeDialog({
             textColor="primary"
             aria-label="scrollable force tabs example"
           >
-            <Tab label="Create New" {...a11yProps(0)} />
-            <Tab id="welcome dialog-choose" label="Choose Existing" {...a11yProps(1)} />
-            <Tab label="Tests" {...a11yProps(2)} />
+            <Tab id="welcome dialog-choose" label="💼 Choose Existing" {...a11yProps(1)} />
+            <Tab label="➕ Create New" {...a11yProps(0)} />
+            <Tab label="💡 Tests" {...a11yProps(2)} />
           </Tabs>
         </AppBar>
 
         <div style={{minHeight:'250px', maxWidth:'470px'}}>
-          <TabPanel  value={value} index={0}>
-            <CreateNewExpTabPanel permit={permit} onClose={onClose}/>
+
+        <TabPanel value={value} index={0}>
+            <ChooseFromExistingTabPanel permit={permit} onClose={onClose}/>
           </TabPanel>
 
-          <TabPanel value={value} index={1}>
-            <ChooseFromExistingTabPanel permit={permit} onClose={onClose}/>
+          <TabPanel  value={value} index={1}>
+            <CreateNewExpTabPanel permit={permit} onClose={onClose}/>
           </TabPanel>
 
           <TabPanel  value={value} index={2}>

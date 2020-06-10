@@ -1,5 +1,5 @@
 import React,{useState,useEffect, useCallback} from 'react';
-import { Typography, Card, TextField, Button, Divider} from '@material-ui/core';
+import { Typography, Card, TextField, Button, Divider, Paper} from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import {
   useParams,
@@ -39,7 +39,13 @@ export function FormsManager(){
             Forms Manager
           </Typography>
           <Divider/>
-          <Autocomplete
+          <Paper variant="outlined" style={{padding:'10px', marginTop:'10px'}}>
+            <Typography style={{color:'#555555'}}>
+            A form is editable unless it is in use with an existing test.
+            </Typography>
+          </Paper>
+          <div style={{display:'flex', alignItems:'flex-end', marginTop:'10px'}}>
+           <Autocomplete
             disabled={newForm}
             id="forms-manager-choose-form"
             style={{ width: '200px', marginRight:10 }}
@@ -48,9 +54,11 @@ export function FormsManager(){
             getOptionLabel={option => option.id}
             renderInput={params => (
               <TextField
+                color="default" 
+                variant="outlined"
+                size="small"
                 {...params}
                 label="Choose existing form"
-                // variant="outlined"
                 fullWidth
                 inputProps={{
                     ...params.inputProps,
@@ -68,8 +76,15 @@ export function FormsManager(){
             inputValue={formText}
 
           />
+          <Typography variant="caption">
+            Or -
+          </Typography>
           {!newForm &&
             <Button 
+              style={{marginLeft:'10px', marginRight:'10px' }} // Nir: Why it doesn't affect??
+              color="primary" 
+              variant="outlined"
+              size="large"
               id='create-new-form-btn'
               style={{display: 'block'}}
               color="primary"
@@ -82,6 +97,7 @@ export function FormsManager(){
                   Create New Form
             </Button>
           }
+          </div>
         </Card>
         {(newForm || selectedForm) && <EditForm 
           form={selectedForm}

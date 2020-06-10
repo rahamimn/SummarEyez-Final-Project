@@ -21,10 +21,13 @@ export const LayersViewer = ({summaries, title, summariesMetadata, experimentNam
         <div key={index} style={{marginBottom: "40px"}}>
             <div style={{display:"flex", alignItems: "center"}}>
                 <div style={{ marginRight:"10px",height:"30px", width:"50px", backgroundColor:`hsl(${colors[index].value}, 100%, 75%)`}}></div>
-                <Typography>{metaData.name}({metaData.type})</Typography>
+                <Typography variant="caption" display="block" gutterBottom>
+                    {metaData.name} ({metaData.type})
+                </Typography>
             </div>
             <Button 
-                size="small"  
+                size="small"
+                variant="outlined"
                 onClick={() => window.open(`/article/${experimentName}/${metaData.type}/${metaData.name}`,'_blank')}>
                     Go to Summary
             </Button>
@@ -113,7 +116,7 @@ export const LayersViewer = ({summaries, title, summariesMetadata, experimentNam
                     flexDirection:'column',
                     padding:'30px',
                     width: '190px',
-                    backgroundColor:'#dddddd'
+                    backgroundColor:'#f5f5f5'
                     }}>
                     <Typography variant="h5" style={{marginBottom:'20px'}}>
                         Filters
@@ -131,7 +134,7 @@ export const LayersViewer = ({summaries, title, summariesMetadata, experimentNam
                             }
                         }}
                         id="minimumWeight"
-                        label="minimum weight" />
+                        label="Minimum weight" />
                     <Typography variant="h5" style={{marginBottom:'20px', marginTop:'20px'}}>
                         Summaries
                     </Typography>

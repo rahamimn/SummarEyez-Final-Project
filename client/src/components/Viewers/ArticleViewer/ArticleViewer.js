@@ -36,8 +36,8 @@ const paleteColors = (colors) => <div style={{display:'flex',justifyContent: 'ce
 export const ArticleViewer = ({summary, title}) => {
 
     let [color, setColor] = useState({
-        colorSize: '5',
-        colorPalete:'op_1'
+        colorSize: '10',
+        colorPalete:'Green'
     });
 
     let [minWeight, setMinWeight] = useState(0);

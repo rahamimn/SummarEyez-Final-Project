@@ -40,7 +40,7 @@ export function ExperimentInfo() {
         <Card style={{padding: '20px'}}>
           <div style={{display:'flex', justifyContent:'space-between'}}>
 						<Typography variant="h5">
-							{experimentName} Info
+							{experimentName} - Information and Details
 						</Typography>
 						<Button color="primary" onClick={() => setOcrModalOpen(true)}>
 							Show OCR
@@ -60,7 +60,7 @@ export function ExperimentInfo() {
                       <DoubleArrowRoundedIcon />
                     </ListItemIcon>
                     <ListItemText
-                      primary={`Questions: ${experimentInfo.questionsCounter}`}
+                      primary={`Total Questions: ${experimentInfo.questionsCounter}`}
                     />
                   </ListItem>
                   <ListItem>
@@ -68,7 +68,7 @@ export function ExperimentInfo() {
                       <DoubleArrowRoundedIcon />
                     </ListItemIcon>
                     <ListItemText
-                      primary={`Forms: ${experimentInfo.formsCounter}`}
+                      primary={`Total Forms: ${experimentInfo.formsCounter}`}
                     />
                   </ListItem>
                   <ListItem>
@@ -88,7 +88,7 @@ export function ExperimentInfo() {
                     />
                   </ListItem>
                 </List>
-              <Typography>* All the data related to experiment only. </Typography>
+              <Typography variant="caption"> • All the data related to experiment only</Typography>
               </div> :
               <div style={{padding:'40px'}}>
                 <CircularProgress/>
@@ -105,9 +105,9 @@ export function ExperimentInfo() {
 			{experimentInfo &&  		
 				<BaseViewer
 					summary={experimentInfo.base_sent_table}
-					title={'OCR text'}
+					title={'Plain text'}
 					filters={{
-            color: {size:'8', palete: 'op_1'},
+            color: {size:'10', palete: 'Green'},
             hideUnderMin: false,
 						minWeight: 0,
 					}}
