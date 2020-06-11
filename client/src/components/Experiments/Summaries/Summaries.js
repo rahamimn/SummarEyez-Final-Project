@@ -80,7 +80,7 @@ export function Summaries() {
           aria-controls="panel1a-content"
           id="summaries-auto-switch"
         >
-          <Typography className={classes.heading}>Automatic Summaries</Typography>
+          <Typography className={classes.heading}>Automatic Algorithms Summaries</Typography>
         </ExpansionPanelSummary >
         <ExpansionPanelDetails>
           <TableSummaries 
@@ -96,7 +96,7 @@ export function Summaries() {
           aria-controls="panel2a-content"
           id="summaries-eyes-switch"
         >
-          <Typography className={classes.heading}>Tests Summaries</Typography>
+          <Typography className={classes.heading}>User-Tests Summaries</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <TableSummaries 
@@ -112,7 +112,7 @@ export function Summaries() {
           aria-controls="panel2a-content"
           id="summaries-custom-switch"
         >
-          <Typography className={classes.heading}>Custom Summaries</Typography>
+          <Typography className={classes.heading}>Custom Made Summaries</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <TableSummaries 
