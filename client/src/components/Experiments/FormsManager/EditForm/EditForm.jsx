@@ -23,7 +23,7 @@ const emptyForm = {
       minutes:5,
       filters:{ 
         hideUnderMin: false,
-        color:{size:'3', palete:'op_1'}}
+        color:{size:'3', palete:'Green'}}
       },
 }
 

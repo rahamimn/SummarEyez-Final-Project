@@ -77,6 +77,7 @@ export function FormsManager(){
           {!newForm &&
             <Button 
               id='create-new-form-btn'
+              color="primary"
               style={{display: 'block'}}
               onClick={() => {
                 setNewForm(true)

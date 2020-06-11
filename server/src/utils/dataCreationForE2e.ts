@@ -102,7 +102,7 @@ export const dataCreation = async (experimetService: ExperimentService) => {
         experimentName: 'expC',
         name: 'formC1',
         questionIds: [QC1.data.id],
-        summary: { "filters": { hideUnderMin: false, "color": { "size": "8", "palete": "op_1" }, "minWeight": "0.1" } },
+        summary: { "filters": { hideUnderMin: false, "color": { "size": "8", "palete": "Green" }, "minWeight": "0.1" } },
         isRankSentences: true,
         isReadSummary: true,
         isFillAnswers: true,

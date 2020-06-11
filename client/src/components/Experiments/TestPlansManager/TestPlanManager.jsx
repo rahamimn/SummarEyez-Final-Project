@@ -71,6 +71,7 @@ export function TestPlanManager(){
           /> 
           {!isCreating && <Button 
             id="test-plan-manaer-create-button"
+            color="primary"
             onClick={() => {
             setIsCreating(true);
             setSelectedTestPlan(null);
