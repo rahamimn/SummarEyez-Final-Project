@@ -4,7 +4,7 @@ import TabPanel from './TabPanel';
 import { Tabs, Tab, Dialog, AppBar } from '@material-ui/core';
 
 import ChooseFromExistingTabPanel from './ChooseFromExisting_TabPanel';
-import CreateNewExpTabPanel from './CreateNewExp_TabPanel copy';
+import CreateNewExpTabPanel from './CreateNewExp_TabPanel';
 import TestsTabPanel from './Tests_TabPanel';
 
 
