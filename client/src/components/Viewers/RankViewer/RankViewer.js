@@ -48,7 +48,7 @@ export const RankSentences = ({
             summary={rankSentences}
             title={'Rank Sentences'}
             filters={{
-                color: {size:'10', palete: 'green'},
+                color: {size:'10', palete: 'Green'},
                 hideUnderMin: false,
                 minWeight: 0,
         }}/>
