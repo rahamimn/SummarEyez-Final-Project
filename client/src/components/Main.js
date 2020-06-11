@@ -49,7 +49,7 @@ function Main() {
           <div style={{
             width: '100%',
             height: '100vh',
-            backgroundImage:"url(/background.jpg)"
+            backgroundImage:"url(/bg.jpg)"
             }}>
               <WelcomeDialog withNewTab permit={permit}/>
             </div>
