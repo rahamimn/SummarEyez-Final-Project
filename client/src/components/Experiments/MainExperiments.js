@@ -36,7 +36,7 @@ import {ExperimentInfo} from './ExperimentInfo/ExperimentInfo';
 import { AddCustomSummary } from './AddCustomSummary/AddCustomSummary';
 
 
-const drawerWidth = 240;
+const drawerWidth = 270;
 
 const useStyles = makeStyles(theme => ({
   nested:{
@@ -90,13 +90,13 @@ function MainExperiments({permit}) {
           <ListItemIcon>
               <AllInboxIcon />
           </ListItemIcon>
-          <ListItemText primary="Create New Test" secondary="and manage them" />
+          <ListItemText primary="Create New Test" secondary=" • And manage them" />
         </ListItem>
         <ListItem id='main-experiments-test-pool' button onClick={e => history.push(experimetPage('testPool'))}>
           <ListItemIcon>
             <AssessmentIcon />
           </ListItemIcon>   
-          <ListItemText primary='Test Results' secondary="by forms / tests" />
+          <ListItemText primary='Test Results' secondary=" • By Forms or Tests" />
         </ListItem>
       </List>
       
@@ -115,14 +115,14 @@ function MainExperiments({permit}) {
               <ListItemIcon>
                 <LibraryBooksIcon />
               </ListItemIcon>
-              <ListItemText primary="All Summaries" secondary="merge, export, view" />
+              <ListItemText primary="All Summaries" secondary=" • Merge, Export, View" />
             </ListItem>
 
             <ListItem button  id='test-form-manager-side-button' onClick={e => history.push(experimetPage('forms'))}>
             <ListItemIcon>
               <DeveloperBoardIcon />
             </ListItemIcon>
-            <ListItemText primary="Create New Form" secondary="edit and more" />
+            <ListItemText primary="Create New Form" secondary=" • Edit and more" />
             </ListItem>
 
             <ListItem button id='upload-fixations-side-button' onClick={e => history.push(experimetPage('uploadFixations'))}>

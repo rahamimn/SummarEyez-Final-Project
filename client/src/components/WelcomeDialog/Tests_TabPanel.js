@@ -21,12 +21,12 @@ export default function Tests_TabPanel() {
     <div style={{display:'flex', flexDirection:'column', justifyContent:'space-between', height:'40vh', width:'100%'}}>
       <div>
         <div>
-          <Typography style={{color:'#aaaaaa'}}>You may choose specific test or choose one later</Typography>
+          <Typography style={{color:'#aaaaaa'}}>You may choose specific test or choose one later<br></br></Typography>
         </div>
         <div>
           <RadioGroup name="gender1" value={option} onChange={(e) => setOption(e.target.value)}>
-            <FormControlLabel value="all" control={<Radio />} label="Choose One Later" />
-            <FormControlLabel value="one-test" control={<Radio />} label={<div style={{display:'flex', alignItems:'center'}}>
+            <FormControlLabel value="all" control={<Radio color="primary"/>} label="Choose One Later" />
+            <FormControlLabel value="one-test" control={<Radio color="primary"/>} label={<div style={{display:'flex', alignItems:'center'}}>
               Choose Test
               <Autocomplete
             disabled={option === 'all'}

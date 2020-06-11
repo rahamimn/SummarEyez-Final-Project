@@ -25,18 +25,22 @@ export default function ChooseFromExisting_TabPanel({
   return (
     <div style={{display:'flex', flexDirection:'column', justifyContent:'space-between', height:'40vh'}}>
       <div>
-        <Typography style={{color:'#aaaaaa'}}>Create New Research, it will contain all conducted tests and summaries</Typography>
+        <Typography style={{color:'#aaaaaa'}}>Create new research<br></br>
+        The research will contain all related tests and summaries</Typography>
+        <br></br>
         {permit && <TextField
+          lineHeight='1200px'
           error={isKeyError}
           helperText=""
           autoFocus
           margin="dense"
           id="welcome-dialog-permission-input"
-          label="Enter Permission key"
+          label="Enter Password"
           value={permKey}
           onChange={(e) => setPermKey(e.target.value)}
           type="password"
           fullWidth
+          variant="outlined"
         />}
       </div>
    
