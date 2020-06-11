@@ -41,7 +41,7 @@ export function FormsManager(){
           <Divider/>
           <Paper  variant="outlined" style={{padding:'10px', marginTop:'10px'}}>
             <Typography style={{color:'#555555'}}>
-              If form have not been tested in real life, you can still change it.
+              A form is editable unless it is in use by an existing test.
             </Typography>
           </Paper>
           <div style={{display:'flex', alignItems:'flex-end', marginTop:'10px'}}>
