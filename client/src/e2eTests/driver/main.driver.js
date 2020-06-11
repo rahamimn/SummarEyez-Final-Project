@@ -4,6 +4,10 @@ export const DEFAULT_EXP_NAME = "expA";
 export const PASSWORD = "1234"
 
 export const enterNewExperimentPage = async (browser) => {
+
+    const newExperimentBtn = await browser.$('#tabPanel-1');
+    await newExperimentBtn.click();
+
     const inputElem = await browser.$('#welcome-dialog-permission-input');
     await inputElem.setValue(PASSWORD);
 
@@ -12,8 +16,6 @@ export const enterNewExperimentPage = async (browser) => {
 }
 
 export const enterExp = async (expIndex, browser) => {
-    const chooseExistingBtn = await browser.$('#tabPanel-1');
-    await chooseExistingBtn.click();
 
     await chooseExperiment(expIndex, browser);
 
@@ -69,7 +71,6 @@ export class Driver {
     expPageDriver = {
         navigateToExperimentPage: async (experimentName) => {
             await this.browser.url('localhost:3000');
-            await this.click("tabPanel-1");
     
             await this.selectFromDropdownByName(experimentName,'choose-from-existing-experiment-select');
         
