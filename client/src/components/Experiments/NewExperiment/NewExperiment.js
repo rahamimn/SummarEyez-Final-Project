@@ -85,7 +85,7 @@ class NewExperimentComponent extends Component{
                   id="new-experiment-experiment-name"
                   label="Experiment Name" />
 
-                <TextareaAutosize style={{width:'100%', height:'60px'}} placeholder="describe your experiment" value={this.state.descriptionText} onChange={(e) => this.setState({descriptionText: e.target.value }) } />
+                <TextareaAutosize style={{width:'100%', height:'60px'}} placeholder="Write your experiment description here..." value={this.state.descriptionText} onChange={(e) => this.setState({descriptionText: e.target.value }) } />
 
 
                 <Autocomplete
