@@ -7,7 +7,9 @@ import ChooseFromExistingTabPanel from './ChooseFromExisting_TabPanel';
 import CreateNewExpTabPanel from './CreateNewExp_TabPanel';
 import TestsTabPanel from './Tests_TabPanel';
 
-
+import AddIcon from '@material-ui/icons/Add';
+import FilterNoneIcon from '@material-ui/icons/FilterNone';
+import DvrIcon from '@material-ui/icons/Dvr';
 
 export default function WelcomeDialog({
   onClose,
@@ -38,20 +40,20 @@ export default function WelcomeDialog({
             textColor="primary"
             aria-label="scrollable force tabs example"
           >
-            <Tab id="welcome dialog-choose" label="💼 Choose Existing" {...a11yProps(0)} />
-            {withNewTab && <Tab label="➕ Create New" {...a11yProps(1)} />}
-            <Tab label="💡 Tests" {...a11yProps(2)} />
+            <Tab id="welcome dialog-choose" label={<span style={{display:'flex', alignItems:'flex-end'}}><DvrIcon style={{marginRight:'5px'}}/> Choose Existing </span>} {...a11yProps(0)} />
+            {withNewTab && <Tab label={<span style={{display:'flex', alignItems:'flex-end'}}><AddIcon style={{marginRight:'5px'}}/> Create New </span>} {...a11yProps(indexTab(1))}/>}
+            <Tab label={<span style={{display:'flex', alignItems:'flex-end'}}><FilterNoneIcon style={{marginRight:'5px'}}/> Tests </span>} {...a11yProps(indexTab(2))}/>
           </Tabs>
         </AppBar>
 
         <div style={{minHeight:'250px',width:'470px'}}>
-          {withNewTab && <TabPanel value={value} index={indexTab(1)}>
-            <CreateNewExpTabPanel permit={permit} onClose={onClose}/>
-          </TabPanel>}
-
           <TabPanel value={value} index={0}>
             <ChooseFromExistingTabPanel permit={permit} onClose={onClose}/>
           </TabPanel>
+
+          {withNewTab && <TabPanel value={value} index={indexTab(1)}>
+            <CreateNewExpTabPanel permit={permit} onClose={onClose}/>
+          </TabPanel>}
 
           <TabPanel value={value} index={indexTab(2)}>
             <TestsTabPanel/>
