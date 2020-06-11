@@ -11,7 +11,7 @@ import {
   useHistory,
 } from "react-router-dom";
 
-const drawerWidth = 240;
+const drawerWidth = 270;
 const useStyle = makeStyles(theme => ({
   appBarWithDrawer: {
       [theme.breakpoints.up('sm')]: {

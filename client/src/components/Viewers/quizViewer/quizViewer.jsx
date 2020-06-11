@@ -32,7 +32,7 @@ export const QuizViewer = ({
               summary={summaryDetails.summary} 
               title={summaryDetails.title}
               filters ={{
-                color: filters.color || {size:'3', palete:'op_1'},
+                color: filters.color || {size:'3', palete:'Green'},
                 hideUnderMin: filters.hideUnderMin || false,
                 minWeight: filters.minWeight || 0,
                 topSentencesCount:21
