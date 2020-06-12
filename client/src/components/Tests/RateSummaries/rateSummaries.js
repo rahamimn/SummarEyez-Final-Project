@@ -12,6 +12,7 @@ export function RateSummaries({
   const formsMapping = (form) => form.isReadSummary && {
     formName: form.name,
     experimentName: form.experimentName,
+    summary: form.summary,
     rate: -1
   };
   

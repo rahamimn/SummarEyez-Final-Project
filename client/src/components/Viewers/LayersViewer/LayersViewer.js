@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography';
-import { Popper, Card } from '@material-ui/core';
+import { Popper, Card, Divider, Paper } from '@material-ui/core';
 
 
 const SmallCircle  = ({color}) => <span style={{
@@ -28,8 +28,31 @@ export const LayersViewer = ({summaries, title, summariesMetadata, experimentNam
                 onClick={() => window.open(`/article/${experimentName}/${metaData.type}/${metaData.name}`,'_blank')}>
                     Go to Summary
             </Button>
+            <Button 
+                size="small"  
+                onClick={event => {
+                    setIdenticalIndex(index)
+                }}>
+                    Compare to others
+            </Button>
         </div>
     );
+
+    const IdenticalSection = ({ index }) => {
+        return distances && index > -1 && (
+                <div >
+                    <Typography variant="h5"> Identicality of: </Typography>                
+                    <Typography variant="h6">{summariesMetadata[index].name}</Typography>
+                    <Divider style={{marginBottom: '10px'}}/>
+                    {distances && index > -1 && distances[index]
+                        .map((v,ind) =>
+                            <div key={'val'+ind}>
+                                {summariesMetadata[ind].name} = {Math.round(v*100)/100}
+                            </div>)
+                        .filter((_,ind) => ind !== index)}
+                </div>
+        );
+    }
 
     const SentPopper = ({weights, isOpen, anchorEl}) => (
         <Popper open={isOpen} anchorEl={anchorEl}>
@@ -47,6 +70,29 @@ export const LayersViewer = ({summaries, title, summariesMetadata, experimentNam
     let [minWeight, setMinWeight] = useState(0);
     const [selectedSent,setSelectedSent] = useState(null); 
     const [anchorEl,setAnchorEl] = useState(null);
+    const [identicalIndex,setIdenticalIndex] = useState(-1)
+
+    const distances = useMemo(() => {
+        let distances_temp = new Array(summaries.length).fill('empty');
+        distances_temp = distances_temp.map(() => new Array(summaries.length).fill('empty'));
+        for(let ind1 = 0 ; ind1 < summaries.length ; ind1++ ){
+            for(let ind2 = ind1 ; ind2 < summaries.length ; ind2++ ){
+
+                if(ind1 === ind2) {
+                    distances_temp[ind1][ind2] = 0
+                }
+                else if(distances_temp[ind1][ind2] === 'empty'){
+                    const sum1 = summaries[ind1];
+                    const sum2 = summaries[ind2];
+                    const distance = calcDistance(sum1,sum2);
+
+                    distances_temp[ind1][ind2] = distance;
+                    distances_temp[ind2][ind1] = distance;
+                }  
+            };
+        }
+        return distances_temp;
+    },[summaries]);
 
     const backgroundColor = (sentIndex, sent) =>  {
         const color = summaries.reduce((prevColor,summary,index) => {
@@ -65,7 +111,7 @@ export const LayersViewer = ({summaries, title, summariesMetadata, experimentNam
         const isSamePar = summaries[0][i].par_num === paragraphNum;
         
         const Sent = (
-            <span>
+            <span key={'sent-'+i}>
                 <span 
                     onClick={(event) => {
                         if(selectedSent === i){
@@ -137,7 +183,9 @@ export const LayersViewer = ({summaries, title, summariesMetadata, experimentNam
                     </Typography>
                     {summariesMetadata.map((summary,index) => summaryDetail(summary, index))}
 
-
+                    {distances && identicalIndex !== -1 && 
+                        <IdenticalSection index={identicalIndex}/>
+                    }
 
                 </div>
                 <div style={{ 
@@ -178,3 +226,15 @@ const colors = [{
 
 
 
+
+const calcDistance = (sum1, sum2) => {
+    const sentDistances = sum1.map((sent, i) =>
+        Math.abs(sent.normalized_weight - sum2[i].normalized_weight)
+    ) 
+    const sum = sentDistances.reduce((acc,distance ) => acc + distance ,0);
+    const maximumDistance = 1 * sum1.length;
+    const badRatio = sum/maximumDistance * 100;
+
+
+    return 100 - badRatio;
+}
