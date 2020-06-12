@@ -183,7 +183,7 @@ export const LayersViewer = ({summaries, title, summariesMetadata, experimentNam
                     </Typography>
                     {summariesMetadata.map((summary,index) => summaryDetail(summary, index))}
 
-                    {distances && identicalIndex !== -1 && 
+                    {summaries.length > 0 && distances && identicalIndex !== -1 && 
                         <IdenticalSection index={identicalIndex}/>
                     }
 
