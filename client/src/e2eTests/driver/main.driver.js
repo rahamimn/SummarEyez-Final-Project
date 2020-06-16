@@ -70,11 +70,8 @@ export class Driver {
         navigateToExperimentPage: async (experimentName) => {
             await this.browser.url('localhost:3000');
             await this.click("tabPanel-1");
-    
             await this.selectFromDropdownByName(experimentName,'choose-from-existing-experiment-select');
-        
             await this.setValue("welcome-dialog-permission-input",PASSWORD);
-        
             await this.click("existing-experiment-submit");
         },
     
