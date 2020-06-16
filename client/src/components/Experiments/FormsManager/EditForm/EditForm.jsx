@@ -56,7 +56,8 @@ export function EditForm({
       const [summaries, setSummaries] = useState({
           auto: [],
           eyes: [],
-          merged: []
+          merged: [],
+          custom: []
       });
       const [question,setQuestion] = useState(null);
       const [isFetchingData,setIsFetchingData] = useState(false);
