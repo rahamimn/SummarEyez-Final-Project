@@ -28,45 +28,45 @@ export function Form({
         const {isReadSummary , isFillAnswers, isRankSentences, withFixations } = form ;
         return (
         <StepPage onClick={nextStep}>
-            <Typography variant="h4">New Task ahead</Typography>
+            <Typography variant="h4">New task</Typography>
             <Paper variant="outlined" style={{padding:'10px', marginTop:'10px'}}>
                 <Typography >
-                    Some Instruction: <br/><br/> 
-                    Your next task includes the following missions: <br/> 
+                    Tasks instructions: <br/><br/> 
+                    Your next task includes the following tasks: <br/> 
                     <div style={{marginLeft:'8px'}}>
                         {isReadSummary && <strong>- Reading Summary <br/></strong>}
-                        {isRankSentences && <strong>- Read a Summary and rank sentences weights<br/></strong>}
-                        {isFillAnswers && <strong>- Answer Questions<br/></strong>}
-                        {withFixations && <strong>- Upload System fixation files (for stuff) <br/></strong>}
+                        {isRankSentences && <strong>- Read summary and rank sentences<br/></strong>}
+                        {isFillAnswers && <strong>- Answering Questions<br/></strong>}
+                        {withFixations && <strong>- Upload system fixation files (staff only) <br/></strong>}
                     </div>
 
                 </Typography>
                 {isReadSummary && (withTimer || isFillAnswers) &&
                      <Typography style={{marginTop:'10px'}}>
-                        regarding the Reading Summary mission:
+                        Regarding the reading summary task:
                         <ul>
                         {withTimer && <li>
-                            For that you would have <strong>{minutes} minutes </strong>, <br/>
-                            you can proceed before the times ends. <br/>
-                            in any case after the time ends you will be start immediately the next mission.
+                            You will have <strong>{minutes} minutes </strong> to complete the task, <br/>
+                            You can proceed before the times ends. <br/>
+                            At the end of the time you will be immediately redirected to the next task.
                         </li>}
-                        {isFillAnswers && <li><span>Please read carfully you would be asking about that text. (you will not have the option to go back) <br/></span></li> }
+                        {isFillAnswers && <li><span>Please read the questions carefully, once you answer a question you will not be able to go back<br/></span></li> }
                         </ul>
                     </Typography>
                 }
                 {isFillAnswers &&  
                     <Typography style={{marginTop:'10px'}}>
-                        regarding the Answer Questions mission:<br/>
+                        Regarding the answering questions mission:<br/>
                         <ul>
                             <li>
-                                please answer as soon as possible.
+                            Please try to answer the right questions in the <strong>shortest</strong> possible time
                             </li>
                         </ul>
                     </Typography>
             }           
             </Paper>
             <Typography style={{marginTop:'10px'}}>
-                press next to start
+                Click 'NEXT' to start
             </Typography>
         </StepPage>
     )};

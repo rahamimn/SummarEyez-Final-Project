@@ -93,12 +93,12 @@ export class UploadImage extends Component{
             </div>
             <Card variant="outlined" style={{backgroundColor:'#eeeeee', marginTop:'40px'}}>
               <CardContent>
-                <Typography style={{display:'block'}}>Instructions & Constraints</Typography>
-                <Typography style={{display:'block'}} >
-                  1. upload jpeg format, for pdf you have to convert it to jpeg.<br/>
-                  2. content of the jpeg file shouldn't include any inner image.<br/>
-                  3. max size 2MB. <br/>
-                  4. your image text should include '.' only as sentence seperator.<br/>
+                <Typography style={{display:'block'}}>Instructions & Constraints:</Typography>
+                <Typography variant="caption"  style={{display:'block'}} >
+                  1. Upload .jpg file<br/>
+                  2. The file must contain text only.<br/>
+                  3. Max file size: 2MB. <br/>
+                  4. Your image text should include '.' only as sentence seperator.<br/>
                 </Typography>
               </CardContent>
             </Card>

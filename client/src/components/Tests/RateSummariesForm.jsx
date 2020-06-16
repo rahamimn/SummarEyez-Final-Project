@@ -28,8 +28,8 @@ export function RateSummariesForm({
   const StartForm = () => {
       return (
       <StepPage onClick={() => nextStep()}>
-          <Typography variant="h4">Last Task ahead</Typography>
-          <Typography variant="h5">press next to start</Typography>
+          <Typography variant="h4">Proceed to the next task</Typography>
+          <Typography variant="h5">Click 'NEXT' to start</Typography>
       </StepPage>
   )};
 
@@ -44,7 +44,7 @@ export function RateSummariesForm({
       });
       nextStep();
     }}/>,
-    <ChooseSummary text ="Top Summary?" forms={forms} onNext={form => {
+    <ChooseSummary text ="Which of the following summaries was the MOST helpful?" forms={forms} onNext={form => {
       setAnswers({
         ...answers,
         topSummary:{
@@ -55,7 +55,7 @@ export function RateSummariesForm({
       });
       nextStep();
     }} />,
-    <ChooseSummary text ="Worst Summary?" forms={forms} onNext={form => {
+    <ChooseSummary text ="Which of the following summaries was the LEAST helpful?" forms={forms} onNext={form => {
       const tempAnswers = {
         ...answers,
         worstSummary:{

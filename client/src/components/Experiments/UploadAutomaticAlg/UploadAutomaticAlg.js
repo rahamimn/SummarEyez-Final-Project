@@ -99,15 +99,15 @@ export class UploadAlgorithm extends Component {
 
               <Card variant="outlined" style={{backgroundColor:'#eeeeee', marginTop:'40px'}}>
                 <CardContent>
-                  <Typography style={{display:'block'}}>Instructions & Constraints</Typography>
-                  <Typography style={{display:'block'}} >
-                    1. upload python file (.py). <br/>
-                    2. see example <a target="_blank" href="https://storage.cloud.google.com/summareyez-6b61e.appspot.com/AutomaticAlgoSample.py?authuser=1&folder&organizationId">python file</a><br/>
-                    2. your 'run' function should return {'{'}'text':{'<sentenceText>'} , 'weight': {'<someValue>}'}[]. <br/>
-                    3. your python script should run under the 'run' function inside the file. <br/>
-                    4. if you want to add external libray besdies (nltk, numpy, sklearn, pandas ) you install on server manually. <br/>
-                    5. in your script you must tokenzie the text by sent_tokenzie from nltk. <br/>
-                    6. max size 2MB. <br/>
+                  <Typography style={{display:'block'}}>Instructions & Constraints:</Typography>
+                  <Typography variant="caption" style={{display:'block'}} >
+                    1. Upload python file (.py) <br/>
+                    2. See example: <a target="_blank" href="https://storage.cloud.google.com/summareyez-6b61e.appspot.com/AutomaticAlgoSample.py?authuser=1&folder&organizationId">python file</a><br/>
+                    2. The 'run' function should return {'{'}'text':{'<sentenceText>'} , 'weight': {'<someValue>}'}[]. <br/>
+                    3. The python script should run under the 'run' function inside the file. <br/>
+                    4. To use other external libray besdie 'nltk', 'numpy', 'sklearn', 'pandas' - Install on server manually. <br/>
+                    5. The script you must tokenzie the text by 'sent_tokenzie' from 'nltk'. <br/>
+                    6. Max file size: 2MB. <br/>
                   </Typography>
                 </CardContent>
               </Card>

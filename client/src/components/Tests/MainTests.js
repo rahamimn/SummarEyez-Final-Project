@@ -59,7 +59,7 @@ function MainTests({testPlanId}) {
     <Card elevation={4}  style={{ marginTop:'60px',padding:'30px', width:'900px'}} >
       <div style={{display: 'flex', justifyContent: 'center'}}>
         <div style={{width: '800px' }}>
-          <Typography variant="h3"> Register Test </Typography>
+          <Typography variant="h4"> Start a new test </Typography>
           <TextField 
             error={testIdError}
             helperText={testIdError && "id already exsits, please choose different id" }
@@ -115,7 +115,7 @@ function MainTests({testPlanId}) {
     <Card elevation={4} style={{ marginTop:'60px',padding:'30px', width:'900px'}} >
       <div style={{display: 'flex', justifyContent: 'center'}}>
         <div style={{width: '800px' }}>
-          <Typography variant="h3"> Submition </Typography>
+          <Typography variant="h4"> Test completed.<br></br>Thank you for participating! </Typography>
                  
           <div style={{display:'flex',justifyContent: ' flex-end'}}>
             {loadingSubmition ? 
