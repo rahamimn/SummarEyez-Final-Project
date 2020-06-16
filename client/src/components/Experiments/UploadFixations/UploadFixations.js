@@ -109,11 +109,11 @@ export class UploadFixations extends Component {
 
               <Card variant="outlined" style={{backgroundColor:'#eeeeee', marginTop:'40px'}}>
                 <CardContent>
-                  <Typography style={{display:'block'}}>Instructions & Constraints</Typography>
-                  <Typography style={{display:'block'}} >
-                    1. upload csv file, as output from the begaze system(.csv). <br/>
-                    2. required fields "Event Duration [ms]","Fixation Position X [px]","Fixation Position Y [px]" <br/>
-                    3. max size 2MB. <br/>
+                  <Typography style={{display:'block'}}>Instructions & Constraints:</Typography>
+                  <Typography variant="caption" style={{display:'block'}} >
+                    1. Upload csv file - output of BeGaze system. <br/>
+                    2. Required fields: | "Event Duration [ms]" | "Fixation Position X [px]" | "Fixation Position Y [px]" | <br/>
+                    3. Max file size: 2MB. <br/>
                   </Typography>
                 </CardContent>
               </Card>
