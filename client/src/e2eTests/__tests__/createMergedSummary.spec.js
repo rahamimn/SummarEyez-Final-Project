@@ -28,14 +28,16 @@ describe('Create Merged Summary', () => {
         await browser.deleteSession()
     });
 
-    const addMergedSummary = async (name) => {
+    const addMergedSummary = async (name, isMergedSectionAlreadyOpen) => {
         const val0 = chance.integer({min:0, max:100});
 
         const SummariesDriver = driver.SummariesDriver;
 
         await experimentDriver.navigateTo.summaries();
   
-        await SummariesDriver.switchTable.auto();
+        if(!isMergedSectionAlreadyOpen)
+            { await SummariesDriver.switchTable.auto(); }
+
         await SummariesDriver.clickOnRowWithName('algo1.py');
         await SummariesDriver.clickOnRowWithName('algo1b.py');
         await SummariesDriver.toolbarActions.merge();
@@ -52,7 +54,7 @@ describe('Create Merged Summary', () => {
         const newSummaryName = chance.word();
         const SummariesDriver = driver.SummariesDriver;
 
-        await addMergedSummary(newSummaryName);
+        await addMergedSummary(newSummaryName, false);
         await browser.pause(4000);
         await SummariesDriver.switchTable.merge();
 
@@ -72,9 +74,9 @@ describe('Create Merged Summary', () => {
     it('fail - name exists', async () => {
         const aSummaryName = chance.word();
 
-        await addMergedSummary(aSummaryName);
+        await addMergedSummary(aSummaryName, false);
         await browser.pause(4000);
-        await addMergedSummary(aSummaryName);
+        await addMergedSummary(aSummaryName, true);
 
         const ErrorText = await browser.$('#submit-merged-summary-name-input-helper-text');
         expect(await ErrorText.getText()).toBe('invalid name')

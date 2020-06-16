@@ -52,7 +52,7 @@ describe('new Experiment', () => {
 
         const submit = await browser.$('#new-experiment-submit');
         await submit.click();
-
+        await browser.pause(1000);
         const helperError = await browser.$('#new-experiment-experiment-name-helper-text');
 
         expect(await helperError.getText()).toBe(`Name already exsits, please choose different name`);
