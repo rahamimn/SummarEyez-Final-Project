@@ -284,28 +284,28 @@ export function EditForm({
                   <Typography style={{display:'block'}}>Instructions</Typography>
                   <ul>
                     <li>
-                        <Typography style={{display:'block'}} >
-                          For Plain Text set in "minimum weight" 1.1 as value
+                        <Typography variant="caption"  style={{display:'block'}} >
+                          For plain-text set 'minimum weight' to be 1.1.
                         </Typography>
                     </li>
                     <li>
-                        <Typography style={{display:'block'}} >
-                          For Highlight(yellow) Text select "color size" 1 and "palete" yellow, and "minimum weight" as 0.5 or any other value.
+                        <Typography variant="caption"  style={{display:'block'}} >
+                          For solid highlighted text set 'color size' to be 1. 
                         </Typography>
                     </li>
                     <li>
-                        <Typography style={{display:'block'}} >
-                        For Gradually Text select "color size" 2 (or above) and what palete you want, and set "minimum weight" as 0.
+                        <Typography variant="caption"  style={{display:'block'}} >
+                        For gradually highlighted text set 'color size' to be 2 or above, and set 'minimum weight' to be 0.
                         </Typography>
                     </li>
                     <li>
-                        <Typography style={{display:'block'}} >
-                          For Hide Sentences Text select "color size" 1 (or above) and "palete" yellow, check "Hide Senteneces" and set "minimum weight" as 0.5 or any other value.
+                        <Typography variant="caption"  style={{display:'block'}} >
+                          For hiding low-weighted sentences check 'Hide Senteneces'.
                         </Typography>
                     </li>
                     <li>
-                        <Typography style={{display:'block'}} >
-                          Off course any other variation is possible 
+                        <Typography variant="caption"  style={{display:'block'}} >
+                          Ofcourse, any other combination is possible 
                         </Typography>
                     </li>
                   </ul>

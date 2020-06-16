@@ -21,7 +21,7 @@ export function RateSummaries({
 
   return (
   <div style={{width:'970px'}}>
-        <Typography variant="h4">Please rate All the next summaries</Typography>
+        <Typography variant="h5">For each of the following summaries,<br></br> Please rate from 1 to 10 how helpful the summary was to you:</Typography>
         <Divider/>
         <div style={{display:'flex', flexWrap:'wrap', marginTop:'20px'}}>
             {forms
