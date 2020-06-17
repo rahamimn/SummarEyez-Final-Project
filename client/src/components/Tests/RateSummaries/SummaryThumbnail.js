@@ -1,8 +1,7 @@
   
-import React, {useState, useMemo} from 'react';
+import React, {useState} from 'react';
 import Card from '@material-ui/core/Card';
-import Paper from '@material-ui/core/Paper';
-import { Typography, Button, Dialog, CardActions } from '@material-ui/core';
+import { Button, Dialog, CardActions } from '@material-ui/core';
 import { QuizViewer } from '../../Viewers/quizViewer/quizViewer';
 
 export function SummaryTumbnail({

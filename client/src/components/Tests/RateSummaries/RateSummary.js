@@ -1,6 +1,6 @@
   
-import React, {useState} from 'react';
-import { Typography, Button,Divider, Slider, Paper } from '@material-ui/core';
+import React from 'react';
+import { Typography, Slider, Paper } from '@material-ui/core';
 import { SummaryTumbnail } from './SummaryThumbnail';
 
 export function RateSummary({

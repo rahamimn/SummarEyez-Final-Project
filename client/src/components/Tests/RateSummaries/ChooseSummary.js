@@ -1,7 +1,6 @@
   
-import React, {useState, useMemo, useEffect} from 'react';
-import { Typography, Button, Dialog, CardActions, Divider } from '@material-ui/core';
-import { QuizViewer } from '../../Viewers/quizViewer/quizViewer';
+import React, {useState, useEffect} from 'react';
+import { Typography, Button, Divider } from '@material-ui/core';
 import { SummaryTumbnail } from './SummaryThumbnail';
 
 export function ChooseSummary({

@@ -1,8 +1,8 @@
-import React, {useState, useEffect, useMemo} from 'react';
+import React, {useState, useMemo} from 'react';
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography';
-import { Popper, Card, Divider, Paper } from '@material-ui/core';
+import { Popper, Card, Divider } from '@material-ui/core';
 
 
 const SmallCircle  = ({color}) => <span style={{

@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useState } from 'react';
 import Button from '@material-ui/core/Button';
-import { Typography, TextField, Checkbox, RadioGroup, Radio, FormControlLabel } from '@material-ui/core';
+import { Typography, TextField, RadioGroup, Radio, FormControlLabel } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import api from '../../apiService';
 
