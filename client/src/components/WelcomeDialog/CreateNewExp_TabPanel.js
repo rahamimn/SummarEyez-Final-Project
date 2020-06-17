@@ -3,6 +3,7 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import {useHistory, useParams} from "react-router-dom";
 import { Typography } from '@material-ui/core';
+export const PASSWORD = "eyes1234";
 
 export default function ChooseFromExisting_TabPanel({
   onClose,
@@ -15,7 +16,7 @@ export default function ChooseFromExisting_TabPanel({
 
   const validate = () => {
     permit(false);
-    if (permKey === '1234') {
+    if (permKey === PASSWORD) {
       permit();
       return true;
     }

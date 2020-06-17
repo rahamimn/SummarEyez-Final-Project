@@ -5,6 +5,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { useHistory } from "react-router-dom";
 import api from '../../apiService';
 import { Typography } from '@material-ui/core';
+export const PASSWORD = "eyes1234";
 
 export default function ChooseFromExisting_TabPanel({
   onClose,
@@ -27,7 +28,7 @@ export default function ChooseFromExisting_TabPanel({
   }
   const validate = () => {
     permit(false);
-    if (permKey === '1234') {
+    if (permKey === PASSWORD) {
       permit();
       return true;
     }

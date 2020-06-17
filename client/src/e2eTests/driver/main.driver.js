@@ -1,7 +1,7 @@
 
 
 export const DEFAULT_EXP_NAME = "expA";
-export const PASSWORD = "1234"
+export const PASSWORD = "eyes1234";
 
 export const enterNewExperimentPage = async (browser) => {
     const inputElem = await browser.$('#welcome-dialog-permission-input');
@@ -18,7 +18,7 @@ export const enterExp = async (expIndex, browser) => {
     await chooseExperiment(expIndex, browser);
 
     const inputElem = await browser.$('#welcome-dialog-permission-input');
-    await inputElem.setValue('1234');
+    await inputElem.setValue(PASSWORD);
 
     const submitBtn = await browser.$('#existing-experiment-submit');
     await submitBtn.click();
