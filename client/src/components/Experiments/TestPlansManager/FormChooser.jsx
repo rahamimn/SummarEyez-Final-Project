@@ -34,6 +34,8 @@ export function FormChooser({experiments, onSelectForm, withoutButton, alreadyDo
               fetchForms(experiment)
             }else{
               setSelectedExperiment(null)
+              setForms([])
+              setFormText('')
             }
           }}
           onInputChange={(e, value) => setExperimentText(value)}
