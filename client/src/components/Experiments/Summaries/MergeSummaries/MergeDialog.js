@@ -68,7 +68,7 @@ export default function MergeDialog({
     <div>
       <Dialog 
         open={true} 
-        onClose={onClose}
+        onClose={() => onClose()}
         aria-labelledby="form-dialog-title"
         disableBackdropClick = {!!!onClose}
         fullWidth={true}
