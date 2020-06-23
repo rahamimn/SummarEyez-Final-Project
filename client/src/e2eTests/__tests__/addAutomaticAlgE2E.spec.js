@@ -1,12 +1,13 @@
 const { remote } = require('webdriverio');
-import {enterNewExperimentPage} from '../driver/main.driver';
 import Chance from 'chance';
+import { Driver} from '../driver/main.driver';
 const chance = new Chance();
 import path from 'path';
 
 jest.setTimeout(100000);
 describe('Add Automatic Algorithm', () => {
     let browser;
+    let driver,experimentDriver;
     beforeAll(async () => {
         browser = await remote({
             logLevel: 'debug',
@@ -14,12 +15,12 @@ describe('Add Automatic Algorithm', () => {
                 browserName: 'chrome'
             }
         })
-
+        driver = new Driver(browser);
+        experimentDriver = driver.expPageDriver;
     })
 
     beforeEach(async () => {
-        await browser.url('localhost:3000')
-        await enterNewExperimentPage(browser);
+        await experimentDriver.navigateToNewExperimentPage();
     });
 
     afterAll(async () => {
@@ -27,13 +28,10 @@ describe('Add Automatic Algorithm', () => {
     });
 
     it('success - upload file', async () => {
-
-        const uploadAlgorithmButton = await browser.$('#upload-algorithm-side-button');
-        await uploadAlgorithmButton.click();
-
         const newAlgoName = chance.word();
-        const inputAlgoName = await browser.$('#insert-algorithm-name');
-        await inputAlgoName.setValue(newAlgoName);
+
+        await driver.click('upload-algorithm-side-button');
+        await driver.setValue('insert-algorithm-name',newAlgoName);
         await browser.pause(1000);
 
         uploadAlgoAndSubmit();
@@ -50,11 +48,8 @@ describe('Add Automatic Algorithm', () => {
     it('fail - name exists', async () => {
         const existsAlgoName = 'algo1';
 
-        const uploadAlgorithmButton = await browser.$('#upload-algorithm-side-button');
-        await uploadAlgorithmButton.click();
-
-        const inputAlgoName = await browser.$('#insert-algorithm-name');
-        await inputAlgoName.setValue(existsAlgoName);
+        await driver.click('upload-algorithm-side-button');
+        await driver.setValue('insert-algorithm-name',existsAlgoName);
         await browser.pause(1000);
 
         uploadAlgoAndSubmit();

@@ -1,5 +1,5 @@
 const { remote } = require('webdriverio');
-import {enterNewExperimentPage} from '../driver/main.driver';
+import { Driver} from '../driver/main.driver';
 import Chance from 'chance';
 const chance = new Chance();
 import path from 'path';
@@ -7,6 +7,7 @@ import path from 'path';
 jest.setTimeout(100000);
 describe('new Experiment', () => {
     let browser;
+    let driver,experimentDriver;
     beforeAll(async ()=>{
         browser = await remote({
             logLevel: 'debug',
@@ -14,12 +15,12 @@ describe('new Experiment', () => {
                 browserName: 'chrome'
             }
         })
-
+        driver = new Driver(browser);
+        experimentDriver = driver.expPageDriver;
     })
 
     beforeEach(async () => {
-        await browser.url('localhost:3000')
-        await enterNewExperimentPage(browser);
+        await experimentDriver.navigateToNewExperimentPage();
     });
 
     afterAll(async () => {
@@ -29,15 +30,11 @@ describe('new Experiment', () => {
     it('success - from existing image',async () => {
         const newExperimentName = chance.word();
 
-        const inputElem = await browser.$('#new-experiment-experiment-name');
-        await inputElem.setValue(newExperimentName);
-
+        await driver.setValue('new-experiment-experiment-name',newExperimentName)
         await chooseImage(0);
+        await driver.click('new-experiment-submit')
 
-        const submit = await browser.$('#new-experiment-submit');
-        await submit.click();
-
-        // await browser.pause(5000);
+        await browser.pause(5000);
 
         expect(await browser.getUrl()).toBe(`http://localhost:3000/experiments/${newExperimentName}/info`);
     });
@@ -45,13 +42,11 @@ describe('new Experiment', () => {
     it('fail - experimentNameExists',async () => {
         const existsingExperimentName = 'exp1'
 
-        const inputElem = await browser.$('#new-experiment-experiment-name');
-        await inputElem.setValue(existsingExperimentName);
-
+        await driver.setValue('new-experiment-experiment-name',existsingExperimentName)
         await chooseImage(0);
 
-        const submit = await browser.$('#new-experiment-submit');
-        await submit.click();
+        await driver.click('new-experiment-submit')
+
         await browser.pause(1000);
         const helperError = await browser.$('#new-experiment-experiment-name-helper-text');
 
@@ -62,22 +57,18 @@ describe('new Experiment', () => {
         const newExperimentName = chance.word();
         const newImageName = chance.word();
 
-        const inputElem = await browser.$('#new-experiment-experiment-name');
-        await inputElem.setValue(newExperimentName);
+        await driver.setValue('new-experiment-experiment-name',newExperimentName)
+        await driver.click('new-experiment-upload-image')
 
-        const toggleImageUploader = await browser.$('#new-experiment-upload-image');
-        await toggleImageUploader.click();
+        await driver.setValue('upload-image-image-name',newImageName)
 
-        const inputImageName = await browser.$('#upload-image-image-name');
-        await inputImageName.setValue(newImageName);
         await browser.pause(1000);
         
         uploadImageAndSubmit();
 
         await browser.pause(80000);
 
-        const submit = await browser.$('#new-experiment-submit');
-        await submit.click();
+        await driver.click('new-experiment-submit')
 
         await browser.pause(1000);
         expect(await browser.getUrl()).toBe(`http://localhost:3000/experiments/${newExperimentName}/info`);
@@ -86,11 +77,8 @@ describe('new Experiment', () => {
     it('fail upload image - name exists',async () => {
         const existsImageName = 'img1';
 
-        const toggleImageUploader = await browser.$('#new-experiment-upload-image');
-        await toggleImageUploader.click();
-
-        const inputImageName = await browser.$('#upload-image-image-name');
-        await inputImageName.setValue(existsImageName);
+        await driver.click('new-experiment-upload-image')
+        await driver.setValue('upload-image-image-name',existsImageName)
         await browser.pause(1000);
         
         uploadImageAndSubmit();
