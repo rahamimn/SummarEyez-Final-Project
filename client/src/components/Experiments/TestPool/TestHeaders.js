@@ -30,7 +30,7 @@ export const createHeadersFromForm = (form, experimentName, openQuestionModal, i
                 <CheckCircleOutlineIcon style={{ margin:'0 3px',color:'#b1c36d'}}/> :
                 <HighlightOffIcon style={{margin:'0 3px', color:'red'}}/> 
             }
-            {answer.time/1000}ms
+            {answer.time/1000}sec
            </span>
           )
       })), 

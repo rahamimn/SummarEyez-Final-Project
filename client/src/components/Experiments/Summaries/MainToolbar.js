@@ -113,7 +113,7 @@ const useToolbarStyles = makeStyles(theme => ({
             <Button 
               id="main-toolbar-layers"key="4" color="inherit" onClick={ () => {
               window.open(`/article-layers/${experimentName}?${stringifySummaries()}`,'_blank')}}>
-                Layers</Button>
+                Compare</Button>
         ]}
       </Toolbar>
       {isMergeOpen && 
