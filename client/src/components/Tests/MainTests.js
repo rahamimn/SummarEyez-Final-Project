@@ -31,6 +31,8 @@ function MainTests({testPlanId}) {
   
   const fetchForms = useCallback(async(formsDetails) => {
     const responses = await Promise.all(formsDetails.map(detail => api.getForm(detail.experimentName, detail.formId)));
+    if(responses.some(({status}) => status !== 0))
+      return;
     setForms(responses.map((res,i) => ({...res.data, experimentName: formsDetails[i].experimentName})));
   },[]);
 

@@ -16,8 +16,10 @@ export function FormsManager(){
     const [formText,setFormText] = useState('');
 
     const fetchForms = useCallback(async() => {
-      const forms = await api.getForms(experimentName);
-      setForms(forms.data);
+      const {data,status} = await api.getForms(experimentName);
+      if(status === 0 ){
+        setForms(data);
+      }
       setSelectedForm(null)
       setNewForm(false)
     },[experimentName]);

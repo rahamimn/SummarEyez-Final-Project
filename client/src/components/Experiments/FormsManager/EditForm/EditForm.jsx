@@ -69,16 +69,20 @@ export function EditForm({
       const disabled = form && !form.editable;
 
       const fetchQuestions = useCallback(async() => { 
-        const {data} = await api.getQuestions(experimentName);
-        //Handle status
-        setQuestions(data);
-        return data;
+        const {data, status} = await api.getQuestions(experimentName);
+        if(status === 0 ){
+          setQuestions(data);
+          return data;
+        }
+        return []
       },[experimentName]);
 
       const fetchSummaries = useCallback(async() => {
-        const {data} = await api.getSummaries(experimentName);
+        const {data,status} = await api.getSummaries(experimentName);
         //Handle status
-        setSummaries(data);
+        if(status === 0){
+          setSummaries(data);
+        }
         return data;
       },[experimentName]);
 

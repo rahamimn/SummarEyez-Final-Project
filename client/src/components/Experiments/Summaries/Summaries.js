@@ -52,12 +52,14 @@ export function Summaries() {
   }
 
   const fetchSummaries = useCallback (async () => {
-    const res = await api.getSummaries(experimentName); 
-    setSummaries(formatData(res.data));
-    setAutoSelected([]);
-    setEyesSelected([]);
-    setMergedSelected([]);
-    setCustomSelected([]);
+    const {data,status} = await api.getSummaries(experimentName);
+    if(status === 0) {
+      setSummaries(formatData(data));
+      setAutoSelected([]);
+      setEyesSelected([]);
+      setMergedSelected([]);
+      setCustomSelected([]);
+    } 
   },[experimentName]);
 
   useEffect(() => {

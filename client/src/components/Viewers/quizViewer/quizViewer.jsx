@@ -20,8 +20,12 @@ export const QuizViewer = ({
       const fetch = async () => {
         setLoader(true);
         const res = await api.getSummary(experimentName,type,name);
-        setSummaryDetails(res.data);
         setLoader(false);
+
+        if(res.status!==0){
+          return;
+        }
+        setSummaryDetails(res.data);
       }
       fetch();
     },[name, type, filters, experimentName]);

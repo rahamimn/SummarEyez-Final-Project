@@ -138,8 +138,8 @@ describe('ExperimentService Tests',() =>{
             collectionsService.images().add('img1',createImage(img1));
             collectionsService.images().add('img2',createImage(img2));
 
-            const images = await experimentService.getImages();
-            expect(images).toEqual([{id:'img1',data:img1},{id:'img2',data:img2}]);
+            const res = await experimentService.getImages();
+            expect(res.data).toEqual([{id:'img1',data:img1},{id:'img2',data:img2}]);
         });
     });
 

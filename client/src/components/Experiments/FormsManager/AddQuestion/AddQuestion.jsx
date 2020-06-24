@@ -75,9 +75,11 @@ export function AddQuestion({
             style={{display: 'block' ,marginTop: '10px', float:'right'}}
             variant="contained"
             onClick={async () => {
-                const {data} = await api.addQuestion(experimentName,question)
-                //TODO handle errors
-                onAdd && onAdd(data.id);
+                const {data, status} = await api.addQuestion(experimentName,question)
+                
+                if(status === 0 ){
+                  onAdd && onAdd(data.id);
+                }
             }}>
               Add
           </Button>

@@ -585,7 +585,7 @@ getFilteredTest = async (experimentName, formId, minScore) =>{
         const imagesCollection = await this.collectionsService.images();
         const images  = await imagesCollection.getAll();
 
-        return images;
+        return response(0,{data: images});
     }
 
     getExperiments = async () => {

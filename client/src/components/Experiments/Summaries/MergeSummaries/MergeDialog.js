@@ -110,7 +110,7 @@ export default function MergeDialog({
             onClick={
               async () => {
                 setIsLoading(true);
-                const {status} = await api.mergeAlgorithms(experimentName, mergeName, mergeInput);
+                const {status} = await api.mergeSummaries(experimentName, mergeName, mergeInput);
                 //TO-DO error handling
                 if(status === ERROR_STATUS.NAME_NOT_VALID){
                   setNameErrorText('invalid name');

@@ -24,13 +24,17 @@ export function CreateTestPlan({ setSelectedForm, onCreate, onClose}){
     }
 
     const fetchExperiments = useCallback(async() => {
-      const experiments = await api.getExperiments();
-      setExperiments(experiments.data.map(exp => exp.id));
+      const {data,status} = await api.getExperiments();
+      if(status === 0){
+        setExperiments(data.map(exp => exp.id));
+      }
     },[]);
 
     const fetchForm = async (experimentName, formId) => {
-      const res = await api.getForm(experimentName, formId, true);
-      setSelectedForm({...res.data,experimentName});
+      const {data,status} = await api.getForm(experimentName, formId, true);
+      if(status === 0 ){
+        setSelectedForm({...data,experimentName});
+      }
     }
 
     useEffect(() => {

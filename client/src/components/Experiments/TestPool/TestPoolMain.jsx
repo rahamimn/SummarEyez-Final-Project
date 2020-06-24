@@ -22,13 +22,17 @@ export const TestsPoolMain = () =>  {
 
 
     const fetchExperiments = useCallback(async() => {
-        const experiments = await api.getExperiments();
-        setExperiments(experiments.data.map(exp => exp.id));
+        const {data,status} = await api.getExperiments();
+        if(status === 0){
+            setExperiments(data.map(exp => exp.id));
+        }
     },[]);
 
     const fetchTestPlans = useCallback(async() => {
-        const testsPlans = await api.getTestPlans();
-        setTestPlans(testsPlans.data);
+        const {data, status} = await api.getTestPlans();
+        if(status === 0){
+            setTestPlans(data);
+        }
     },[]);
     
       useEffect(() => {
@@ -37,31 +41,35 @@ export const TestsPoolMain = () =>  {
       },[fetchTestPlans,fetchTestPlans]);
       
     const fetchTests = useCallback(async(expName, form) => {
-        const res = await api.getExperimentTests(expName,form.name);
+        const {data, status} = await api.getExperimentTests(expName,form.name);
         let questions=[];
         if(form.isFillAnswers){
             questions = await fetchQuestions(expName)
         }
-
-        setTests({rows:res.data, headers: createHeadersFromForm(
-            form,
-            expName,
-            (qid) => {
-                const question= questions.find(question => question.id === qid);
-                setCurrentQuestion(question.data);
-                setQuestionModalOpen(true);
-             },
-            (qid, answer) => {
-              const question= questions.find(question => question.id === qid);
-              return parseInt(question.data.correctAnswer) === parseInt(answer.ans);
-            },
-             
-             )});
+        if(status === 0){
+            setTests({rows:data, headers: createHeadersFromForm(
+                form,
+                expName,
+                (qid) => {
+                    const question= questions.find(question => question.id === qid);
+                    setCurrentQuestion(question.data);
+                    setQuestionModalOpen(true);
+                 },
+                (qid, answer) => {
+                  const question= questions.find(question => question.id === qid);
+                  return parseInt(question.data.correctAnswer) === parseInt(answer.ans);
+                },
+                 
+            )});
+        }
     },[]);
 
     const fetchQuestions = useCallback(async(expName) => {
-        const res = await api.getQuestions(expName);
-        return res.data;
+        const {data, status} = await api.getQuestions(expName);
+        if(status === 0){
+            return data;
+        }
+        return []
     },[]);
   
     useEffect(() => {

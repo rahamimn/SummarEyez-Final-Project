@@ -13,11 +13,14 @@ export function FormChooser({experiments, onSelectForm, withoutButton, alreadyDo
     const [experimentText,setExperimentText] = useState('');
 
     const fetchForms = useCallback(async(selectedExperiment) => {
-      const forms = await api.getForms(selectedExperiment);
-      setForms(forms.data.filter(form => 
-        (withManually || form.id !== 'Manually') &&
-        (!alreadyDone || !form.data.editable)
-      ));
+      const {data, status} = await api.getForms(selectedExperiment);
+      if(status === 0 ){
+        setForms(data.filter(form => 
+          (withManually || form.id !== 'Manually') &&
+          (!alreadyDone || !form.data.editable)
+        ));
+      }
+     
     },[]);
 
     return (

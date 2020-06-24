@@ -13,8 +13,10 @@ export function TestPlanManager(){
   const [selectedForm,setSelectedForm] = useState(null);
 
   const fetchTestPlans = useCallback(async() => {
-    const testsPlans = await api.getTestPlans();
-    setTestPlans(testsPlans.data);
+    const {data, status} = await api.getTestPlans();
+    if(status === 0 ){
+      setTestPlans(data);
+    }
   },[]);
 
   useEffect(() => {
@@ -22,8 +24,10 @@ export function TestPlanManager(){
   },[fetchTestPlans]);
   
   const fetchForm = async (experimentName, formId) => {
-    const res = await api.getForm(experimentName, formId, true);
-    setSelectedForm({...res.data,experimentName});
+    const {data, status} = await api.getForm(experimentName, formId, true);
+    if(status === 0){
+      setSelectedForm({...data,experimentName});
+    }
   }
 
   return (

@@ -18,6 +18,9 @@ export const ArticleMain = () => {
     useEffect(() => {
       const fetch = async () => {
         const res = await api.getSummary(experimentName,type,name);
+        if(res.status!==0){
+          return;
+        }
         setSummaryDetails(res.data);
       }
       fetch();

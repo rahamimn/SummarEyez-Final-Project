@@ -25,8 +25,10 @@ export function ExperimentInfo() {
   const [ocrModalOpen,setOcrModalOpen] = useState(false)
 
   const fetchExperimentInfo = useCallback (async () => {
-    const res = await api.getExperimentInfo(experimentName); 
-		setExperimentInfo(res.data);
+    const {data, status} = await api.getExperimentInfo(experimentName); 
+    if(status === 0){
+      setExperimentInfo(data);
+    }
   },[experimentName]);
 
   useEffect(() => {

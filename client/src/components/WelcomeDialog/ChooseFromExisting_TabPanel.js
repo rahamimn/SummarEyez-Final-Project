@@ -24,7 +24,9 @@ export default function ChooseFromExisting_TabPanel({
 
   const fetchExperiments = async () => {
     const res = await api.getExperiments();
-    setExperiments(res.data);
+    if(res.status === 0){
+      setExperiments(res.data);
+    }
   }
   const validate = () => {
     permit(false);

@@ -69,10 +69,6 @@ const api = {
         return res.data;
     },
 
-    merge: async () => {
-
-    },
-
     addExperiment: async (experimentName,description,imageName) => {
         const res = await axios.post('/api/experiments',{
             experimentName,
@@ -82,7 +78,7 @@ const api = {
         return res.data;
     },
 
-    mergeAlgorithms: async(experimentName, mergedName, mergeInput) =>{
+    mergeSummaries: async(experimentName, mergedName, mergeInput) =>{
         const res = await axios.post(`/api/experiments/${experimentName}/summary/merge`,{
             name: mergedName,
             mergeInputs: mergeInput

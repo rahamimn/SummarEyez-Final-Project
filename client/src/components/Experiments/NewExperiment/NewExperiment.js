@@ -44,8 +44,11 @@ class NewExperimentComponent extends Component{
   }
 
   fetchImages = async () => {
-    const images = await api.getImages();
-    this.setState({images});
+    const {status, data} = await api.getImages();
+    if(status === 0){
+      this.setState({images: data});
+    }
+
   }
 
   handleAddExperiment = async () => {

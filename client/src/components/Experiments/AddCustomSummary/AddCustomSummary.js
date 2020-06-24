@@ -16,8 +16,10 @@ export function AddCustomSummary() {
   const history = useHistory();
 
   const fetchExperimentInfo = useCallback (async () => {
-    const res = await api.getSentencesWeights(experimentName); 
-    setRankSentences(res.data.map(sent => ({...sent, weight:0, normalized_weight: 0})));
+    const {data,status} = await api.getSentencesWeights(experimentName); 
+    if(status === 0){
+        setRankSentences(data.map(sent => ({...sent, weight:0, normalized_weight: 0})));
+    }
   },[experimentName]);
 
   useEffect(() => {

@@ -29,6 +29,10 @@ export const LayersMain = () => {
           )
         );
 
+        if(responses.some(res => res.status !== 0)){
+          return;
+        }
+
         setSummariesDetails({
           title: responses[0].data.title,
           summaries: responses.map(sum => sum.data.summary)
