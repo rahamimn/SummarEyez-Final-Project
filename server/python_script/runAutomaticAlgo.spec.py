@@ -2,6 +2,7 @@
 import runAutomaticAlgo
 import pandas as pd
 import sklearn
+import math
 
 base_sent_table = pd.read_csv('./inputForTests/base_sent_table.tsv', sep = '\t')
 text = """According to you, which one is more important between teacher’s ability to relate
@@ -18,11 +19,19 @@ He/she should make or help the students to understand the lesson. That is his/he
 responsibility."""
 
 
-sent_tables = runAutomaticAlgo.main(base_sent_table, text,['Alg1.py','Alg2.py'])
+sent_tables = runAutomaticAlgo.main(base_sent_table, text,['TF_IDF.py','Word_Frequency_Ver_2.py','Word_Frequency.py'])
 
-print(sent_tables[0])
-print(sent_tables[1])
+def equal(number1, number2):
+    assert math.isclose(number1 , number2, rel_tol=1e-2)
 
-sent_tables2 = runAutomaticAlgo.main(base_sent_table, text,['shouldFail.py']);
+equal(sent_tables[0]['weight'][0],0.04309 )
+equal(sent_tables[0]['normalized_weight'][0],0.042339 )
 
-print(sent_tables2[0])
+equal(sent_tables[1]['weight'][0],5)
+equal(sent_tables[1]['normalized_weight'][0],0.679095)
+
+equal(sent_tables[2]['weight'][0],2.333)
+equal(sent_tables[2]['normalized_weight'][0],0.0)
+
+sent_tables2 = runAutomaticAlgo.main(base_sent_table, text,['shouldFail.py'])
+assert sent_tables2[0] == None
