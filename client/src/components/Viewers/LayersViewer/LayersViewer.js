@@ -19,7 +19,7 @@ export const LayersViewer = ({summaries, title, summariesMetadata, experimentNam
 
     const summaryDetail = (metaData, index) => (
         <div key={index} style={{marginBottom: "40px"}}>
-            <Typography variant="h6">{metaData.name}({metaData.type})</Typography>
+            <Typography style={{overflowX: 'scroll', height: '40px'}}variant="h6">{metaData.name}({metaData.type})</Typography>
             <div style={{ borderRadius:'25px',border:'0.2px #dcdcdc solid',marginRight:"8px",  height:"13px", width:"20%", backgroundColor:`hsl(${colors[index].value}, 100%, 75%)`}}></div>
 
             <Button 
