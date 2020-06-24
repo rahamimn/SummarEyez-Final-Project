@@ -19,10 +19,9 @@ export const LayersViewer = ({summaries, title, summariesMetadata, experimentNam
 
     const summaryDetail = (metaData, index) => (
         <div key={index} style={{marginBottom: "40px"}}>
-            <div style={{display:"flex", alignItems: "center"}}>
-                <div style={{ marginRight:"10px",height:"30px", width:"50px", backgroundColor:`hsl(${colors[index].value}, 100%, 75%)`}}></div>
-                <Typography variant="caption">{metaData.name}({metaData.type})</Typography>
-            </div>
+            <Typography variant="h6">{metaData.name}({metaData.type})</Typography>
+            <div style={{ borderRadius:'25px',border:'0.2px #dcdcdc solid',marginRight:"8px",  height:"13px", width:"20%", backgroundColor:`hsl(${colors[index].value}, 100%, 75%)`}}></div>
+
             <Button 
                 size="small"  
                 onClick={() => window.open(`/article/${experimentName}/${metaData.type}/${metaData.name}`,'_blank')}>
